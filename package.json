@@ -1,7 +1,7 @@
 {
-  "name": "project",
+  "name": "vue-apollo-boost",
   "version": "1.0.0",
-  "description": "",
+  "description": "Starter for Full-Stack Vue-GraphQL Projects",
   "main": "index.js",
   "scripts": {
     "server": "nodemon server.js",
@@ -9,7 +9,7 @@
     "dev": "concurrently --names \"server,client\" \"npm run server --silent\" \"npm run client --silent\""
   },
   "keywords": [],
-  "author": "",
+  "author": "Reed Barger",
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^2.0.0-rc.7",

@@ -5,18 +5,18 @@ import Vuetify from "vuetify";
 import ApolloClient from "apollo-boost";
 import VueApollo from "vue-apollo";
 import "vuetify/dist/vuetify.min.css";
-import colors from "vuetify/es5/util/colors";
+// import colors from "vuetify/es5/util/colors";
 
 Vue.use(VueApollo);
 Vue.use(Vuetify, {
   theme: {
-    primary: colors.teal.lighten1,
-    secondary: colors.teal.lighten4,
-    accent: colors.red.darken2,
-    error: colors.red.base,
-    warning: colors.amber.darken2,
-    info: colors.blue.base,
-    success: colors.green.base
+    primary: "#4A148C",
+    secondary: "#7B1FA2",
+    accent: "#F06292",
+    error: "#C62828",
+    warning: "#FF8F00",
+    info: "#2196f3",
+    success: "#4caf50"
   }
 });
 
