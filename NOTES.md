@@ -1,4 +1,13 @@
+VSCode
+
+- Mention using the GraphQL package for VSCode for syntax highlighting
+- Show that you can just alt click in VS Code to take you to the address once its serving your project
+
+Preparation
+
 - Show the package.json scripts upon dl'ling the repo from Github; show how few server scripts there are and say you can dl each of these individually if you want
+
+Vuetify
+
 - Show that on the Vuetify site you specify a theme to include in main.js
 - Show the different shades that Vuetify has (i.e. grey lighten-1, 2)
-- Show that you can just alt click in VS Code to take you to the address once its serving your project
