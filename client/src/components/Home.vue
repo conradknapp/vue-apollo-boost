@@ -68,7 +68,12 @@
                   <form @submit.prevent="onSignup">
                     <v-layout row>
                       <v-flex xs12>
-                        <v-text-field name="email" label="Email" id="email" v-model="email" type="email" prepend-icon="email" required="required"></v-text-field>
+                        <v-text-field name="username" label="Username" v-model="username" type="text" prepend-icon="face" required="required"></v-text-field>
+                      </v-flex>
+                    </v-layout>
+                    <v-layout row>
+                      <v-flex xs12>
+                        <v-text-field name="email" label="Email" v-model="email" type="email" prepend-icon="email" required="required"></v-text-field>
                       </v-flex>
                     </v-layout>
                     <v-layout row>
@@ -78,7 +83,7 @@
                     </v-layout>
                     <v-layout row>
                       <v-flex xs12="xs12">
-                        <v-text-field name="passwordConfirmation" label="Confirm Password" id="confirmPassword" v-model="passwordConfirmation" type="password" prepend-icon="gavel" :rules="[comparePasswords]" required="required"></v-text-field>
+                        <v-text-field name="passwordConfirmation" label="Confirm Password" v-model="passwordConfirmation" type="password" prepend-icon="gavel" :rules="[comparePasswords]" required="required"></v-text-field>
                       </v-flex>
                     </v-layout>
                     <v-layout row>
@@ -102,10 +107,13 @@
 </template>
 
 <script>
+import { GET_BOOKS } from "../queries";
+
 export default {
   name: "Home",
   data() {
     return {
+      username: "",
       email: "",
       password: "",
       passwordConfirmation: "",
@@ -125,7 +133,14 @@ export default {
     }
   },
   methods: {
-    onSignup() {},
+    onSignup() {
+      // this.$store.dispatch('onSignup', {
+      //   username: this.username,
+      //   email: this.email,
+      //   password: this.password
+      // });
+      this.$apollo.query({ query: GET_BOOKS }).then(res => console.log(res));
+    },
     toggleCarousel() {
       this.cycleCarousel = !this.cycleCarousel;
     }
