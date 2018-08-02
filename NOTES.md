@@ -16,3 +16,7 @@ Vuetify
 
 - Show that on the Vuetify site you specify a theme to include in main.js
 - Show the different shades that Vuetify has (i.e. grey lighten-1, 2)
+
+GraphQL
+
+- If you don't need to use a certain parameter, don't pass in an underscore, like you do with the root parameter, it will throw a Syntax Error --> "Duplicate parameter name not allowed in this context"

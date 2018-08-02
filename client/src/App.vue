@@ -71,7 +71,7 @@ export default {
   data() {
     return {
       sideNav: false,
-      userAuth: false
+      userAuth: true
     };
   },
   computed: {
@@ -81,6 +81,13 @@ export default {
         { icon: "lock_open", title: "Sign In", link: "/signin" },
         { icon: "create", title: "Sign Up", link: "/signup" }
       ];
+      if (this.userAuth) {
+        items = [
+          { icon: "weekend", title: "Products", link: "/products" },
+          { icon: "account_box", title: "Profile", link: "/profile" },
+          { icon: "stars", title: "Create Product", link: "/products/add" }
+        ];
+      }
       return items;
     }
   },

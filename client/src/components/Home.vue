@@ -107,8 +107,6 @@
 </template>
 
 <script>
-import { GET_BOOKS } from "../queries";
-
 export default {
   name: "Home",
   data() {
@@ -133,6 +131,13 @@ export default {
         return "Passwords do not match";
       } else {
         return false;
+      }
+    }
+  },
+  watch: {
+    user(value) {
+      if (value !== null && value !== undefined) {
+        this.$router.push("/");
       }
     }
   },

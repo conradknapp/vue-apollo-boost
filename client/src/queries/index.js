@@ -1,11 +1,41 @@
 import { gql } from "apollo-boost";
 
-/* Queries */
-export const GET_BOOKS = gql`
+/* Product Queries */
+export const GET_ALL_PRODUCTS = gql`
   query {
-    books {
+    getAllProducts {
+      _id
       title
-      author
+      imageUrl
+      categories
+      description
+      likes
+      createdDate
+    }
+  }
+`;
+
+/* Product Mutations */
+
+export const ADD_PRODUCT = gql`
+  mutation(
+    $title: String!
+    $imageUrl: String!
+    $description: String!
+    $categories: [String]!
+  ) {
+    addProduct(
+      title: $title
+      imageUrl: $imageUrl
+      description: $description
+      categories: $categories
+    ) {
+      title
+      imageUrl
+      description
+      categories
+      createdDate
+      likes
     }
   }
 `;

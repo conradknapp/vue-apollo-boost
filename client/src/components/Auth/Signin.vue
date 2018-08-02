@@ -15,12 +15,12 @@
 
   <v-layout row wrap>
     <v-flex xs12="xs12" sm6 offset-sm3>
-      <v-card>
+      <v-card primary>
         <v-card-text>
           <v-container>
             <form @submit.prevent="onSignin">
-              <v-layout row="row">
-                <v-flex xs12="xs12">
+              <v-layout row>
+                <v-flex xs12>
                   <v-text-field name="username" prepend-icon="face" label="Username" v-model="username" type="text" required="required"></v-text-field>
                 </v-flex>
               </v-layout>
@@ -32,7 +32,7 @@
               <v-layout row>
                 <v-flex xs12>
                   <v-btn type="submit" :disabled="loading" :loading="loading" color="orange">Sign in<span class="custom-loader" slot="loader">
-                      <v-icon light="light">cached</v-icon></span></v-btn>
+                      <v-icon light>cached</v-icon></span></v-btn>
                   <h3>Don't have an account?
                     <router-link to="/signup">Sign up</router-link>
                   </h3>

@@ -8,9 +8,25 @@ const createToken = (user, secret, expiresIn) => {
 
 module.exports = {
   Query: {
-    // books: () => books
+    getAllProducts: async (_, args, { Product }) => {
+      const allProducts = await Product.find({}).sort({ createdDate: "desc" });
+      return allProducts;
+    }
   },
   Mutation: {
+    addProduct: async (
+      _,
+      { title, imageUrl, description, categories },
+      { Product }
+    ) => {
+      const newProduct = await new Product({
+        title,
+        imageUrl,
+        description,
+        categories
+      }).save();
+      return newProduct;
+    },
     signinUser: async (_, { username, password }, { User }) => {
       const user = await User.findOne({ username });
       if (!user) {

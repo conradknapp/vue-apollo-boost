@@ -7,3 +7,8 @@ Links
 - https://github.com/Akryum/vue-apollo/issues/7
 - https://github.com/apollographql/react-apollo/issues/763
 - https://lmiller1990.github.io/electic/posts/integrating_apollo_with_vue_and_vuex.html
+
+Useful
+
+- https://stackoverflow.com/questions/41013039/mongoose-schema-how-to-add-an-array
+- https://stackoverflow.com/questions/49577394/which-vuejs-lifecycle-hook-must-asynchronous-http-requests-be-called-in

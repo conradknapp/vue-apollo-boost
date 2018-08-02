@@ -1,6 +1,11 @@
-type Book {
-  title: String
-  author: String
+type Product {
+  _id: ID
+  title: String!
+  imageUrl: String!
+  description: String!
+  categories: [String]!
+  createdDate: String
+  likes: Int
 }
 
 type User {
@@ -17,10 +22,16 @@ type Token {
 }
 
 type Query {
-  books: [Book]
+  getAllProducts: [Product]!
 }
 
 type Mutation {
+  addProduct(
+    title: String!
+    imageUrl: String!
+    description: String!
+    categories: [String]!
+  ): Product!
   signinUser(username: String!, password: String!): Token
   signupUser(username: String!, email: String!, password: String!): Token
 }
