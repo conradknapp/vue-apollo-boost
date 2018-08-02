@@ -68,22 +68,22 @@
                   <form @submit.prevent="onSignup">
                     <v-layout row>
                       <v-flex xs12>
-                        <v-text-field name="username" label="Username" v-model="username" type="text" prepend-icon="face" required="required"></v-text-field>
+                        <v-text-field name="username" label="Username" v-model="username" type="text" prepend-icon="face" required></v-text-field>
                       </v-flex>
                     </v-layout>
                     <v-layout row>
                       <v-flex xs12>
-                        <v-text-field name="email" label="Email" v-model="email" type="email" prepend-icon="email" required="required"></v-text-field>
+                        <v-text-field name="email" label="Email" v-model="email" type="email" prepend-icon="email" required></v-text-field>
                       </v-flex>
                     </v-layout>
                     <v-layout row>
                       <v-flex xs12>
-                        <v-text-field name="password" label="Password" v-model="password" prepend-icon="extension" type="password" required="required"></v-text-field>
+                        <v-text-field name="password" label="Password" v-model="password" prepend-icon="extension" type="password" required></v-text-field>
                       </v-flex>
                     </v-layout>
                     <v-layout row>
                       <v-flex xs12="xs12">
-                        <v-text-field name="passwordConfirmation" label="Confirm Password" v-model="passwordConfirmation" type="password" prepend-icon="gavel" :rules="[comparePasswords]" required="required"></v-text-field>
+                        <v-text-field name="passwordConfirmation" label="Confirm Password" v-model="passwordConfirmation" type="password" prepend-icon="gavel" :rules="[comparePasswords]" required></v-text-field>
                       </v-flex>
                     </v-layout>
                     <v-layout row>
@@ -188,6 +188,43 @@ export default {
   );
   background-size: 100%;
   /* transition: 5000ms; */
+}
+
+.custom-loader {
+  animation: loader 1s infinite;
+  display: flex;
+}
+@-moz-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media screen and (max-width: 500px) {

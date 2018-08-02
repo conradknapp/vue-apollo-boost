@@ -21,12 +21,12 @@
             <form @submit.prevent="onSignin">
               <v-layout row>
                 <v-flex xs12>
-                  <v-text-field name="username" prepend-icon="face" label="Username" v-model="username" type="text" required="required"></v-text-field>
+                  <v-text-field name="username" prepend-icon="face" label="Username" v-model="username" type="text" required></v-text-field>
                 </v-flex>
               </v-layout>
               <v-layout row>
                 <v-flex xs12>
-                  <v-text-field name="password" label="Password" v-model="password" prepend-icon="extension" type="password" required="required"></v-text-field>
+                  <v-text-field name="password" label="Password" v-model="password" prepend-icon="extension" type="password" required></v-text-field>
                 </v-flex>
               </v-layout>
               <v-layout row>
@@ -87,3 +87,42 @@ export default {
   }
 };
 </script>
+
+<style>
+.custom-loader {
+  animation: loader 1s infinite;
+  display: flex;
+}
+@-moz-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>

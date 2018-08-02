@@ -35,12 +35,13 @@ export default new Router({
       component: Products
     },
     {
-      path: "/product/:id",
+      path: "/products/:_id",
       name: "Product",
+      props: true,
       component: Product
     },
     {
-      path: "/products/add",
+      path: "/product/add",
       name: "AddProduct",
       component: AddProduct
     },

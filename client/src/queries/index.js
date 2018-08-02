@@ -1,6 +1,20 @@
 import { gql } from "apollo-boost";
 
 /* Product Queries */
+export const GET_PRODUCT = gql`
+  query($_id: ID!) {
+    getProduct(_id: $_id) {
+      _id
+      title
+      imageUrl
+      categories
+      description
+      likes
+      createdDate
+    }
+  }
+`;
+
 export const GET_ALL_PRODUCTS = gql`
   query {
     getAllProducts {

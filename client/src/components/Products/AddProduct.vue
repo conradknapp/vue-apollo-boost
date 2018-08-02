@@ -10,17 +10,17 @@
       <form @submit.prevent="onAddProduct">
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3>
-            <v-textarea name="title" label="Title" id="title" v-model="title" required="required"></v-textarea>
+            <v-textarea name="title" label="Title" id="title" v-model="title" required></v-textarea>
           </v-flex>
         </v-layout>
         <v-layout row="row">
           <v-flex xs12 sm6 offset-sm3>
-            <v-select name="categories" label="Categories" id="categories" :items="['Mid-Century Modern', 'Rustic', 'Preppy', 'Traditional', 'Arts and Crafts']" v-model="categories" multiple required="required"></v-select>
+            <v-select name="categories" label="Categories" id="categories" :items="['Mid-Century Modern', 'Rustic', 'Preppy', 'Traditional', 'Arts and Crafts']" v-model="categories" multiple required></v-select>
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3>
-            <v-textarea name="imageUrl" label="Image URL" id="image-url" v-model="imageUrl" required="required"></v-textarea>
+            <v-textarea name="imageUrl" label="Image URL" id="image-url" v-model="imageUrl" required></v-textarea>
           </v-flex>
         </v-layout>
         <v-layout row>

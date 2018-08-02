@@ -85,7 +85,7 @@ export default {
         items = [
           { icon: "weekend", title: "Products", link: "/products" },
           { icon: "account_box", title: "Profile", link: "/profile" },
-          { icon: "stars", title: "Create Product", link: "/products/add" }
+          { icon: "stars", title: "Create Product", link: "/product/add" }
         ];
       }
       return items;

@@ -48,7 +48,7 @@
 
 <script>
 export default {
-  props: ["id"],
+  props: ["_id"],
   data() {
     return {
       dialog: false,
@@ -58,9 +58,9 @@ export default {
     };
   },
   computed: {
-    product() {
-      return this.$store.getters.product(this._id);
-    },
+    // product() {
+    //   return this.$store.getters.product(this._id);
+    // },
     loading() {
       return this.$store.getters.loading;
     },
@@ -79,17 +79,17 @@ export default {
     //   }
     //   return this.$store.getters.user.id === this.product.creatorId
     // },
-    onProductLiked() {
-      return this.$store.getters.user.favoritedProducts.includes(
-        this.product._id
-      );
-    },
-    products() {
-      return this.$store.getters.products;
+    // onProductLiked() {
+    //   return this.$store.getters.user.favoritedProducts.includes(
+    //     this.product._id
+    //   );
+    // },
+    product() {
+      return this.$store.getters.product;
     }
   },
-  mounted() {
-    this.$store.dispatch("loadProduct", this._id);
+  created() {
+    this.$store.dispatch("onGetProduct", this._id);
   },
   methods: {
     // onAgree() {
@@ -105,23 +105,63 @@ export default {
     //     this.$store.dispatch('favoriteProduct', this.product.id)
     //   }
     // },
-    // onUnAuthFave() {
-    //   if (scrollY > 25) {
-    //    this.isAnimating = true
-    //    this.unAuthFave = true
-    //   }
-    //   this.unAuthFave = true
-    //   setTimeout(() => this.$router.push('/signup'), 1000)
-    //   setTimeout(() => this.$store.dispatch('unAuthUserClick', {message: `Sign up to save all your favorites 💖`, submessage: `(it only takes a second ⏱)`, icon: 'info', color: "info"}), 1500)
-    // },
-    // togglePictureDialog() {
-    //   if (window.innerWidth > 500 && !this.unAuthFave && !this.mouseEnterHeart) {
-    //     this.dialog = !this.dialog
-    //   }
-    // },
-    navBack() {
+    onUnAuthFave() {
+      console.log("fave");
+      // if (scrollY > 25) {
+      //  this.isAnimating = true
+      //  this.unAuthFave = true
+      // }
+      // this.unAuthFave = true
+      // setTimeout(() => this.$router.push('/signup'), 1000)
+      // setTimeout(() => this.$store.dispatch('unAuthUserClick', {message: `Sign up to save all your favorites 💖`, submessage: `(it only takes a second ⏱)`, icon: 'info', color: "info"}), 1500)
+    },
+    togglePictureDialog() {
+      if (window.innerWidth > 500) {
+        this.dialog = !this.dialog;
+      }
+      // if (window.innerWidth > 500 && !this.unAuthFave && !this.mouseEnterHeart) {
+      //   this.dialog = !this.dialog
+      // }
+    },
+    goBack() {
       this.$router.go(-1);
     }
   }
 };
 </script>
+
+<style scoped>
+  /* #heart-flutter {
+    transform: translateY(-100px);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+  } */
+  @media screen and (min-width: 350px) {
+    #media {
+      height: 180px !important;
+    }
+  }
+  @media screen and (min-width: 400px) {
+    #media {
+      height: 230px !important;
+    }
+  }
+  @media screen and (min-width: 550px) {
+    #media {
+      font-size: 2rem;
+      height: 300px !important;
+    }
+  }
+  @media screen and (min-width: 630px) {
+    #media {
+      height: 400px !important;
+    }
+  }
+  @media screen and (min-width: 800px) {
+    #media {
+      height: 500px !important;
+    }
+  }
+</style>

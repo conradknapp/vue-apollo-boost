@@ -8,6 +8,10 @@ const createToken = (user, secret, expiresIn) => {
 
 module.exports = {
   Query: {
+    getProduct: async (_, { _id }, { Product }) => {
+      const product = await Product.findOne({ _id });
+      return product;
+    },
     getAllProducts: async (_, args, { Product }) => {
       const allProducts = await Product.find({}).sort({ createdDate: "desc" });
       return allProducts;

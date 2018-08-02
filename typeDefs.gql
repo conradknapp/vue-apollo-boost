@@ -22,6 +22,7 @@ type Token {
 }
 
 type Query {
+  getProduct(_id: ID!): Product!
   getAllProducts: [Product]!
 }
 

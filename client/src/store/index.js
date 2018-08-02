@@ -6,6 +6,7 @@ import { defaultClient as apolloClient } from "../main";
 Vue.use(Vuex);
 
 import {
+  GET_PRODUCT,
   GET_ALL_PRODUCTS,
   ADD_PRODUCT,
   SIGNIN_USER,
@@ -14,12 +15,16 @@ import {
 
 export const store = new Vuex.Store({
   state: {
+    product: null,
     products: [],
     user: null,
     loading: false,
     error: null
   },
   mutations: {
+    setProduct(state, payload) {
+      state.product = payload;
+    },
     setProducts(state, payload) {
       state.products = payload;
     },
@@ -40,6 +45,24 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
+    onGetProduct({ commit }, payload) {
+      commit("setLoading", true);
+      apolloClient
+        .query({
+          query: GET_PRODUCT,
+          variables: { _id: payload }
+        })
+        .then(({ data }) => {
+          commit("setLoading", false);
+          commit("setProduct", data.getProduct);
+          console.log(data.getProduct);
+        })
+        .catch(err => {
+          commit("setLoading", false);
+          commit("setError", err);
+          console.error(err);
+        });
+    },
     onGetAllProducts({ commit }) {
       commit("setLoading", true);
       apolloClient
@@ -124,6 +147,9 @@ export const store = new Vuex.Store({
     }
   },
   getters: {
+    product(state) {
+      return state.product;
+    },
     products(state) {
       return state.products;
     },
