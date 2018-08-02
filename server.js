@@ -7,6 +7,9 @@ const mongoose = require("mongoose");
 const filePath = path.join(__dirname, "typeDefs.gql");
 const typeDefs = fs.readFileSync(filePath, "utf-8");
 const resolvers = require("./resolvers");
+
+// Bring in Mongoose models and Environment Variables
+const User = require("./models/User");
 require("dotenv").config({ path: "variables.env" });
 
 // Connect to MongoDB
@@ -19,7 +22,13 @@ mongoose
   .catch(err => console.error(err));
 
 // Create GraphQL Server using typeDefs / resolvers
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: {
+    User
+  }
+});
 
 server.listen().then(({ url }) => {
   console.log(`Server ready at ${url}`);

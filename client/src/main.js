@@ -25,11 +25,14 @@ Vue.use(Vuetify, {
   }
 });
 
-const defaultClient = new ApolloClient({
+// Setup Apollo Client
+export const defaultClient = new ApolloClient({
   uri: "http://localhost:4000/graphql"
 });
 
 const apolloProvider = new VueApollo({ defaultClient });
+
+// Vue.prototype.apollo = defaultClient;
 
 new Vue({
   el: "#app",

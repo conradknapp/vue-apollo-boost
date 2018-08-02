@@ -134,12 +134,12 @@ export default {
   },
   methods: {
     onSignup() {
-      // this.$store.dispatch('onSignup', {
-      //   username: this.username,
-      //   email: this.email,
-      //   password: this.password
-      // });
-      this.$apollo.query({ query: GET_BOOKS }).then(res => console.log(res));
+      this.$store.dispatch('onSignup', {
+        username: this.username,
+        email: this.email,
+        password: this.password
+      });
+      // this.$apollo.query({ query: GET_BOOKS }).then(res => console.log(res));
     },
     toggleCarousel() {
       this.cycleCarousel = !this.cycleCarousel;

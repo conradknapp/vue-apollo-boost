@@ -3,6 +3,23 @@ type Book {
   author: String
 }
 
+type User {
+  _id: ID
+  username: String! @unique
+  password: String!
+  email: String!
+  joinDate: String
+  # favorites: [Recipe]
+}
+
+type Token {
+  token: String!
+}
+
 type Query {
   books: [Book]
+}
+
+type Mutation {
+  signupUser(username: String!, email: String!, password: String!): Token
 }

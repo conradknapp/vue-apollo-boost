@@ -6,7 +6,7 @@
   "scripts": {
     "server": "nodemon server.js",
     "client": "cd client && npm start",
-    "dev": "concurrently --names \"server,client\" \"npm run server --silent\" \"npm run client --silent\""
+    "dev": "concurrently --kill-others --names \"server,client\" \"npm run server --silent\" \"npm run client --silent\""
   },
   "keywords": [],
   "author": "Reed Barger",
@@ -15,6 +15,7 @@
     "apollo-server": "^2.0.0-rc.7",
     "dotenv": "^6.0.0",
     "graphql": "^0.13.2",
+    "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.2.6"
   },
   "devDependencies": {
