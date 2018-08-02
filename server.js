@@ -3,16 +3,16 @@ const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
 
-// Import resolvers and typeDefs (use path module to read file)
+// Import resolvers and typeDefs
 const filePath = path.join(__dirname, "typeDefs.gql");
 const typeDefs = fs.readFileSync(filePath, "utf-8");
 const resolvers = require("./resolvers");
 
-// Bring in Mongoose models and Environment Variables
+// Import Mongoose models and Environment Variables
 const User = require("./models/User");
 require("dotenv").config({ path: "variables.env" });
 
-// Connect to MongoDB
+// Connect to MLab Database
 mongoose
   .connect(
     process.env.MONGO_URI,
@@ -21,7 +21,7 @@ mongoose
   .then(() => console.log("DB connected"))
   .catch(err => console.error(err));
 
-// Create GraphQL Server using typeDefs / resolvers
+// Create GraphQL Server using typeDefs, resolvers, and Mongoose models
 const server = new ApolloServer({
   typeDefs,
   resolvers,

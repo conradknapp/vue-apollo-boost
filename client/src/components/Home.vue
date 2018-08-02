@@ -117,13 +117,17 @@ export default {
       email: "",
       password: "",
       passwordConfirmation: "",
-      loading: false,
       userAuth: false,
-      error: false,
       cycleCarousel: false
     };
   },
   computed: {
+    loading() {
+      return this.$store.getters.loading;
+    },
+    error() {
+      return this.$store.getters.error;
+    },
     comparePasswords() {
       if (this.password !== this.passwordConfirmation) {
         return "Passwords do not match";
@@ -134,12 +138,11 @@ export default {
   },
   methods: {
     onSignup() {
-      this.$store.dispatch('onSignup', {
+      this.$store.dispatch("onSignup", {
         username: this.username,
         email: this.email,
         password: this.password
       });
-      // this.$apollo.query({ query: GET_BOOKS }).then(res => console.log(res));
     },
     toggleCarousel() {
       this.cycleCarousel = !this.cycleCarousel;

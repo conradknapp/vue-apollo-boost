@@ -5,14 +5,44 @@ import { defaultClient as apolloClient } from "../main";
 
 Vue.use(Vuex);
 
-import { SIGNUP_USER, GET_BOOKS } from "../queries";
+import { SIGNIN_USER, SIGNUP_USER } from "../queries";
 
 export const store = new Vuex.Store({
-  state: {},
-  mutations: {},
+  state: {
+    loading: null,
+    error: null
+  },
+  mutations: {
+    setLoading(state, payload) {
+      state.loading = payload;
+    },
+    setError(state, payload) {
+      state.error = payload;
+    }
+  },
   actions: {
+    onSignin({ commit }, payload) {
+      commit("setLoading", true);
+      apolloClient
+        .mutate({
+          mutation: SIGNIN_USER,
+          variables: {
+            username: payload.username,
+            password: payload.password
+          }
+        })
+        .then(data => {
+          commit("setLoading", false);
+          console.log(data);
+        })
+        .catch(err => {
+          commit("setLoading", false);
+          commit("setError", err);
+          console.error(err);
+        });
+    },
     onSignup({ commit }, payload) {
-      // apolloClient.query({ query: GET_BOOKS }).then(res => console.log(res));
+      commit("setLoading", true);
       apolloClient
         .mutate({
           mutation: SIGNUP_USER,
@@ -22,9 +52,23 @@ export const store = new Vuex.Store({
             password: payload.password
           }
         })
-        .then(data => console.log(data))
-        .catch(err => console.error(err));
+        .then(data => {
+          commit("setLoading", false);
+          console.log(data);
+        })
+        .catch(err => {
+          commit("setLoading", false);
+          commit("setError", err);
+          console.error(err);
+        });
     }
   },
-  getters: {}
+  getters: {
+    loading(state) {
+      return state.loading;
+    },
+    error(state) {
+      return state.error;
+    }
+  }
 });
