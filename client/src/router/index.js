@@ -9,6 +9,7 @@ import Profile from "@/components/Auth/Profile";
 import Products from "@/components/Products/Products";
 import Product from "@/components/Products/Product";
 import AddProduct from "@/components/Products/AddProduct";
+import test from "@/components/Products/test";
 
 Vue.use(Router);
 
@@ -49,6 +50,11 @@ export default new Router({
       path: "/profile",
       name: "Profile",
       component: Profile
+    },
+    {
+      path: "/test",
+      name: "test",
+      component: test
     }
   ],
   mode: "history"

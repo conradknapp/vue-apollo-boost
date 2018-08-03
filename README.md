@@ -12,3 +12,6 @@ Useful
 
 - https://stackoverflow.com/questions/41013039/mongoose-schema-how-to-add-an-array
 - https://stackoverflow.com/questions/49577394/which-vuejs-lifecycle-hook-must-asynchronous-http-requests-be-called-in
+- https://codeburst.io/vuex-getters-are-great-but-dont-overuse-them-9c946689b414
+- https://hackernoon.com/how-graphql-replaces-redux-3fff8289221d
+- https://www.codementor.io/arpitbhayani/fast-and-efficient-pagination-in-mongodb-9095flbqr

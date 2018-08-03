@@ -1,5 +1,22 @@
 import { gql } from "apollo-boost";
 
+export const PRODUCTS_PAGE = gql`
+  query($page: Int!, $size: Int!) {
+    productsPage(page: $page, size: $size) {
+      products {
+        _id
+        title
+        imageUrl
+        categories
+        description
+        likes
+        createdDate
+      }
+      hasMore
+    }
+  }
+`;
+
 /* Product Queries */
 export const GET_PRODUCT = gql`
   query($_id: ID!) {
@@ -25,6 +42,16 @@ export const GET_ALL_PRODUCTS = gql`
       description
       likes
       createdDate
+    }
+  }
+`;
+
+export const SEARCH_PRODUCTS = gql`
+  query($searchTerm: String) {
+    searchRecipes(searchTerm: $searchTerm) {
+      _id
+      title
+      likes
     }
   }
 `;

@@ -8,6 +8,20 @@ const createToken = (user, secret, expiresIn) => {
 
 module.exports = {
   Query: {
+    productsPage: async (_, { page, size }, { Product }) => {
+      let products;
+      if (page === 1) {
+        products = await Product.find({}).limit(size);
+      } else {
+        const skips = size * (page - 1);
+        products = await Product.find({})
+          .skip(skips)
+          .limit(size);
+      }
+      const countDocs = await Product.countDocuments();
+      const hasMore = countDocs > size * page;
+      return { products, hasMore };
+    },
     getProduct: async (_, { _id }, { Product }) => {
       const product = await Product.findOne({ _id });
       return product;
@@ -15,7 +29,8 @@ module.exports = {
     getAllProducts: async (_, args, { Product }) => {
       const allProducts = await Product.find({}).sort({ createdDate: "desc" });
       return allProducts;
-    }
+    },
+    searchProducts: async () => {}
   },
   Mutation: {
     addProduct: async (

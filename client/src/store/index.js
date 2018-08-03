@@ -25,7 +25,7 @@ export const store = new Vuex.Store({
     setProduct(state, payload) {
       state.product = payload;
     },
-    setProducts(state, payload) {
+    setProducts: (state, payload) => {
       state.products = payload;
     },
     setNewProduct(state, payload) {
@@ -147,20 +147,10 @@ export const store = new Vuex.Store({
     }
   },
   getters: {
-    product(state) {
-      return state.product;
-    },
-    products(state) {
-      return state.products;
-    },
-    user(state) {
-      return state.user;
-    },
-    loading(state) {
-      return state.loading;
-    },
-    error(state) {
-      return state.error;
-    }
+    product: state => state.product,
+    products: state => state.products,
+    user: state => state.user,
+    loading: state => state.loading,
+    error: state => state.error
   }
 });

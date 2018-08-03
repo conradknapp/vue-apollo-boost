@@ -8,6 +8,11 @@ type Product {
   likes: Int
 }
 
+type ProductsPage {
+  products: [Product]
+  hasMore: Boolean!
+}
+
 type User {
   _id: ID
   username: String! @unique
@@ -24,6 +29,9 @@ type Token {
 type Query {
   getProduct(_id: ID!): Product!
   getAllProducts: [Product]!
+  searchProducts(searchTerm: String): [Product]
+
+  productsPage(page: Int!, size: Int!): ProductsPage
 }
 
 type Mutation {
