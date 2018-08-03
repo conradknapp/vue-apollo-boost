@@ -30,7 +30,24 @@ module.exports = {
       const allProducts = await Product.find({}).sort({ createdDate: "desc" });
       return allProducts;
     },
-    searchProducts: async () => {}
+    searchProducts: async (_, { searchTerm }, { Product }) => {
+      if (searchTerm) {
+        const searchResults = await Product.find(
+          {
+            $text: { $search: searchTerm }
+          },
+          {
+            score: { $meta: "textScore" }
+          }
+        )
+          .sort({
+            score: { $meta: "textScore" },
+            likes: "desc"
+          })
+          .limit(5);
+        return searchResults;
+      }
+    }
   },
   Mutation: {
     addProduct: async (

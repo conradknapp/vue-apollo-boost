@@ -88,6 +88,11 @@ export default {
       return this.$store.getters.product;
     }
   },
+  watch: {
+    $route() {
+      this.$store.dispatch("onGetProduct", this._id);
+    }
+  },
   created() {
     this.$store.dispatch("onGetProduct", this._id);
   },
@@ -131,37 +136,37 @@ export default {
 </script>
 
 <style scoped>
-  /* #heart-flutter {
+/* #heart-flutter {
     transform: translateY(-100px);
     position: fixed;
     width: 100%;
     height: 100%;
     z-index: 99;
   } */
-  @media screen and (min-width: 350px) {
-    #media {
-      height: 180px !important;
-    }
+@media screen and (min-width: 350px) {
+  #media {
+    height: 180px !important;
   }
-  @media screen and (min-width: 400px) {
-    #media {
-      height: 230px !important;
-    }
+}
+@media screen and (min-width: 400px) {
+  #media {
+    height: 230px !important;
   }
-  @media screen and (min-width: 550px) {
-    #media {
-      font-size: 2rem;
-      height: 300px !important;
-    }
+}
+@media screen and (min-width: 550px) {
+  #media {
+    font-size: 2rem;
+    height: 300px !important;
   }
-  @media screen and (min-width: 630px) {
-    #media {
-      height: 400px !important;
-    }
+}
+@media screen and (min-width: 630px) {
+  #media {
+    height: 400px !important;
   }
-  @media screen and (min-width: 800px) {
-    #media {
-      height: 500px !important;
-    }
+}
+@media screen and (min-width: 800px) {
+  #media {
+    height: 500px !important;
   }
+}
 </style>

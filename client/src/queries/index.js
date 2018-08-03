@@ -48,7 +48,7 @@ export const GET_ALL_PRODUCTS = gql`
 
 export const SEARCH_PRODUCTS = gql`
   query($searchTerm: String) {
-    searchRecipes(searchTerm: $searchTerm) {
+    searchProducts(searchTerm: $searchTerm) {
       _id
       title
       likes

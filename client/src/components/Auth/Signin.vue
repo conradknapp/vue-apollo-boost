@@ -14,7 +14,7 @@
   </v-layout> -->
 
   <v-layout row wrap>
-    <v-flex xs12="xs12" sm6 offset-sm3>
+    <v-flex xs12 sm6 offset-sm3>
       <v-card primary>
         <v-card-text>
           <v-container>

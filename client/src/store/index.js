@@ -10,13 +10,15 @@ import {
   GET_ALL_PRODUCTS,
   ADD_PRODUCT,
   SIGNIN_USER,
-  SIGNUP_USER
+  SIGNUP_USER,
+  SEARCH_PRODUCTS
 } from "../queries";
 
 export const store = new Vuex.Store({
   state: {
     product: null,
     products: [],
+    searchResults: [],
     user: null,
     loading: false,
     error: null
@@ -25,11 +27,16 @@ export const store = new Vuex.Store({
     setProduct(state, payload) {
       state.product = payload;
     },
-    setProducts: (state, payload) => {
+    setProducts(state, payload) {
       state.products = payload;
     },
     setNewProduct(state, payload) {
       state.products = [payload, ...state.products];
+    },
+    setSearchResults(state, payload) {
+      if (payload !== null) {
+        state.searchResults = payload;
+      }
     },
     setUser(state, payload) {
       state.user = payload;
@@ -75,6 +82,20 @@ export const store = new Vuex.Store({
         .catch(err => {
           commit("setLoading", false);
           commit("setError", err);
+          console.error(err);
+        });
+    },
+    onSearchProducts({ commit }, payload) {
+      apolloClient
+        .query({
+          query: SEARCH_PRODUCTS,
+          variables: { searchTerm: payload }
+        })
+        .then(({ data }) => {
+          commit("setSearchResults", data.searchProducts);
+          console.log(data.searchProducts);
+        })
+        .catch(err => {
           console.error(err);
         });
     },
@@ -149,6 +170,7 @@ export const store = new Vuex.Store({
   getters: {
     product: state => state.product,
     products: state => state.products,
+    searchResults: state => state.searchResults,
     user: state => state.user,
     loading: state => state.loading,
     error: state => state.error
