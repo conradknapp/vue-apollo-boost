@@ -41,10 +41,10 @@
     <v-spacer></v-spacer>
 
     <!-- Search Input -->
-    <v-text-field v-model="searchTerm" @input="onSearchProducts"  flex prepend-icon="search" placeholder="Search styles" color="accent" single-line hide-details></v-text-field>
+    <v-text-field v-model="searchTerm" @input="onSearchProducts" flex prepend-icon="search" placeholder="Search styles" color="accent" single-line hide-details></v-text-field>
 
     <!-- Search Results Card -->
-    <v-card dark v-if="searchResults.length" id="Card__Search">
+    <v-card dark v-if="searchResults.length" id="card__search">
       <v-list>
         <v-list-tile @click="goToResult(result._id)" v-for="result in searchResults" :key="result.title">
           <v-list-tile-title v-html="`${result.title}`"></v-list-tile-title>
@@ -62,8 +62,8 @@
       </v-btn>
       <v-btn flat to="/signup">Signup
       </v-btn>
-      <v-btn flat="flat" v-if="userAuth">
-        <v-icon class="hidden-sm-only" left="left">exit_to_app</v-icon>Signout
+      <v-btn flat v-if="userAuth">
+        <v-icon class="hidden-sm-only" left>exit_to_app</v-icon>Signout
       </v-btn>
     </v-toolbar-items>
   </v-toolbar>
@@ -141,7 +141,7 @@ export default {
   opacity: 0;
 }
 
-#Card__Favorites {
+#card__favorites {
   position: absolute;
   transition: all 0.5s;
   width: 200px;
@@ -149,7 +149,7 @@ export default {
   top: 100%;
   transform: translateX(-160px);
 }
-#Card__Search {
+#card__search {
   position: absolute;
   transition: all 0.5s;
   width: 100vw;
@@ -157,18 +157,18 @@ export default {
   top: 100%;
   left: 0%;
 }
-.SearchTerm__Highlight {
+.search__highlight {
   color: #ffc600;
 }
 
-.Card__Favorites--Image__Container {
+/* .card__favorites--image__container {
   display: flex;
   align-items: center;
   flex-direction: column;
   cursor: pointer;
 }
 
-.Card__Favorites--Image {
+.card__favorites--image {
   max-width: 100%;
   max-height: 100%;
 }
@@ -193,5 +193,5 @@ export default {
   90% {
     transform: translate3d(0, -4px, 0);
   }
-}
+} */
 </style>

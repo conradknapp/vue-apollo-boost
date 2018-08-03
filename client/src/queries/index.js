@@ -32,9 +32,9 @@ export const GET_PRODUCT = gql`
   }
 `;
 
-export const GET_ALL_PRODUCTS = gql`
-  query {
-    getAllProducts {
+export const GET_PRODUCTS = gql`
+  query($size: Int) {
+    getProducts(size: $size) {
       _id
       title
       imageUrl

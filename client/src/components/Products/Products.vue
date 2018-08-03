@@ -123,11 +123,11 @@ export default {
     // this.$store.dispatch("setResultsLog", false);
   },
   mounted() {
-    this.getAllProducts();
+    this.getProducts();
   },
   methods: {
-    getAllProducts() {
-      this.$store.dispatch("onGetAllProducts");
+    getProducts() {
+      this.$store.dispatch("onGetProducts");
     },
     // infiniteScroll() {
     //   this.$store.dispatch('infiniteScroll')

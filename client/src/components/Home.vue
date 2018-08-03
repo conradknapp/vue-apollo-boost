@@ -1,25 +1,25 @@
 <template>
   <v-container class="text-xs-center" fluid grid-list-md>
 
-  <!-- <v-layout row="row" wrap="wrap" v-if="error && !loading">
+  <!-- <v-layout row wrap v-if="error && !loading">
     <v-flex xs12>
       <app-alert class="Alert" v-if="!isSignUpAlert" @dismissed="onDismissed" :icon="error.icon" :color="error.color" :submessage="error.submessage" :text="error.message"></app-alert>
     </v-flex>
   </v-layout> -->
 
   <!-- Explore Products Button -->
-  <v-layout row="row" wrap="wrap" v-if="!loading">
+  <v-layout row wrap v-if="!loading">
     <v-flex xs12>
-      <v-btn class="darken-4 purple" to="/products" large dark>
+      <v-btn class="primary" to="/products" large dark>
         Explore Products
       </v-btn>
     </v-flex>
   </v-layout>
 
-  <!-- Spinner -->
+  <!-- Loading Spinner -->
   <v-layout>
     <v-flex xs12>
-      <v-progress-circular indeterminate="indeterminate" color="purple" :width="7" :size="70" v-if="loading"></v-progress-circular>
+      <v-progress-circular indeterminate="indeterminate" color="secondary" :width="7" :size="70" v-if="loading"></v-progress-circular>
     </v-flex>
   </v-layout>
 
@@ -27,8 +27,8 @@
   <v-layout row wrap v-if="!loading">
     <v-flex xs12>
       <v-carousel v-bind="{ 'cycle': cycleCarousel }" interval="3000" delimiter-icon="home" id="carousel" lazy>
-        <v-carousel-item @mouseover="toggleCarousel" @mouseout="toggleCarousel">
-          <h1 id="carousel__title">Hello</h1>
+        <v-carousel-item v-for="product in products" :src="product.imageUrl" :key="product._id" @click="onLoadProduct(product._id)" @mouseover="toggleCarousel" @mouseout="toggleCarousel">
+          <h1 id="carousel__title">{{product.title}}</h1>
         </v-carousel-item>
       </v-carousel>
 
@@ -88,8 +88,8 @@
                     </v-layout>
                     <v-layout row>
                       <v-flex xs12>
-                        <v-btn color="pink darken-2" dark type="submit" :disabled="loading" :loading="loading">Let's Go!<span class="custom-loader" slot="loader">
-                            <v-icon light="light">cached</v-icon></span></v-btn>
+                        <v-btn color="accent" dark type="submit" :disabled="loading" :loading="loading">Let's Go!<span class="custom-loader" slot="loader">
+                            <v-icon light>cached</v-icon></span></v-btn>
                       </v-flex>
                     </v-layout>
                   </form>
@@ -126,6 +126,9 @@ export default {
     error() {
       return this.$store.getters.error;
     },
+    products() {
+      return this.$store.getters.products;
+    },
     comparePasswords() {
       if (this.password !== this.passwordConfirmation) {
         return "Passwords do not match";
@@ -133,6 +136,9 @@ export default {
         return false;
       }
     }
+  },
+  created() {
+    this.$store.dispatch("onGetProducts", 3);
   },
   watch: {
     user(value) {

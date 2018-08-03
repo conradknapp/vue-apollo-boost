@@ -7,7 +7,7 @@ Vue.use(Vuex);
 
 import {
   GET_PRODUCT,
-  GET_ALL_PRODUCTS,
+  GET_PRODUCTS,
   ADD_PRODUCT,
   SIGNIN_USER,
   SIGNUP_USER,
@@ -70,14 +70,14 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    onGetAllProducts({ commit }) {
+    onGetProducts({ commit }, payload) {
       commit("setLoading", true);
       apolloClient
-        .query({ query: GET_ALL_PRODUCTS })
+        .query({ query: GET_PRODUCTS, variables: { size: payload } })
         .then(({ data }) => {
           commit("setLoading", false);
-          commit("setProducts", data.getAllProducts);
-          console.log(data.getAllProducts);
+          commit("setProducts", data.getProducts);
+          console.log(data.getProducts);
         })
         .catch(err => {
           commit("setLoading", false);

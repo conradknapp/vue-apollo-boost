@@ -26,9 +26,17 @@ module.exports = {
       const product = await Product.findOne({ _id });
       return product;
     },
-    getAllProducts: async (_, args, { Product }) => {
-      const allProducts = await Product.find({}).sort({ createdDate: "desc" });
-      return allProducts;
+    getProducts: async (_, { size }, { Product }) => {
+      let products;
+      console.log(size);
+      if (size) {
+        products = await Product.find({})
+          .sort({ createdDate: "desc" })
+          .limit(size);
+      } else {
+        products = await Product.find({}).sort({ createdDate: "desc" });
+      }
+      return products;
     },
     searchProducts: async (_, { searchTerm }, { Product }) => {
       if (searchTerm) {
