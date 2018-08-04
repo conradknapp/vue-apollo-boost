@@ -56,11 +56,15 @@ module.exports = {
       }
     },
     getCurrentUser: async (_, args, { User, currentUser }) => {
+      console.log(currentUser);
       if (!currentUser) {
         return null;
       }
       const user = await User.findOne({
         username: currentUser.username
+      }).populate({
+        path: "favorites",
+        model: "Product"
       });
       return user;
     }

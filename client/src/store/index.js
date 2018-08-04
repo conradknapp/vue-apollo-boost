@@ -53,7 +53,7 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
-    onGetCurrentUser({ commit, dispatch }) {
+    onGetCurrentUser({ commit }) {
       commit("setLoading", true);
       apolloClient
         .query({ query: GET_CURRENT_USER })
@@ -150,7 +150,7 @@ export const store = new Vuex.Store({
           }
         })
         .then(({ data }) => {
-          commit("setLoading", false);
+          // commit("setLoading", false);
           localStorage.setItem("token", data.signinUser.token);
           dispatch("onGetCurrentUser");
         })
@@ -160,7 +160,7 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    onSignup({ commit }, payload) {
+    onSignup({ commit, dispatch }, payload) {
       commit("setLoading", true);
       commit("clearError");
       apolloClient
@@ -173,7 +173,7 @@ export const store = new Vuex.Store({
           }
         })
         .then(({ data }) => {
-          commit("setLoading", false);
+          // commit("setLoading", false);
           localStorage.setItem("token", data.signupUser.token);
           dispatch("onGetCurrentUser");
         })

@@ -5,12 +5,15 @@
       <h1>Get started here</h1>
     </v-flex>
   </v-layout>
+
+  <!-- Error Alert -->
   <v-layout row v-if="error">
     <v-flex xs12 sm6 offset-sm3>
-
-      <!-- <app-alert @dismissed="onDismissed" :text="error.message" :submessage="error.submessage" :color="error.color" :icon="error.icon"></app-alert> -->
+      <FormAlert @dismiss="onDismiss" :color="error.color" :text="error.message"></FormAlert>
     </v-flex>
   </v-layout>
+
+
   <v-layout row>
     <v-flex xs12 sm6 offset-sm3>
       <v-card>
@@ -98,8 +101,8 @@ export default {
         password: this.password
       });
     },
-    onDismissed() {
-      this.$store.dispatch("clearError");
+    onDismiss() {
+      this.$store.dispatch("setError", null);
     }
   }
 };

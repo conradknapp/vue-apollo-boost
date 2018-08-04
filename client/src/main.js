@@ -2,7 +2,7 @@ import Vue from "vue";
 import App from "./App";
 import router from "./router";
 import { store } from "./store";
-import { GET_CURRENT_USER } from "./queries";
+import FormAlert from "./components/Shared/FormAlert";
 
 // Import Vuetify
 import Vuetify from "vuetify";
@@ -26,6 +26,9 @@ Vue.use(Vuetify, {
   }
 });
 
+// Global Components
+Vue.component("FormAlert", FormAlert);
+
 // Setup Apollo Client
 export const defaultClient = new ApolloClient({
   uri: "http://localhost:4000/graphql",
@@ -33,7 +36,7 @@ export const defaultClient = new ApolloClient({
     credentials: "include"
   },
   request: operation => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token") || "";
     operation.setContext({
       headers: {
         authorization: token

@@ -51,6 +51,8 @@ export const SEARCH_PRODUCTS = gql`
     searchProducts(searchTerm: $searchTerm) {
       _id
       title
+      description
+      imageUrl
       likes
     }
   }
@@ -64,6 +66,10 @@ export const GET_CURRENT_USER = gql`
       username
       email
       joinDate
+      favorites {
+        _id
+        title
+      }
     }
   }
 `;

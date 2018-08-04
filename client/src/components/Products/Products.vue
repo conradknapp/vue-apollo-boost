@@ -1,17 +1,17 @@
 <template>
-<v-container class="pt-5 mt-5" grid-list-md>
+<v-container grid-list-md>
 
   <!-- Layout Buttons -->
   <v-layout class="hidden-xs-only" row wrap>
     <v-flex xs12>
       <v-tooltip bottom><span>Row layout</span>
         <v-btn icon slot="activator" @click="layoutButtonActive = false">
-          <v-icon :color="!layoutButtonActive ? 'purple darken-3' : ''">view_headline</v-icon>
+          <v-icon :color="!layoutButtonActive ? 'primary' : ''">view_headline</v-icon>
         </v-btn>
       </v-tooltip>
       <v-tooltip bottom><span>Mozaic layout</span>
         <v-btn icon slot="activator" @click="layoutButtonActive = true">
-          <v-icon :color="layoutButtonActive ? 'purple darken-3' : ''">view_quilt</v-icon>
+          <v-icon :color="layoutButtonActive ? 'primary' : ''">view_quilt</v-icon>
         </v-btn>
       </v-tooltip>
     </v-flex>
@@ -19,7 +19,7 @@
 
 
   <v-layout row wrap>
-    <v-flex xs12 v-bind="{ [`sm${layoutButtonActive ? product.flex : 6}`]: true }" v-for="product in products" :key="product._id" hover="hover" @mouseenter="showDescription(product)" @mouseleave="description = null">
+    <v-flex xs12 v-bind="{ [`sm${layoutButtonActive && index % 3 === 0 ? 12 : 6}`]: true }" v-for="(product, index) in products" :key="product._id" hover @mouseenter="showDescription(product)" @mouseleave="description = null">
       <v-card class="mt-3 ml-1 mr-2" hover>
         <v-card-media lazy :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" tag="button" height="40vh">
           <v-container fill-height fluid>
@@ -27,15 +27,15 @@
               <v-flex xs12 align-end flexbox>
                 <span class="Product__Title headline" v-text="product.title"></span>
                 <span class="Product__Description" v-if="product.description === description" v-text="showFirstSentence(description)"></span>
-                <div>
-                  <v-btn icon x-large v-if="userAuth" @mouseenter="mouseInHeart = true" @mouseleave="mouseInHeart = false" @click="toggleLike(product)">
+                <!-- <div>
+                  <v-btn icon x-large v-if="user" @mouseenter="mouseInHeart = true" @mouseleave="mouseInHeart = false" @click="toggleLike(product)">
                     <v-icon color="red darken-4" x-large v-if="userFavorites.includes(product._id)">favorite</v-icon>
                     <v-icon color="grey" x-large v-else>favorite</v-icon>
                   </v-btn>
-                  <v-btn icon x-large v-if="!userAuth" @click="onUnAuthFave">
+                  <v-btn icon x-large v-if="!user" @click="onUnAuthFave">
                     <v-icon color="grey" x-large>favorite</v-icon>
                   </v-btn>
-                </div>
+                </div> -->
               </v-flex>
             </v-layout>
           </v-container>
@@ -54,7 +54,7 @@
   </v-layout>
 
   <!-- Product Skeleton Component -->
-  <!-- <product-skeleton v-show="loading && !bottom"></product-skeleton> -->
+  <Skeleton v-show="loading && !bottom"></Skeleton>
 
   <v-layout v-if="!loading">
     <v-flex class="text-xs-center mt-5 mb-5" xs12>
@@ -67,13 +67,15 @@
 </template>
 
 <script>
+import Skeleton from "../Shared/Skeleton";
+
 export default {
+  components: { Skeleton },
   data() {
     return {
       layoutButtonActive: false,
       pageUpButton: false,
       description: null,
-      userAuth: false,
       // mouseInHeart: false,
       unAuthFave: false,
       bottom: false
@@ -85,6 +87,9 @@ export default {
     },
     loading() {
       return this.$store.getters.loading;
+    },
+    user() {
+      return this.$store.getters.user;
     }
     // userIsAuthenticated() {
     //   return this.$store.getters.user !== null &&

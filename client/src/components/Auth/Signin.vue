@@ -7,11 +7,11 @@
   </v-layout>
 
   <!-- Error Alert -->
-  <!-- <v-layout row v-if="error">
+  <v-layout row v-if="error">
     <v-flex xs12 sm6 offset-sm3>
-      <app-alert @dismissed="onDismissed" :text="error.message" :color="error.color" :icon="error.icon"></app-alert>
+      <FormAlert @dismiss="onDismiss" :text="error.message" :color="error.color"></FormAlert>
     </v-flex>
-  </v-layout> -->
+  </v-layout>
 
   <v-layout row wrap>
     <v-flex xs12 sm6 offset-sm3>
@@ -80,10 +80,10 @@ export default {
         username: this.username,
         password: this.password
       });
+    },
+    onDismiss() {
+      this.$store.dispatch("setError", null);
     }
-    // onDismissed() {
-    //   this.$store.dispatch('clearError')
-    // }
   }
 };
 </script>

@@ -5,7 +5,7 @@
       <v-toolbar flat>
         <v-list>
           <v-list-tile>
-          <v-toolbar-side-icon @click.native.stop="toggleNav"></v-toolbar-side-icon>
+          <v-toolbar-side-icon @click="toggleNav"></v-toolbar-side-icon>
           <v-list-tile-title class="title">Vue Pinterest</v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -22,9 +22,9 @@
         </v-list-tile>
 
       <!-- if User is Authenticated -->
-        <v-list-tile v-if="user">
+        <v-list-tile v-if="user" @click="onSignout">
         <v-list-tile-action>
-          <v-icon @click="onSignout">exit_to_app</v-icon>
+          <v-icon>exit_to_app</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>Signout</v-list-tile-content>
       </v-list-tile>
@@ -47,7 +47,9 @@
     <v-card dark v-if="searchResults.length" id="card__search">
       <v-list>
         <v-list-tile @click="goToResult(result._id)" v-for="result in searchResults" :key="result.title">
-          <v-list-tile-title v-html="`${result.title}`"></v-list-tile-title>
+          <v-list-tile-title>
+            {{ result.title }} - {{ formatDescription(result.description) }}
+          </v-list-tile-title>
           <!-- <v-list-tile-action v-if="user && userFavorites.includes(result._id)">
             <v-icon>favorite</v-icon>
           </v-list-tile-action> -->
@@ -75,9 +77,21 @@
 
   <!-- App Content -->
     <main>
-      <transition name="fade">
-        <router-view/>
-      </transition>
+      <v-container class="mt-4">
+        <transition name="fade">
+          <router-view/>
+        </transition>
+        <v-snackbar
+          v-model="snackbar"
+          color="success"
+          bottom
+          left
+          :timeout='5000'>
+          <v-icon>check_circle</v-icon>
+          <h3>You are now signed in!</h3>
+            <v-btn dark flat @click="snackbar = false">Close</v-btn>
+        </v-snackbar>
+      </v-container>
     </main>
 
   </v-app>
@@ -89,7 +103,8 @@ export default {
   data() {
     return {
       sideNav: false,
-      searchTerm: ""
+      searchTerm: "",
+      snackbar: false
     };
   },
   computed: {
@@ -115,7 +130,17 @@ export default {
       return this.$store.getters.user;
     }
   },
+  watch: {
+    user(value) {
+      if (value) {
+        this.snackbar = true;
+      }
+    }
+  },
   methods: {
+    formatDescription(desc) {
+      return desc.length > 30 ? `${desc.slice(0, 30)}...` : desc;
+    },
     toggleNav() {
       this.sideNav = !this.sideNav;
     },
@@ -166,9 +191,6 @@ export default {
   z-index: 8;
   top: 100%;
   left: 0%;
-}
-.search__highlight {
-  color: #ffc600;
 }
 
 /* .card__favorites--image__container {

@@ -1,12 +1,6 @@
 <template>
   <v-container class="text-xs-center" fluid grid-list-md>
 
-  <!-- <v-layout row wrap v-if="error && !loading">
-    <v-flex xs12>
-      <app-alert class="Alert" v-if="!isSignUpAlert" @dismissed="onDismissed" :icon="error.icon" :color="error.color" :submessage="error.submessage" :text="error.message"></app-alert>
-    </v-flex>
-  </v-layout> -->
-
   <!-- Explore Products Button -->
   <v-layout row wrap v-if="!loading">
     <v-flex xs12>
@@ -17,9 +11,9 @@
   </v-layout>
 
   <!-- Loading Spinner -->
-  <v-layout>
+  <v-layout fixed row wrap>
     <v-flex xs12>
-      <v-progress-circular indeterminate="indeterminate" color="secondary" :width="7" :size="70" v-if="loading"></v-progress-circular>
+      <v-progress-circular indeterminate color="secondary" :width="7" :size="70" v-if="loading"></v-progress-circular>
     </v-flex>
   </v-layout>
 
@@ -53,11 +47,11 @@
 
         <!-- Form Error Message  -->
 
-        <!-- <v-layout row="row" wrap="wrap" v-if="error && !loading">
-          <v-flex xs12="xs12" sm6="sm6" offset-sm3="offset-sm3">
-            <app-alert @dismissed="onDismissed" :icon="error.icon" :color="error.color" :submessage="error.submessage" :text="error.message"></app-alert>
+        <v-layout row wrap v-if="error && !loading">
+          <v-flex xs12 sm6 offset-sm3>
+            <FormAlert @dismiss="onDismiss" :icon="error.icon" :color="error.color" :text="error.message"></FormAlert>
           </v-flex>
-        </v-layout> -->
+        </v-layout>
 
         <!-- Signup Form -->
         <v-layout row wrap>
@@ -115,7 +109,8 @@ export default {
       email: "",
       password: "",
       passwordConfirmation: "",
-      cycleCarousel: true
+      cycleCarousel: true,
+      snackbar: false
     };
   },
   computed: {
@@ -145,14 +140,17 @@ export default {
   created() {
     this.$store.dispatch("onGetProducts", 3);
   },
-  watch: {
-    user(value) {
-      if (value !== null && value !== undefined) {
-        this.$router.push("/");
-      }
-    }
-  },
+  // watch: {
+  //   user(value) {
+  //     if (value !== null && value !== undefined) {
+  //       this.snackbar = true;
+  //     }
+  //   }
+  // },
   methods: {
+    onDismiss() {
+      this.$store.commit("setError", null);
+    },
     onSignup() {
       this.$store.dispatch("onSignup", {
         username: this.username,
@@ -168,8 +166,9 @@ export default {
 </script>
 
 <style scoped>
-#products__button {
-  margin: 5em 0 2em 0;
+h1 {
+  font-weight: 100;
+  font-size: 2.5rem;
 }
 
 #carousel {
