@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App";
 import router from "./router";
 import { store } from "./store";
+import { GET_CURRENT_USER } from "./queries";
 
 // Import Vuetify
 import Vuetify from "vuetify";
@@ -27,7 +28,23 @@ Vue.use(Vuetify, {
 
 // Setup Apollo Client
 export const defaultClient = new ApolloClient({
-  uri: "http://localhost:4000/graphql"
+  uri: "http://localhost:4000/graphql",
+  fetchOptions: {
+    credentials: "include"
+  },
+  request: operation => {
+    const token = localStorage.getItem("token");
+    operation.setContext({
+      headers: {
+        authorization: token
+      }
+    });
+  },
+  onError: ({ networkError }) => {
+    if (networkError) {
+      console.log("Network Error:", networkError);
+    }
+  }
 });
 
 const apolloProvider = new VueApollo({ defaultClient });
@@ -40,5 +57,8 @@ new Vue({
   router,
   store,
   components: { App },
-  template: "<App/>"
+  template: "<App/>",
+  beforeCreate() {
+    this.$store.dispatch("onGetCurrentUser");
+  }
 });

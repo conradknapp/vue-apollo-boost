@@ -10,7 +10,7 @@
   <!-- Explore Products Button -->
   <v-layout row wrap v-if="!loading">
     <v-flex xs12>
-      <v-btn class="primary" to="/products" large dark>
+      <v-btn class="primary" id="products__button" to="/products" large dark>
         Explore Products
       </v-btn>
     </v-flex>
@@ -33,7 +33,7 @@
       </v-carousel>
 
 
-      <div id="info-card" v-if="!userAuth">
+      <div id="info-card" v-if="!user">
         <v-layout row>
           <v-flex xs12>
             <h1><span class="font-weight-black">Love</span> Your Home</h1>
@@ -42,7 +42,7 @@
         </v-layout>
       </div>
 
-      <v-container v-if="!userAuth">
+      <v-container v-if="!user">
 
         <v-layout row wrap v-if="!error">
           <v-flex xs12 sm6 offset-sm3>
@@ -115,8 +115,7 @@ export default {
       email: "",
       password: "",
       passwordConfirmation: "",
-      userAuth: false,
-      cycleCarousel: false
+      cycleCarousel: true
     };
   },
   computed: {
@@ -128,6 +127,12 @@ export default {
     },
     products() {
       return this.$store.getters.products;
+    },
+    user() {
+      return (
+        this.$store.getters.user !== null &&
+        this.$store.getters.user !== undefined
+      );
     },
     comparePasswords() {
       if (this.password !== this.passwordConfirmation) {
@@ -163,6 +168,10 @@ export default {
 </script>
 
 <style scoped>
+#products__button {
+  margin: 5em 0 2em 0;
+}
+
 #carousel {
   cursor: pointer;
   animation-play-state: paused;

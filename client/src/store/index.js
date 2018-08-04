@@ -6,6 +6,7 @@ import { defaultClient as apolloClient } from "../main";
 Vue.use(Vuex);
 
 import {
+  GET_CURRENT_USER,
   GET_PRODUCT,
   GET_PRODUCTS,
   ADD_PRODUCT,
@@ -52,6 +53,20 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
+    onGetCurrentUser({ commit, dispatch }) {
+      commit("setLoading", true);
+      apolloClient
+        .query({ query: GET_CURRENT_USER })
+        .then(({ data }) => {
+          commit("setLoading", false);
+          commit("setUser", data.getCurrentUser);
+          console.log("current user", data.getCurrentUser);
+        })
+        .catch(err => {
+          commit("setLoading", false);
+          console.error(err);
+        });
+    },
     onGetProduct({ commit }, payload) {
       commit("setLoading", true);
       apolloClient
@@ -123,7 +138,7 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    onSignin({ commit }, payload) {
+    onSignin({ commit, dispatch }, payload) {
       commit("setLoading", true);
       commit("clearError");
       apolloClient
@@ -134,9 +149,10 @@ export const store = new Vuex.Store({
             password: payload.password
           }
         })
-        .then(data => {
+        .then(({ data }) => {
           commit("setLoading", false);
-          console.log(data);
+          localStorage.setItem("token", data.signinUser.token);
+          dispatch("onGetCurrentUser");
         })
         .catch(err => {
           commit("setLoading", false);
@@ -156,15 +172,21 @@ export const store = new Vuex.Store({
             password: payload.password
           }
         })
-        .then(data => {
+        .then(({ data }) => {
           commit("setLoading", false);
-          console.log(data);
+          localStorage.setItem("token", data.signupUser.token);
+          dispatch("onGetCurrentUser");
         })
         .catch(err => {
           commit("setLoading", false);
           commit("setError", err);
           console.error(err);
         });
+    },
+    onSignout: async ({ commit }) => {
+      commit("setUser", null);
+      localStorage.setItem("token", "");
+      await apolloClient.resetStore();
     }
   },
   getters: {

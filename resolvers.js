@@ -28,7 +28,6 @@ module.exports = {
     },
     getProducts: async (_, { size }, { Product }) => {
       let products;
-      console.log(size);
       if (size) {
         products = await Product.find({})
           .sort({ createdDate: "desc" })
@@ -55,6 +54,15 @@ module.exports = {
           .limit(5);
         return searchResults;
       }
+    },
+    getCurrentUser: async (_, args, { User, currentUser }) => {
+      if (!currentUser) {
+        return null;
+      }
+      const user = await User.findOne({
+        username: currentUser.username
+      });
+      return user;
     }
   },
   Mutation: {

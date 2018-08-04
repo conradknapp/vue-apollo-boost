@@ -27,6 +27,8 @@ type Token {
 }
 
 type Query {
+  getCurrentUser: User
+
   getProduct(_id: ID!): Product!
   getProducts(size: Int): [Product]!
   searchProducts(searchTerm: String): [Product]

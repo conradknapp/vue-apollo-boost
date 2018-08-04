@@ -22,9 +22,9 @@
         </v-list-tile>
 
       <!-- if User is Authenticated -->
-        <v-list-tile v-if="userAuth">
+        <v-list-tile v-if="user">
         <v-list-tile-action>
-          <v-icon>exit_to_app</v-icon>
+          <v-icon @click="onSignout">exit_to_app</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>Signout</v-list-tile-content>
       </v-list-tile>
@@ -48,7 +48,7 @@
       <v-list>
         <v-list-tile @click="goToResult(result._id)" v-for="result in searchResults" :key="result.title">
           <v-list-tile-title v-html="`${result.title}`"></v-list-tile-title>
-          <!-- <v-list-tile-action v-if="userAuth && userFavorites.includes(result._id)">
+          <!-- <v-list-tile-action v-if="user && userFavorites.includes(result._id)">
             <v-icon>favorite</v-icon>
           </v-list-tile-action> -->
         </v-list-tile>
@@ -58,11 +58,16 @@
     <v-spacer></v-spacer>
 
     <v-toolbar-items dark class="hidden-sm-and-down">
-      <v-btn flat to="/signin">Signin
+      <v-btn flat to="/products">
+      <v-icon class="hidden-sm-only" left>weekend</v-icon>Products
       </v-btn>
-      <v-btn flat to="/signup">Signup
+      <v-btn flat v-if="!user" to="/signin">
+      <v-icon class="hidden-sm-only" left>lock_open</v-icon>Signin
       </v-btn>
-      <v-btn flat v-if="userAuth">
+      <v-btn flat v-if="!user" to="/signup">
+      <v-icon class="hidden-sm-only" left>create</v-icon>Signup
+      </v-btn>
+      <v-btn flat v-if="user" @click="onSignout">
         <v-icon class="hidden-sm-only" left>exit_to_app</v-icon>Signout
       </v-btn>
     </v-toolbar-items>
@@ -84,7 +89,6 @@ export default {
   data() {
     return {
       sideNav: false,
-      userAuth: true,
       searchTerm: ""
     };
   },
@@ -95,17 +99,20 @@ export default {
         { icon: "lock_open", title: "Sign In", link: "/signin" },
         { icon: "create", title: "Sign Up", link: "/signup" }
       ];
-      if (this.userAuth) {
+      if (this.user) {
         items = [
           { icon: "weekend", title: "Products", link: "/products" },
-          { icon: "account_box", title: "Profile", link: "/profile" },
-          { icon: "stars", title: "Create Product", link: "/product/add" }
+          { icon: "stars", title: "Create Product", link: "/product/add" },
+          { icon: "account_box", title: "Profile", link: "/profile" }
         ];
       }
       return items;
     },
     searchResults() {
       return this.$store.getters.searchResults;
+    },
+    user() {
+      return this.$store.getters.user;
     }
   },
   methods: {
@@ -120,6 +127,9 @@ export default {
       this.$router.push(`/products/${id}`);
       this.$store.dispatch("onGetProduct", id);
       this.$store.commit("setSearchResults", []);
+    },
+    onSignout() {
+      this.$store.dispatch("onSignout");
     }
   }
 };

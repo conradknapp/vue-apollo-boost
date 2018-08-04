@@ -1,7 +1,7 @@
 <template>
-  <v-container class="text-xs-center" flexbox center>
+  <v-container mt-5 pt-5 class="text-xs-center" flexbox center>
   <v-layout row wrap>
-    <v-flex xs12="xs12" sm6 offset-sm3>
+    <v-flex xs12 sm6 offset-sm3>
       <h1>Welcome Back!</h1>
     </v-flex>
   </v-layout>
@@ -57,9 +57,9 @@ export default {
     };
   },
   computed: {
-    // user() {
-    //   return this.$store.getters.user
-    // },
+    user() {
+      return this.$store.getters.user;
+    },
     error() {
       return this.$store.getters.error;
     },
@@ -67,13 +67,13 @@ export default {
       return this.$store.getters.loading;
     }
   },
-  // watch: {
-  //   user(value) {
-  //     if (value !== null && value !== undefined) {
-  //       this.$router.push('/')
-  //     }
-  //   }
-  // },
+  watch: {
+    user(value) {
+      if (value) {
+        this.$router.push("/");
+      }
+    }
+  },
   methods: {
     onSignin() {
       this.$store.dispatch("onSignin", {

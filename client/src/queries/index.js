@@ -56,6 +56,18 @@ export const SEARCH_PRODUCTS = gql`
   }
 `;
 
+/* User Queries */
+export const GET_CURRENT_USER = gql`
+  query {
+    getCurrentUser {
+      _id
+      username
+      email
+      joinDate
+    }
+  }
+`;
+
 /* Product Mutations */
 
 export const ADD_PRODUCT = gql`
