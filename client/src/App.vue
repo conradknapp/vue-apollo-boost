@@ -87,7 +87,7 @@
           bottom
           left
           :timeout='5000'>
-          <v-icon>check_circle</v-icon>
+          <v-icon class="mr-3">check_circle</v-icon>
           <h3>You are now signed in!</h3>
             <v-btn dark flat @click="snackbar = false">Close</v-btn>
         </v-snackbar>
@@ -97,9 +97,9 @@
           bottom
           left
           :timeout='5000'>
-          <v-icon>cancel</v-icon>
+          <v-icon class="mr-3">cancel</v-icon>
           <h3 v-if="authError">{{ authError.message }}</h3>
-            <v-btn dark flat @click="snackbar2 = false">Close</v-btn>
+            <v-btn dark flat to="/signin">Signin</v-btn>
         </v-snackbar>
       </v-container>
     </main>
