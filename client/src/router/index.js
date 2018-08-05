@@ -11,6 +11,8 @@ import Product from "@/components/Products/Product";
 import AddProduct from "@/components/Products/AddProduct";
 import test from "@/components/Products/test";
 
+import AuthGuard from "./AuthGuard";
+
 Vue.use(Router);
 
 export default new Router({
@@ -44,11 +46,13 @@ export default new Router({
     {
       path: "/product/add",
       name: "AddProduct",
+      beforeEnter: AuthGuard,
       component: AddProduct
     },
     {
       path: "/profile",
       name: "Profile",
+      beforeEnter: AuthGuard,
       component: Profile
     },
     {

@@ -1,6 +1,7 @@
-const { ApolloServer } = require("apollo-server");
+const { ApolloServer, AuthenticationError } = require("apollo-server");
 const fs = require("fs");
 const path = require("path");
+const cors = require("cors");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
@@ -23,14 +24,12 @@ mongoose
   .then(() => console.log("DB connected"))
   .catch(err => console.error(err));
 
-const getUser = async req => {
-  const token = req.headers["authorization"];
-
+const getUser = async token => {
   if (token) {
     try {
       return await jwt.verify(token, process.env.SECRET);
-    } catch (e) {
-      throw new AuthenticationError("Your session expired. Sign in again.");
+    } catch (err) {
+      throw new AuthenticationError("Sign in again.");
     }
   }
 };
@@ -39,9 +38,17 @@ const getUser = async req => {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  formatError: error => ({
+    name: error.name,
+    message: error.message
+  }),
   context: async ({ req }) => {
-    const currentUser = await getUser(req);
-    return { User, Product, currentUser };
+    const token = req.headers["authorization"];
+    return {
+      User,
+      Product,
+      currentUser: await getUser(token)
+    };
   }
 });
 

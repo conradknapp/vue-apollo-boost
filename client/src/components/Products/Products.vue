@@ -24,10 +24,9 @@
         <v-card-media lazy :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" tag="button" height="40vh">
           <v-container fill-height fluid>
             <v-layout fill-height>
-              <v-flex xs12 align-end flexbox>
+              <v-flex xs12 flexbox>
                 <span class="Product__Title headline" v-text="product.title"></span>
-                <span class="Product__Description" v-if="product.description === description" v-text="showFirstSentence(description)"></span>
-                <!-- <div>
+
                   <v-btn icon x-large v-if="user" @mouseenter="mouseInHeart = true" @mouseleave="mouseInHeart = false" @click="toggleLike(product)">
                     <v-icon color="red darken-4" x-large v-if="userFavorites.includes(product._id)">favorite</v-icon>
                     <v-icon color="grey" x-large v-else>favorite</v-icon>
@@ -35,7 +34,8 @@
                   <v-btn icon x-large v-if="!user" @click="onUnAuthFave">
                     <v-icon color="grey" x-large>favorite</v-icon>
                   </v-btn>
-                </div> -->
+
+                <span class="Product__Description" v-if="product.description === description" v-text="showFirstSentence(description)"></span>
               </v-flex>
             </v-layout>
           </v-container>
@@ -90,7 +90,7 @@ export default {
     },
     user() {
       return this.$store.getters.user;
-    }
+    },
     // userIsAuthenticated() {
     //   return this.$store.getters.user !== null &&
     //   this.$store.getters.user !== undefined
@@ -101,9 +101,9 @@ export default {
     //   }
     //   return this.$store.getters.user.id === this.product.creatorId
     // },
-    // userFavorites() {
-    //   return this.$store.getters.user.favoritedProducts
-    // },
+    userFavorites() {
+      return this.$store.getters.user.favorites || [];
+    }
     // resultsLog() {
     //   return this.$store.getters.resultsLog
     // }

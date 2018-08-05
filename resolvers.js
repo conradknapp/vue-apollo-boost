@@ -56,7 +56,6 @@ module.exports = {
       }
     },
     getCurrentUser: async (_, args, { User, currentUser }) => {
-      console.log(currentUser);
       if (!currentUser) {
         return null;
       }

@@ -20,3 +20,6 @@ Vuetify
 GraphQL
 
 - If you don't need to use a certain parameter, don't pass in an underscore, like you do with the root parameter, it will throw a Syntax Error --> "Duplicate parameter name not allowed in this context"
+- If we have a malformed token, we will get a 400 error from Apollo, so in ApolloClient set up, we check the status code for that and remove token in localStorage
+
+- Show example where your token is malformed and therefore you return an AuthenticationError (as from getUser function). Go to index.js and log the graphQLErrors object and show how you can use the formatErrors function with ApolloServer to create better error messages to check for such errors and therefore remove your token (otherwise it will be everywhere in your app); see this -> https://stackoverflow.com/questions/41852880/how-to-handle-errors-with-the-apollo-stack

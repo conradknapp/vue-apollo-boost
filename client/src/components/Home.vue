@@ -11,11 +11,15 @@
   </v-layout>
 
   <!-- Loading Spinner -->
-  <v-layout fixed row wrap>
-    <v-flex xs12>
-      <v-progress-circular indeterminate color="secondary" :width="7" :size="70" v-if="loading"></v-progress-circular>
-    </v-flex>
-  </v-layout>
+  <v-layout row justify-center>
+      <v-dialog v-model="loading" persistent fullscreen content-class="loading-dialog">
+        <v-container fill-height>
+          <v-layout row justify-center align-center>
+            <v-progress-circular indeterminate :size="70" :width="7"></v-progress-circular>
+          </v-layout>
+        </v-container>
+      </v-dialog>
+    </v-layout>
 
   <!-- Products Carousel  -->
   <v-layout row wrap v-if="!loading">
@@ -49,7 +53,7 @@
 
         <v-layout row wrap v-if="error && !loading">
           <v-flex xs12 sm6 offset-sm3>
-            <FormAlert @dismiss="onDismiss" :icon="error.icon" :color="error.color" :text="error.message"></FormAlert>
+            <form-alert @dismiss="onDismiss" :icon="error.icon" :color="error.color" :text="error.message"></form-alert>
           </v-flex>
         </v-layout>
 
@@ -76,7 +80,7 @@
                       </v-flex>
                     </v-layout>
                     <v-layout row>
-                      <v-flex xs12="xs12">
+                      <v-flex xs12>
                         <v-text-field name="passwordConfirmation" label="Confirm Password" v-model="passwordConfirmation" type="password" prepend-icon="gavel" :rules="[comparePasswords]" required></v-text-field>
                       </v-flex>
                     </v-layout>
@@ -124,10 +128,7 @@ export default {
       return this.$store.getters.products;
     },
     user() {
-      return (
-        this.$store.getters.user !== null &&
-        this.$store.getters.user !== undefined
-      );
+      return this.$store.getters.user != null;
     },
     comparePasswords() {
       if (this.password !== this.passwordConfirmation) {
@@ -140,16 +141,9 @@ export default {
   created() {
     this.$store.dispatch("onGetProducts", 3);
   },
-  // watch: {
-  //   user(value) {
-  //     if (value !== null && value !== undefined) {
-  //       this.snackbar = true;
-  //     }
-  //   }
-  // },
   methods: {
     onDismiss() {
-      this.$store.commit("setError", null);
+      this.$store.commit("clearError");
     },
     onSignup() {
       this.$store.dispatch("onSignup", {
@@ -166,6 +160,9 @@ export default {
 </script>
 
 <style scoped>
+.loading-dialog {
+  background-color: #303030;
+}
 h1 {
   font-weight: 100;
   font-size: 2.5rem;

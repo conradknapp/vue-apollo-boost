@@ -17,3 +17,4 @@ Useful
 - https://www.codementor.io/arpitbhayani/fast-and-efficient-pagination-in-mongodb-9095flbqr
 - https://stackoverflow.com/questions/41298174/click-on-link-changes-the-url-but-not-the-content-data-on-page
 - https://github.com/Akryum/vue-apollo/issues/120
+- https://github.com/vuetifyjs/vuetify/issues/2508

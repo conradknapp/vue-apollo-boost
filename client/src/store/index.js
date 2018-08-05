@@ -22,7 +22,8 @@ export const store = new Vuex.Store({
     searchResults: [],
     user: null,
     loading: false,
-    error: null
+    error: null,
+    authError: null
   },
   mutations: {
     setProduct(state, payload) {
@@ -50,6 +51,9 @@ export const store = new Vuex.Store({
     },
     clearError(state) {
       state.error = null;
+    },
+    setAuthError(state, payload) {
+      state.authError = payload;
     }
   },
   actions: {
@@ -60,7 +64,7 @@ export const store = new Vuex.Store({
         .then(({ data }) => {
           commit("setLoading", false);
           commit("setUser", data.getCurrentUser);
-          console.log("current user", data.getCurrentUser);
+          console.log("current user", data);
         })
         .catch(err => {
           commit("setLoading", false);
@@ -195,6 +199,7 @@ export const store = new Vuex.Store({
     searchResults: state => state.searchResults,
     user: state => state.user,
     loading: state => state.loading,
-    error: state => state.error
+    error: state => state.error,
+    authError: state => state.authError
   }
 });

@@ -9,7 +9,7 @@
   <!-- Error Alert -->
   <v-layout row v-if="error">
     <v-flex xs12 sm6 offset-sm3>
-      <FormAlert @dismiss="onDismiss" :text="error.message" :color="error.color"></FormAlert>
+      <form-alert @dismiss="onDismiss" :text="error.message" :color="error.color"></form-alert>
     </v-flex>
   </v-layout>
 
@@ -82,7 +82,7 @@ export default {
       });
     },
     onDismiss() {
-      this.$store.dispatch("setError", null);
+      this.$store.commit("clearError");
     }
   }
 };

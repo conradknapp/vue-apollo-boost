@@ -27,7 +27,7 @@ Vue.use(Vuetify, {
 });
 
 // Global Components
-Vue.component("FormAlert", FormAlert);
+Vue.component("form-alert", FormAlert);
 
 // Setup Apollo Client
 export const defaultClient = new ApolloClient({
@@ -43,9 +43,13 @@ export const defaultClient = new ApolloClient({
       }
     });
   },
-  onError: ({ networkError }) => {
+  onError: ({ graphQLErrors, networkError }) => {
     if (networkError) {
       console.log("Network Error:", networkError);
+    }
+    if (graphQLErrors) {
+      store.commit("setAuthError", graphQLErrors[0]);
+      localStorage.setItem("token", "");
     }
   }
 });

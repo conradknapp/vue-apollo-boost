@@ -91,6 +91,16 @@
           <h3>You are now signed in!</h3>
             <v-btn dark flat @click="snackbar = false">Close</v-btn>
         </v-snackbar>
+        <v-snackbar
+          v-model="snackbar2"
+          color="warning"
+          bottom
+          left
+          :timeout='5000'>
+          <v-icon>cancel</v-icon>
+          <h3 v-if="authError">{{ authError.message }}</h3>
+            <v-btn dark flat @click="snackbar2 = false">Close</v-btn>
+        </v-snackbar>
       </v-container>
     </main>
 
@@ -104,7 +114,8 @@ export default {
     return {
       sideNav: false,
       searchTerm: "",
-      snackbar: false
+      snackbar: false,
+      snackbar2: false
     };
   },
   computed: {
@@ -128,12 +139,20 @@ export default {
     },
     user() {
       return this.$store.getters.user;
+    },
+    authError() {
+      return this.$store.getters.authError;
     }
   },
   watch: {
     user(value) {
       if (value) {
         this.snackbar = true;
+      }
+    },
+    authError(value) {
+      if (value) {
+        this.snackbar2 = true;
       }
     }
   },
