@@ -22,7 +22,7 @@
         </v-list-tile>
 
       <!-- if User is Authenticated -->
-        <v-list-tile v-if="user" @click="onSignout">
+        <v-list-tile v-if="user" @click="handleSignout">
         <v-list-tile-action>
           <v-icon>exit_to_app</v-icon>
         </v-list-tile-action>
@@ -41,7 +41,7 @@
     <v-spacer></v-spacer>
 
     <!-- Search Input -->
-    <v-text-field v-model="searchTerm" @input="onSearchProducts" flex prepend-icon="search" placeholder="Search styles" color="accent" single-line hide-details></v-text-field>
+    <v-text-field v-model="searchTerm" @input="handleSearchProducts" flex prepend-icon="search" placeholder="Search styles" color="accent" single-line hide-details></v-text-field>
 
     <!-- Search Results Card -->
     <v-card dark v-if="searchResults.length" id="card__search">
@@ -69,7 +69,7 @@
       <v-btn flat v-if="!user" to="/signup">
       <v-icon class="hidden-sm-only" left>create</v-icon>Signup
       </v-btn>
-      <v-btn flat v-if="user" @click="onSignout">
+      <v-btn flat v-if="user" @click="handleSignout">
         <v-icon class="hidden-sm-only" left>exit_to_app</v-icon>Signout
       </v-btn>
     </v-toolbar-items>
@@ -108,6 +108,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "App",
   data() {
@@ -119,6 +121,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["searchResults", "user", "authError"]),
     sideNavItems() {
       let items = [
         { icon: "weekend", title: "Products", link: "/products" },
@@ -133,15 +136,6 @@ export default {
         ];
       }
       return items;
-    },
-    searchResults() {
-      return this.$store.getters.searchResults;
-    },
-    user() {
-      return this.$store.getters.user;
-    },
-    authError() {
-      return this.$store.getters.authError;
     }
   },
   watch: {
@@ -163,17 +157,17 @@ export default {
     toggleNav() {
       this.sideNav = !this.sideNav;
     },
-    onSearchProducts() {
-      this.$store.dispatch("onSearchProducts", this.searchTerm);
-    },
     goToResult(id) {
       this.searchTerm = "";
       this.$router.push(`/products/${id}`);
-      this.$store.dispatch("onGetProduct", id);
+      this.$store.dispatch("getProduct", id);
       this.$store.commit("setSearchResults", []);
     },
-    onSignout() {
-      this.$store.dispatch("onSignout");
+    handleSearchProducts() {
+      this.$store.dispatch("searchProducts", this.searchTerm);
+    },
+    handleSignout() {
+      this.$store.dispatch("signoutUser");
     }
   }
 };

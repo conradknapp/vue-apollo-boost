@@ -18,15 +18,15 @@
       <v-card primary>
         <v-card-text>
           <v-container>
-            <form @submit.prevent="onSignin">
+            <form @submit.prevent="handleSignin">
               <v-layout row>
                 <v-flex xs12>
-                  <v-text-field name="username" prepend-icon="face" label="Username" v-model="username" type="text" required></v-text-field>
+                  <v-text-field name="username" prepend-icon="face" label="Username" v-model.trim="username" type="text" required></v-text-field>
                 </v-flex>
               </v-layout>
               <v-layout row>
                 <v-flex xs12>
-                  <v-text-field name="password" label="Password" v-model="password" prepend-icon="extension" type="password" required></v-text-field>
+                  <v-text-field name="password" label="Password" v-model.trim="password" prepend-icon="extension" type="password" required></v-text-field>
                 </v-flex>
               </v-layout>
               <v-layout row>
@@ -48,6 +48,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "Signin",
   data() {
@@ -57,15 +59,7 @@ export default {
     };
   },
   computed: {
-    user() {
-      return this.$store.getters.user;
-    },
-    error() {
-      return this.$store.getters.error;
-    },
-    loading() {
-      return this.$store.getters.loading;
-    }
+    ...mapGetters(["user", "loading", "error"])
   },
   watch: {
     user(value) {
@@ -75,8 +69,8 @@ export default {
     }
   },
   methods: {
-    onSignin() {
-      this.$store.dispatch("onSignin", {
+    handleSignin() {
+      this.$store.dispatch("signinUser", {
         username: this.username,
         password: this.password
       });

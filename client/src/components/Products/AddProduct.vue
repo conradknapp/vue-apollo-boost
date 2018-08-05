@@ -7,10 +7,10 @@
   </v-layout>
   <v-layout row>
     <v-flex xs12>
-      <form @submit.prevent="onAddProduct">
+      <form @submit.prevent="handleAddProduct">
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3>
-            <v-textarea name="title" label="Title" id="title" v-model="title" required></v-textarea>
+            <v-textarea name="title" label="Title" id="title" v-model.trim="title" required></v-textarea>
           </v-flex>
         </v-layout>
         <v-layout row="row">
@@ -20,7 +20,7 @@
         </v-layout>
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3>
-            <v-textarea name="imageUrl" label="Image URL" id="image-url" v-model="imageUrl" required></v-textarea>
+            <v-textarea name="imageUrl" label="Image URL" id="image-url" v-model.trim="imageUrl" required></v-textarea>
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -28,7 +28,7 @@
         </v-layout>
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3>
-            <v-textarea name="description" label="Description" id="description" v-model="description" multi-line required></v-textarea>
+            <v-textarea name="description" label="Description" id="description" v-model.trim="description" multi-line required></v-textarea>
           </v-flex>
         </v-layout>
 
@@ -60,14 +60,13 @@ export default {
   methods: {
     onAddProduct() {
       if (!this.formValid) return;
-
       const newProduct = {
         title: this.title,
         categories: this.categories,
         imageUrl: this.imageUrl,
         description: this.description
       };
-      this.$store.dispatch("onAddProduct", newProduct);
+      this.$store.dispatch("handleAddProduct", newProduct);
       this.$router.push("/products");
     }
   }

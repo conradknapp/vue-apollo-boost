@@ -26,38 +26,38 @@ export const store = new Vuex.Store({
     authError: null
   },
   mutations: {
-    setProduct(state, payload) {
+    setProduct: (state, payload) => {
       state.product = payload;
     },
-    setProducts(state, payload) {
+    setProducts: (state, payload) => {
       state.products = payload;
     },
-    setNewProduct(state, payload) {
+    setNewProduct: (state, payload) => {
       state.products = [payload, ...state.products];
     },
-    setSearchResults(state, payload) {
+    setSearchResults: (state, payload) => {
       if (payload !== null) {
         state.searchResults = payload;
       }
     },
-    setUser(state, payload) {
+    setUser: (state, payload) => {
       state.user = payload;
     },
-    setLoading(state, payload) {
+    setLoading: (state, payload) => {
       state.loading = payload;
     },
-    setError(state, payload) {
+    setError: (state, payload) => {
       state.error = payload;
     },
-    clearError(state) {
+    clearError: state => {
       state.error = null;
     },
-    setAuthError(state, payload) {
+    setAuthError: (state, payload) => {
       state.authError = payload;
     }
   },
   actions: {
-    onGetCurrentUser({ commit }) {
+    getCurrentUser: ({ commit }) => {
       commit("setLoading", true);
       apolloClient
         .query({ query: GET_CURRENT_USER })
@@ -71,7 +71,7 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    onGetProduct({ commit }, payload) {
+    getProduct: ({ commit }, payload) => {
       commit("setLoading", true);
       apolloClient
         .query({
@@ -81,7 +81,6 @@ export const store = new Vuex.Store({
         .then(({ data }) => {
           commit("setLoading", false);
           commit("setProduct", data.getProduct);
-          console.log(data.getProduct);
         })
         .catch(err => {
           commit("setLoading", false);
@@ -89,14 +88,13 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    onGetProducts({ commit }, payload) {
+    getProducts: ({ commit }, payload) => {
       commit("setLoading", true);
       apolloClient
         .query({ query: GET_PRODUCTS, variables: { size: payload } })
         .then(({ data }) => {
           commit("setLoading", false);
           commit("setProducts", data.getProducts);
-          console.log(data.getProducts);
         })
         .catch(err => {
           commit("setLoading", false);
@@ -104,7 +102,7 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    onSearchProducts({ commit }, payload) {
+    searchProducts: ({ commit }, payload) => {
       apolloClient
         .query({
           query: SEARCH_PRODUCTS,
@@ -112,13 +110,12 @@ export const store = new Vuex.Store({
         })
         .then(({ data }) => {
           commit("setSearchResults", data.searchProducts);
-          console.log(data.searchProducts);
         })
         .catch(err => {
           console.error(err);
         });
     },
-    onAddProduct({ commit }, payload) {
+    addProduct: ({ commit }, payload) => {
       commit("setLoading", true);
       commit("clearError");
       apolloClient
@@ -142,7 +139,7 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    onSignin({ commit, dispatch }, payload) {
+    signinUser: ({ commit, dispatch }, payload) => {
       commit("setLoading", true);
       commit("clearError");
       apolloClient
@@ -156,7 +153,7 @@ export const store = new Vuex.Store({
         .then(({ data }) => {
           // commit("setLoading", false);
           localStorage.setItem("token", data.signinUser.token);
-          dispatch("onGetCurrentUser");
+          dispatch("getCurrentUser");
         })
         .catch(err => {
           commit("setLoading", false);
@@ -164,7 +161,7 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    onSignup({ commit, dispatch }, payload) {
+    signupUser: ({ commit, dispatch }, payload) => {
       commit("setLoading", true);
       commit("clearError");
       apolloClient
@@ -179,7 +176,7 @@ export const store = new Vuex.Store({
         .then(({ data }) => {
           // commit("setLoading", false);
           localStorage.setItem("token", data.signupUser.token);
-          dispatch("onGetCurrentUser");
+          dispatch("getCurrentUser");
         })
         .catch(err => {
           commit("setLoading", false);
@@ -187,7 +184,7 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    onSignout: async ({ commit }) => {
+    signoutUser: async ({ commit }) => {
       commit("setUser", null);
       localStorage.setItem("token", "");
       await apolloClient.resetStore();
@@ -196,6 +193,8 @@ export const store = new Vuex.Store({
   getters: {
     product: state => state.product,
     products: state => state.products,
+    shuffledProducts: state =>
+      [...state.products].sort(() => Math.random() - 0.5),
     searchResults: state => state.searchResults,
     user: state => state.user,
     loading: state => state.loading,

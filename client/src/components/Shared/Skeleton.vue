@@ -6,7 +6,7 @@
         <v-container fill-height fluid>
           <v-layout fill-height>
             <v-flex xs12 align-end flexbox>
-              <span class="product__skeleton--headline headline">Product Skeleton</span>
+              <span class="product__skeleton--headline headline">              </span>
               <span class="product__skeleton--description"></span>
               <div>
                 <v-btn x-large icon>
@@ -25,7 +25,7 @@
         <v-container fill-height fluid>
           <v-layout fill-height>
             <v-flex xs12 align-end flexbox>
-              <span class="product__skeleton--headline headline">Product Skeleton</span>
+              <span class="product__skeleton--headline headline">            </span>
               <span class="product__skeleton--description"></span>
               <div>
                 <v-btn icon>

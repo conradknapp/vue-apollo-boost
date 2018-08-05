@@ -5,13 +5,13 @@
   <v-layout class="hidden-xs-only" row wrap>
     <v-flex xs12>
       <v-tooltip bottom><span>Row layout</span>
-        <v-btn icon slot="activator" @click="layoutButtonActive = false">
-          <v-icon :color="!layoutButtonActive ? 'primary' : ''">view_headline</v-icon>
+        <v-btn icon slot="activator" @click="mozaicLayout = false">
+          <v-icon :color="mozaicLayout ? 'grey' : 'primary'">view_headline</v-icon>
         </v-btn>
       </v-tooltip>
       <v-tooltip bottom><span>Mozaic layout</span>
-        <v-btn icon slot="activator" @click="layoutButtonActive = true">
-          <v-icon :color="layoutButtonActive ? 'primary' : ''">view_quilt</v-icon>
+        <v-btn icon slot="activator" @click="mozaicLayout = true">
+          <v-icon :color="mozaicLayout ? 'primary' : 'grey'">view_quilt</v-icon>
         </v-btn>
       </v-tooltip>
     </v-flex>
@@ -19,23 +19,23 @@
 
 
   <v-layout row wrap>
-    <v-flex xs12 v-bind="{ [`sm${layoutButtonActive && index % 3 === 0 ? 12 : 6}`]: true }" v-for="(product, index) in products" :key="product._id" hover @mouseenter="showDescription(product)" @mouseleave="description = null">
+    <v-flex xs12 v-bind="{ [`sm${mozaicLayout && index % 3 === 0 ? 12 : 6}`]: true }" v-for="(product, index) in products" :key="product._id" hover @mouseenter="showDescription(product)" @mouseleave="description = null">
       <v-card class="mt-3 ml-1 mr-2" hover>
         <v-card-media lazy :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" tag="button" height="40vh">
           <v-container fill-height fluid>
             <v-layout fill-height>
               <v-flex xs12 flexbox>
-                <span class="Product__Title headline" v-text="product.title"></span>
+                <span class="product__title headline" v-text="product.title"></span>
 
-                  <v-btn icon x-large v-if="user" @mouseenter="mouseInHeart = true" @mouseleave="mouseInHeart = false" @click="toggleLike(product)">
+                  <v-btn icon x-large v-if="user" @mouseenter="mouseInHeart = true" @mouseleave="mouseInHeart = false" @click="handleToggleLike(product)">
                     <v-icon color="red darken-4" x-large v-if="userFavorites.includes(product._id)">favorite</v-icon>
                     <v-icon color="grey" x-large v-else>favorite</v-icon>
                   </v-btn>
-                  <v-btn icon x-large v-if="!user" @click="onUnAuthFave">
+                  <v-btn icon x-large v-if="!user">
                     <v-icon color="grey" x-large>favorite</v-icon>
                   </v-btn>
 
-                <span class="Product__Description" v-if="product.description === description" v-text="showFirstSentence(description)"></span>
+                <span class="product__description" v-if="product.description === description" v-text="showFirstSentence(description)"></span>
               </v-flex>
             </v-layout>
           </v-container>
@@ -47,7 +47,7 @@
   <!-- Page Up Button -->
   <v-layout v-if="pageUpButton">
     <v-flex>
-      <v-btn color="grey darken-2" @click="backToTop" dark fixed bottom right fab>
+      <v-btn color="grey darken-2" @click="goToTop" dark fixed bottom right fab>
         <v-icon>navigation</v-icon>
       </v-btn>
     </v-flex>
@@ -67,34 +67,26 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import Skeleton from "../Shared/Skeleton";
 
 export default {
   components: { Skeleton },
   data() {
     return {
-      layoutButtonActive: false,
+      mozaicLayout: false,
       pageUpButton: false,
-      description: null,
+      description: "",
       // mouseInHeart: false,
       unAuthFave: false,
       bottom: false
     };
   },
   computed: {
-    products() {
-      return this.$store.getters.products;
-    },
-    loading() {
-      return this.$store.getters.loading;
-    },
+    ...mapGetters(["products", "loading"]),
     user() {
-      return this.$store.getters.user;
+      this.$store.getters.user != null;
     },
-    // userIsAuthenticated() {
-    //   return this.$store.getters.user !== null &&
-    //   this.$store.getters.user !== undefined
-    // },
     // userIsCreator() {
     //   if (!this.userIsAuthenticated) {
     //     return false
@@ -104,13 +96,10 @@ export default {
     userFavorites() {
       return this.$store.getters.user.favorites || [];
     }
-    // resultsLog() {
-    //   return this.$store.getters.resultsLog
-    // }
   },
   // watch: {
   //   bottom(bottomOfPage) {
-  //     if (bottomOfPage && !this.resultsLog) {
+  //     if (bottomOfPage) {
   //       const throttled = throttle(this.infiniteScroll, 500);
   //       throttled();
   //     }
@@ -125,19 +114,18 @@ export default {
     window.addEventListener("scroll", () => {
       this.bottom = this.bottomVisible();
     });
-    // this.$store.dispatch("setResultsLog", false);
   },
-  mounted() {
-    this.getProducts();
+  created() {
+    this.handleGetProducts();
   },
   methods: {
-    getProducts() {
-      this.$store.dispatch("onGetProducts");
+    handleGetProducts() {
+      this.$store.dispatch("getProducts");
     },
     // infiniteScroll() {
     //   this.$store.dispatch('infiniteScroll')
     // },
-    backToTop() {
+    goToTop() {
       window.scroll({ top: 0, left: 0, behavior: "smooth" });
     },
     goToProduct(id) {
@@ -158,45 +146,47 @@ export default {
         this.description = product.description;
       }
     },
-    onUnAuthFave() {
-      this.unAuthFave = true;
-      setTimeout(() => this.$router.push("/signup"), 1000);
-      setTimeout(
-        () =>
-          this.$store.dispatch("unAuthUserClick", {
-            message: `Sign up to save all your favorites 💖`,
-            submessage: `(it only takes a second ⏱)`,
-            icon: "info",
-            color: "info"
-          }),
-        1500
-      );
-    },
-    // toggleLike(product) {
-    //   if (this.userFavorites.includes(product.id)) {
-    //     this.$store.dispatch('unfavoriteProduct', product.id)
-    //   } else {
-    //     this.$store.dispatch('favoriteProduct', product.id)
-    //   }
-    // },
     showFirstSentence(description) {
       return description.match(/^[^.]+/)[0];
+    },
+    // onUnAuthFave() {
+    //   this.unAuthFave = true;
+    //   setTimeout(() => this.$router.push("/signup"), 1000);
+    //   setTimeout(
+    //     () =>
+    //       this.$store.dispatch("unAuthUserClick", {
+    //         message: `Sign up to save all your favorites 💖`,
+    //         submessage: `(it only takes a second ⏱)`,
+    //         icon: "info",
+    //         color: "info"
+    //       }),
+    //     1500
+    //   );
+    // },
+    handleToggleLike(product) {
+      if (this.userFavorites.includes(product._id)) {
+        this.$store.dispatch("unfavoriteProduct", product._id);
+      } else {
+        this.$store.dispatch("favoriteProduct", product._id);
+      }
     }
   }
 };
 </script>
 
 <style>
-.Product__Title {
+.product__title {
   color: white;
   background: rgba(0, 0, 0, 0.3);
   font-weight: 400;
   padding: 0.1em;
 }
-.Product__Title:hover {
+
+.product__title:hover {
   background: rgba(87, 6, 104, 0.3);
 }
-.Product__Description {
+
+.product__description {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -209,9 +199,11 @@ export default {
   pointer-events: none;
   animation: showDescription 0.1s ease-in-out forwards;
 }
-.Product__Description:hover {
+
+.product__description:hover {
   background-color: rgba(74, 20, 140, 0.4);
 }
+
 @keyframes showDescription {
   0% {
     opacity: 0;

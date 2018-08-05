@@ -24,8 +24,8 @@
   <!-- Products Carousel  -->
   <v-layout row wrap v-if="!loading">
     <v-flex xs12>
-      <v-carousel v-bind="{ 'cycle': cycleCarousel }" interval="3000" delimiter-icon="home" id="carousel" lazy>
-        <v-carousel-item v-for="product in products" :src="product.imageUrl" :key="product._id" @click="onLoadProduct(product._id)" @mouseover="toggleCarousel" @mouseout="toggleCarousel">
+      <v-carousel v-bind="{ 'cycle': cycleCarousel }" interval="3000" delimiter-icon="home" id="carousel">
+        <v-carousel-item v-for="product in shuffledProducts" :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" @mouseover="toggleCarousel" @mouseout="toggleCarousel">
           <h1 id="carousel__title">{{product.title}}</h1>
         </v-carousel-item>
       </v-carousel>
@@ -53,7 +53,7 @@
 
         <v-layout row wrap v-if="error && !loading">
           <v-flex xs12 sm6 offset-sm3>
-            <form-alert @dismiss="onDismiss" :icon="error.icon" :color="error.color" :text="error.message"></form-alert>
+            <form-alert @dismiss="handleDismiss" :icon="error.icon" :color="error.color" :text="error.message"></form-alert>
           </v-flex>
         </v-layout>
 
@@ -63,25 +63,25 @@
             <v-card class="mt-4 mb-5" dark>
               <v-card-text>
                 <v-container>
-                  <form @submit.prevent="onSignup">
+                  <form @submit.prevent="handleSignup">
                     <v-layout row>
                       <v-flex xs12>
-                        <v-text-field name="username" label="Username" v-model="username" type="text" prepend-icon="face" required></v-text-field>
+                        <v-text-field name="username" label="Username" v-model.trim="username" type="text" prepend-icon="face" required></v-text-field>
                       </v-flex>
                     </v-layout>
                     <v-layout row>
                       <v-flex xs12>
-                        <v-text-field name="email" label="Email" v-model="email" type="email" prepend-icon="email" required></v-text-field>
+                        <v-text-field name="email" label="Email" v-model.trim="email" type="email" prepend-icon="email" required></v-text-field>
                       </v-flex>
                     </v-layout>
                     <v-layout row>
                       <v-flex xs12>
-                        <v-text-field name="password" label="Password" v-model="password" prepend-icon="extension" type="password" required></v-text-field>
+                        <v-text-field name="password" label="Password" v-model.trim="password" prepend-icon="extension" type="password" required></v-text-field>
                       </v-flex>
                     </v-layout>
                     <v-layout row>
                       <v-flex xs12>
-                        <v-text-field name="passwordConfirmation" label="Confirm Password" v-model="passwordConfirmation" type="password" prepend-icon="gavel" :rules="[comparePasswords]" required></v-text-field>
+                        <v-text-field name="passwordConfirmation" label="Confirm Password" v-model.trim="passwordConfirmation" type="password" prepend-icon="gavel" :rules="[comparePasswords]" required></v-text-field>
                       </v-flex>
                     </v-layout>
                     <v-layout row>
@@ -105,6 +105,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "Home",
   data() {
@@ -113,20 +115,11 @@ export default {
       email: "",
       password: "",
       passwordConfirmation: "",
-      cycleCarousel: true,
-      snackbar: false
+      cycleCarousel: true
     };
   },
   computed: {
-    loading() {
-      return this.$store.getters.loading;
-    },
-    error() {
-      return this.$store.getters.error;
-    },
-    products() {
-      return this.$store.getters.products;
-    },
+    ...mapGetters(["loading", "error", "shuffledProducts"]),
     user() {
       return this.$store.getters.user != null;
     },
@@ -139,18 +132,24 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch("onGetProducts", 3);
+    this.handleGetCarouselProducts();
   },
   methods: {
-    onDismiss() {
+    handleGetCarouselProducts() {
+      this.$store.dispatch("getProducts", 3);
+    },
+    handleDismiss() {
       this.$store.commit("clearError");
     },
-    onSignup() {
-      this.$store.dispatch("onSignup", {
+    handleSignup() {
+      this.$store.dispatch("signupUser", {
         username: this.username,
         email: this.email,
         password: this.password
       });
+    },
+    goToProduct(id) {
+      this.$router.push(`/products/${id}`);
     },
     toggleCarousel() {
       this.cycleCarousel = !this.cycleCarousel;
@@ -163,6 +162,7 @@ export default {
 .loading-dialog {
   background-color: #303030;
 }
+
 h1 {
   font-weight: 100;
   font-size: 2.5rem;

@@ -37,6 +37,7 @@ export const defaultClient = new ApolloClient({
   },
   request: operation => {
     const token = localStorage.getItem("token") || "";
+    console.log(token);
     operation.setContext({
       headers: {
         authorization: token
@@ -66,6 +67,6 @@ new Vue({
   components: { App },
   template: "<App/>",
   beforeCreate() {
-    this.$store.dispatch("onGetCurrentUser");
+    this.$store.dispatch("getCurrentUser");
   }
 });

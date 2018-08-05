@@ -18,3 +18,4 @@ Useful
 - https://stackoverflow.com/questions/41298174/click-on-link-changes-the-url-but-not-the-content-data-on-page
 - https://github.com/Akryum/vue-apollo/issues/120
 - https://github.com/vuetifyjs/vuetify/issues/2508
+- https://github.com/vuejs/vuex/issues/611

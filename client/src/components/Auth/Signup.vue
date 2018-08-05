@@ -9,7 +9,7 @@
   <!-- Error Alert -->
   <v-layout row v-if="error">
     <v-flex xs12 sm6 offset-sm3>
-      <form-alert @dismiss="onDismiss" :color="error.color" :text="error.message"></form-alert>
+      <form-alert @dismiss="handleDismiss" :color="error.color" :text="error.message"></form-alert>
     </v-flex>
   </v-layout>
 
@@ -19,7 +19,7 @@
       <v-card>
         <v-card-text>
           <v-container>
-            <form @submit.prevent="onSignup">
+            <form @submit.prevent="handleSignup">
               <v-layout row>
                 <v-flex xs12>
                   <v-text-field name="username" label="Username" v-model="username" type="text" prepend-icon="face" required></v-text-field>
@@ -59,6 +59,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
@@ -69,21 +71,13 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["user", "error", "loading"]),
     comparePasswords() {
       if (this.password !== this.passwordConfirmation) {
         return "Passwords do not match";
       } else {
         return false;
       }
-    },
-    user() {
-      return this.$store.getters.user;
-    },
-    error() {
-      return this.$store.getters.error;
-    },
-    loading() {
-      return this.$store.getters.loading;
     }
   },
   watch: {
@@ -94,14 +88,14 @@ export default {
     }
   },
   methods: {
-    onSignup() {
-      this.$store.dispatch("onSignup", {
+    handleSignup() {
+      this.$store.dispatch("signupUser", {
         username: this.username,
         email: this.email,
         password: this.password
       });
     },
-    onDismiss() {
+    handleDismiss() {
       this.$store.commit("clearError");
     }
   }

@@ -1,30 +1,33 @@
 <template>
   <v-container class="mt-5 mb-5" flexbox center>
-  <v-layout row wrap v-if="loading">
-    <v-flex class="text-xs-center" xs12>
-      <v-progress-circular indeterminate color="purple" :width="7" :size="70" v-if="loading"></v-progress-circular>
-    </v-flex>
-  </v-layout>
+
+  <v-layout row justify-center>
+      <v-dialog v-model="loading" persistent fullscreen content-class="loading-dialog">
+        <v-container fill-height>
+          <v-layout row justify-center align-center>
+            <v-progress-circular indeterminate :size="70" :width="7" color="secondary"></v-progress-circular>
+          </v-layout>
+        </v-container>
+      </v-dialog>
+    </v-layout>
 
   <v-layout row wrap v-if="!loading">
     <v-flex xs12>
       <v-card hover>
         <v-card-title>
-          <h1 class="Product__Title">{{product.title}}</h1>
+          <h1>{{product.title}}</h1>
           <v-spacer></v-spacer>
-          <v-btn dark color="purple darken-4" @click="goBack">
+          <v-btn dark color="primary" @click="goBack">
             <v-icon>arrow_back</v-icon>
           </v-btn>
         </v-card-title>
         <v-tooltip right><span>Click to enlarge image</span>
-          <v-card-media slot="activator" @click="togglePictureDialog" :src="product.imageUrl" style="height: 200px; width: 100%; object-fit: contain;" id="media">
-            <!-- <heart-flutter v-if="unAuthFave && !isAnimating" id="heart-flutter"></heart-flutter>
-            <heart-flutter v-if="heartLoading && !isAnimating" id="heart-flutter"></heart-flutter> -->
-            <v-btn icon x-large v-if="userAuth" @mouseenter="mouseEnterHeart = true" @mouseleave="mouseEnterHeart = false" @click="onAgree">
+          <v-card-media slot="activator" @click="togglePictureDialog" :src="product.imageUrl" id="product__image">
+            <v-btn icon x-large v-if="user" @mouseenter="mouseEnterHeart = true" @mouseleave="mouseEnterHeart = false" @click="onAgree">
               <v-icon color="red darken-4" x-large v-if="onProductLiked">favorite</v-icon>
-              <v-icon color="grey" x-large="x-large" v-else>favorite</v-icon>
+              <v-icon color="grey" x-large v-else>favorite</v-icon>
             </v-btn>
-            <v-btn icon x-large v-if="!userAuth" @click="onUnAuthFave">
+            <v-btn icon x-large v-if="!user" @click="onUnAuthFave">
               <v-icon x-large color="grey">favorite</v-icon>
             </v-btn>
           </v-card-media>
@@ -47,6 +50,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   props: ["_id"],
   data() {
@@ -58,23 +63,18 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["loading", "product"]),
     // product() {
     //   return this.$store.getters.product(this._id);
     // },
-    loading() {
-      return this.$store.getters.loading;
-    },
     // heartLoading() {
     //   return this.$store.getters.heartLoading
     // },
-    userAuth() {
-      return (
-        this.$store.getters.user !== null &&
-        this.$store.getters.user !== undefined
-      );
-    },
+    user() {
+      return this.$store.getters.user != null;
+    }
     // userIsCreator() {
-    //   if (!this.userAuth) {
+    //   if (!this.user) {
     //     return false
     //   }
     //   return this.$store.getters.user.id === this.product.creatorId
@@ -84,19 +84,19 @@ export default {
     //     this.product._id
     //   );
     // },
-    product() {
-      return this.$store.getters.product;
-    }
   },
   watch: {
     $route() {
-      this.$store.dispatch("onGetProduct", this._id);
+      this.handleGetProduct();
     }
   },
   created() {
-    this.$store.dispatch("onGetProduct", this._id);
+    this.handleGetProduct();
   },
   methods: {
+    handleGetProduct() {
+      this.$store.dispatch("getProduct", this._id);
+    },
     // onAgree() {
     //   if (this.onProductLiked) {
     //     if (window.scrollY > 25) {
@@ -136,36 +136,39 @@ export default {
 </script>
 
 <style scoped>
-/* #heart-flutter {
-    transform: translateY(-100px);
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: 99;
-  } */
+.loading-dialog {
+  background-color: #303030;
+}
+
+#product__image {
+  height: 200px;
+  width: 100%;
+  object-fit: contain;
+}
+
 @media screen and (min-width: 350px) {
-  #media {
+  #product__image {
     height: 180px !important;
   }
 }
 @media screen and (min-width: 400px) {
-  #media {
+  #product__image {
     height: 230px !important;
   }
 }
 @media screen and (min-width: 550px) {
-  #media {
+  #product__image {
     font-size: 2rem;
     height: 300px !important;
   }
 }
 @media screen and (min-width: 630px) {
-  #media {
+  #product__image {
     height: 400px !important;
   }
 }
 @media screen and (min-width: 800px) {
-  #media {
+  #product__image {
     height: 500px !important;
   }
 }
