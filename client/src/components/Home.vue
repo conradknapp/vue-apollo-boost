@@ -26,7 +26,7 @@
     <v-flex xs12>
       <v-carousel v-bind="{ 'cycle': cycleCarousel }" interval="3000" delimiter-icon="home" id="carousel">
         <v-carousel-item v-for="product in shuffledProducts" :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" @mouseover="toggleCarousel" @mouseout="toggleCarousel">
-          <h1 id="carousel__title">{{product.title}}</h1>
+          <h1 id="carousel__title" @click="goToProduct(product._id)">{{product.title}}</h1>
         </v-carousel-item>
       </v-carousel>
 
@@ -149,6 +149,7 @@ export default {
       });
     },
     goToProduct(id) {
+      console.log(id);
       this.$router.push(`/products/${id}`);
     },
     toggleCarousel() {

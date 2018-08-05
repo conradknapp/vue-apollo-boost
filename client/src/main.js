@@ -1,4 +1,6 @@
 import Vue from "vue";
+import wysiwyg from "vue-wysiwyg";
+import "vue-wysiwyg/dist/vueWysiwyg.css";
 import App from "./App";
 import router from "./router";
 import { store } from "./store";
@@ -14,6 +16,7 @@ import ApolloClient from "apollo-boost";
 import VueApollo from "vue-apollo";
 
 Vue.use(VueApollo);
+Vue.use(wysiwyg, {});
 Vue.use(Vuetify, {
   theme: {
     primary: "#4A148C",
@@ -36,11 +39,12 @@ export const defaultClient = new ApolloClient({
     credentials: "include"
   },
   request: operation => {
-    const token = localStorage.getItem("token") || "";
-    console.log(token);
+    if (!localStorage.token) {
+      localStorage.setItem("token", "");
+    }
     operation.setContext({
       headers: {
-        authorization: token
+        authorization: localStorage.getItem("token")
       }
     });
   },

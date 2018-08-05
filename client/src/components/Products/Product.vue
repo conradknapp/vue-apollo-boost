@@ -46,6 +46,10 @@
       </v-card>
     </v-flex>
   </v-layout>
+
+  <!-- Editor Component -->
+  <wysiwyg v-model="content" />
+
 </v-container>
 </template>
 
@@ -57,19 +61,13 @@ export default {
   data() {
     return {
       dialog: false,
+      content: "",
       unAuthFave: false,
-      mouseEnterHeart: false,
-      isAnimating: false
+      mouseEnterHeart: false
     };
   },
   computed: {
-    ...mapGetters(["loading", "product"]),
-    // product() {
-    //   return this.$store.getters.product(this._id);
-    // },
-    // heartLoading() {
-    //   return this.$store.getters.heartLoading
-    // },
+    ...mapGetters(["user", "loading", "product"]),
     user() {
       return this.$store.getters.user != null;
     }
