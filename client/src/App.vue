@@ -1,5 +1,5 @@
 <template>
-  <v-app class="grey lighten-3">
+  <v-app style="background: #E3E3EE">
     <!-- Side Navbar -->
     <v-navigation-drawer app temporary fixed v-model="sideNav">
       <v-toolbar flat>
@@ -93,7 +93,7 @@
         </v-snackbar>
         <v-snackbar
           v-model="snackbar2"
-          color="warning"
+          color="info"
           bottom
           left
           :timeout='5000'>

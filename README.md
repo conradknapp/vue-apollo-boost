@@ -19,3 +19,4 @@ Useful
 - https://github.com/Akryum/vue-apollo/issues/120
 - https://github.com/vuetifyjs/vuetify/issues/2508
 - https://github.com/vuejs/vuex/issues/611
+- https://coolors.co/

@@ -19,12 +19,12 @@ Vue.use(VueApollo);
 Vue.use(wysiwyg, {});
 Vue.use(Vuetify, {
   theme: {
-    primary: "#4A148C",
-    secondary: "#7B1FA2",
-    accent: "#F06292",
-    error: "#C62828",
+    primary: "#3B125F",
+    secondary: "#8B5FBF",
+    accent: "#BF653F",
+    error: "#722530",
     warning: "#FF8F00",
-    info: "#2196f3",
+    info: "#396893",
     success: "#4caf50"
   }
 });

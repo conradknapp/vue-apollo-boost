@@ -13,9 +13,10 @@
     </v-flex>
   </v-layout>
 
+  <!-- Signin Form -->
   <v-layout row wrap>
     <v-flex xs12 sm6 offset-sm3>
-      <v-card primary>
+      <v-card color="secondary" dark>
         <v-card-text>
           <v-container>
             <form @submit.prevent="handleSignin">

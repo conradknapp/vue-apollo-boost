@@ -13,10 +13,9 @@
     </v-flex>
   </v-layout>
 
-
   <v-layout row>
     <v-flex xs12 sm6 offset-sm3>
-      <v-card>
+      <v-card color="accent" dark>
         <v-card-text>
           <v-container>
             <form @submit.prevent="handleSignup">
@@ -42,7 +41,7 @@
               </v-layout>
               <v-layout row>
                 <v-flex xs12>
-                  <v-btn color="blue" dark type="submit" :disabled="loading" :loading="loading">Sign Up<span class="custom-loader" slot="loader">
+                  <v-btn color="info" dark type="submit" :disabled="loading" :loading="loading">Sign Up<span class="custom-loader" slot="loader">
                       <v-icon light="light">cached</v-icon></span></v-btn>
                   <h3>Already have an account?
                     <router-link to="/signin">Sign in</router-link>

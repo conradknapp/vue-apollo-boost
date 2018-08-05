@@ -4,7 +4,7 @@
   <!-- Explore Products Button -->
   <v-layout row wrap v-if="!loading">
     <v-flex xs12>
-      <v-btn class="primary" id="products__button" to="/products" large dark>
+      <v-btn class="secondary" id="products__button" to="/products" large dark>
         Explore Products
       </v-btn>
     </v-flex>
@@ -60,7 +60,7 @@
         <!-- Signup Form -->
         <v-layout row wrap>
           <v-flex xs12 sm6 offset-sm3>
-            <v-card class="mt-4 mb-5" dark>
+            <v-card class="mt-4 mb-5" color="accent" dark>
               <v-card-text>
                 <v-container>
                   <form @submit.prevent="handleSignup">
@@ -86,7 +86,7 @@
                     </v-layout>
                     <v-layout row>
                       <v-flex xs12>
-                        <v-btn color="accent" dark type="submit" :disabled="loading" :loading="loading">Let's Go!<span class="custom-loader" slot="loader">
+                        <v-btn dark color="primary" type="submit" :disabled="loading" :loading="loading">Let's Go!<span class="custom-loader" slot="loader">
                             <v-icon light>cached</v-icon></span></v-btn>
                       </v-flex>
                     </v-layout>
