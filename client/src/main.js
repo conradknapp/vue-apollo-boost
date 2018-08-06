@@ -1,6 +1,4 @@
 import Vue from "vue";
-import wysiwyg from "vue-wysiwyg";
-import "vue-wysiwyg/dist/vueWysiwyg.css";
 import App from "./App";
 import router from "./router";
 import { store } from "./store";
@@ -16,7 +14,6 @@ import ApolloClient from "apollo-boost";
 import VueApollo from "vue-apollo";
 
 Vue.use(VueApollo);
-Vue.use(wysiwyg, {});
 Vue.use(Vuetify, {
   theme: {
     primary: "#3B125F",
@@ -53,6 +50,9 @@ export const apolloClient = new ApolloClient({
       console.log("Network Error:", networkError);
     }
     if (graphQLErrors) {
+      for (let err of graphQLErrors) {
+        console.log(err);
+      }
       store.commit("setAuthError", graphQLErrors[0]);
       localStorage.setItem("token", "");
     }
@@ -70,7 +70,7 @@ new Vue({
   store,
   components: { App },
   template: "<App/>",
-  beforeCreate() {
+  created() {
     this.$store.dispatch("getCurrentUser");
   }
 });

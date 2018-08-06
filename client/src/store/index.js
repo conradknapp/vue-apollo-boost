@@ -80,8 +80,8 @@ export const store = new Vuex.Store({
           variables: { _id: payload }
         })
         .then(({ data }) => {
-          commit("setLoading", false);
           commit("setProduct", data.getProduct);
+          commit("setLoading", false);
         })
         .catch(err => {
           commit("setLoading", false);
@@ -140,7 +140,7 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    signinUser: ({ commit, dispatch }, payload) => {
+    signinUser: ({ commit }, payload) => {
       commit("setLoading", true);
       commit("clearError");
       apolloClient
@@ -152,9 +152,8 @@ export const store = new Vuex.Store({
           }
         })
         .then(({ data }) => {
-          // commit("setLoading", false);
           localStorage.setItem("token", data.signinUser.token);
-          dispatch("getCurrentUser");
+          router.go();
         })
         .catch(err => {
           commit("setLoading", false);
@@ -162,7 +161,7 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    signupUser: ({ commit, dispatch }, payload) => {
+    signupUser: ({ commit }, payload) => {
       commit("setLoading", true);
       commit("clearError");
       apolloClient
@@ -175,9 +174,8 @@ export const store = new Vuex.Store({
           }
         })
         .then(({ data }) => {
-          // commit("setLoading", false);
           localStorage.setItem("token", data.signupUser.token);
-          dispatch("getCurrentUser");
+          router.go();
         })
         .catch(err => {
           commit("setLoading", false);

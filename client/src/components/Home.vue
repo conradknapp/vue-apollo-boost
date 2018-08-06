@@ -179,11 +179,6 @@ export default {
   background-color: #303030;
 }
 
-h1 {
-  font-weight: 100;
-  font-size: 2.5rem;
-}
-
 #carousel {
   cursor: pointer;
   animation-play-state: paused;

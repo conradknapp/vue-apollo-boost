@@ -12,6 +12,14 @@ Preparation
 - Show the package.json scripts upon dl'ling the repo from Github; show how few server scripts there are and say you can dl each of these individually if you want
 - Mention the fact that if there is a problem connecting to MLab for example, you don't have to run the 'dev' script you can just run the 'server' script until you diagnose the problem
 
+Vue
+
+- When you set up logging out functionality, point out that you can either redirect the user everytime to the home page on logout, or you can add watchers in each of the private routes to check if the user getter changes to null or undefined
+
+Vuex
+
+- When called from Vue components all actions are referenced with the prefix 'handle'. We distinguish actions from mutations by prefixing each mutation with 'set-'
+
 Vuetify
 
 - Show that on the Vuetify site you specify a theme to include in main.js
@@ -23,3 +31,5 @@ GraphQL
 - If we have a malformed token, we will get a 400 error from Apollo, so in ApolloClient set up, we check the status code for that and remove token in localStorage
 
 - Show example where your token is malformed and therefore you return an AuthenticationError (as from getUser function). Go to index.js and log the graphQLErrors object and show how you can use the formatErrors function with ApolloServer to create better error messages to check for such errors and therefore remove your token (otherwise it will be everywhere in your app); see this -> https://stackoverflow.com/questions/41852880/how-to-handle-errors-with-the-apollo-stack
+- Explain the difference between GraphQLErrors and networkErrors (https://blog.apollographql.com/full-stack-error-handling-with-graphql-apollo-5c12da407210)
+- Explain Authentication errors in Apollo Server 2

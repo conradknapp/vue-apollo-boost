@@ -11,7 +11,7 @@
       </v-dialog>
     </v-layout>
 
-    <v-layout row wrap v-if="!loading">
+    <v-layout row wrap v-if="!loading && product">
       <v-flex xs12>
         <v-card hover>
           <v-card-title>
@@ -24,10 +24,6 @@
           <v-tooltip right>
             <span>Click to enlarge image</span>
             <v-card-media slot="activator" @click="togglePictureDialog" :src="product.imageUrl" id="product__image">
-              <v-btn icon x-large v-if="user" @mouseenter="mouseEnterHeart = true" @mouseleave="mouseEnterHeart = false" @click="onAgree">
-                <v-icon color="red darken-4" x-large v-if="onProductLiked">favorite</v-icon>
-                <v-icon color="grey" x-large v-else>favorite</v-icon>
-              </v-btn>
               <v-btn icon x-large v-if="!user" @click="onUnAuthFave">
                 <v-icon x-large color="grey">favorite</v-icon>
               </v-btn>
@@ -41,32 +37,40 @@
           <v-card-text>
             <p>{{product.description}}</p>
           </v-card-text>
-          <!-- <v-card-actions>
-          <v-btn class="deep-purple darken-2" flat dark round :href="link.linkUrl" v-for="link in product.links" :key="link.linkTitle">{{link.linkTitle}}</v-btn>
-        </v-card-actions> -->
         </v-card>
       </v-flex>
     </v-layout>
 
     <!-- Editor Component -->
-    <v-layout row wrap v-if="user">
-      <wysiwyg v-model="content" />
-    </v-layout>
+    <v-container flexbox center v-if="user">
+      <v-layout class="mt-3 pb-5">
+        <v-flex xs12>
+          <vue-editor style="width: 100%; min-height: 20px; height: 80px" v-model="content" :editorToolbar="customToolbar"></vue-editor>
+        </v-flex>
+      </v-layout>
+      <v-layout column align-center>
+        <v-btn color="info" @click="handleAddMessage">Add Message</v-btn>
+      </v-layout>
+    </v-container>
 
   </v-container>
 </template>
 
 <script>
+import { VueEditor } from "vue2-editor";
 import { mapGetters } from "vuex";
 
 export default {
+  name: "Product",
+  components: { VueEditor },
   props: ["_id"],
   data() {
     return {
       dialog: false,
       content: "",
       unAuthFave: false,
-      mouseEnterHeart: false
+      mouseEnterHeart: false,
+      customToolbar: [["bold", "italic", "underline"]]
     };
   },
   computed: {
@@ -98,6 +102,7 @@ export default {
     handleGetProduct() {
       this.$store.dispatch("getProduct", this._id);
     },
+    handleAddMessage() {},
     // onAgree() {
     //   if (this.onProductLiked) {
     //     if (window.scrollY > 25) {

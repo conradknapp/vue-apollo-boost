@@ -25,6 +25,7 @@ mongoose
 
 const getUser = async token => {
   if (token) {
+    console.log(token);
     try {
       return await jwt.verify(token, process.env.SECRET);
     } catch (err) {

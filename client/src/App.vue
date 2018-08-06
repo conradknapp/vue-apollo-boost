@@ -57,15 +57,10 @@
 
       <v-spacer></v-spacer>
 
-      <v-toolbar-items dark class="hidden-sm-and-down">
-        <v-btn flat to="/products">
-          <v-icon class="hidden-sm-only" left>weekend</v-icon>Products
-        </v-btn>
-        <v-btn flat v-if="!user" to="/signin">
-          <v-icon class="hidden-sm-only" left>lock_open</v-icon>Signin
-        </v-btn>
-        <v-btn flat v-if="!user" to="/signup">
-          <v-icon class="hidden-sm-only" left>create</v-icon>Signup
+      <!-- Horizontal Navbar Links -->
+      <v-toolbar-items dark class="hidden-xs-only">
+        <v-btn flat v-for="item in horizontalNavItems" :key="item.title" :to="item.link">
+          <v-icon class="hidden-sm-only" left>{{item.icon}}</v-icon>{{item.title}}
         </v-btn>
         <v-btn flat v-if="user" @click="handleSignout">
           <v-icon class="hidden-sm-only" left>exit_to_app</v-icon>Signout
@@ -79,14 +74,14 @@
         <transition name="fade">
           <router-view/>
         </transition>
-        <v-snackbar v-model="snackbar" color="success" bottom left :timeout='5000'>
+        <v-snackbar v-model="signinSnackbar" color="success" bottom left :timeout='5000'>
           <v-icon class="mr-3">check_circle</v-icon>
           <h3>You are now signed in!</h3>
-          <v-btn dark flat @click="snackbar = false">Close</v-btn>
+          <v-btn dark flat @click="signinSnackbar = false">Close</v-btn>
         </v-snackbar>
-        <v-snackbar v-model="snackbar2" color="info" bottom left :timeout='5000'>
+        <v-snackbar v-model="errorSnackbar" color="info" bottom left :timeout='5000'>
           <v-icon class="mr-3">cancel</v-icon>
-          <h3 v-if="authError">{{ authError.message }}</h3>
+          <h3 v-if="authError">{{authError.message}}</h3>
           <v-btn dark flat to="/signin">Signin</v-btn>
         </v-snackbar>
       </v-container>
@@ -104,8 +99,8 @@ export default {
     return {
       sideNav: false,
       searchTerm: "",
-      snackbar: false,
-      snackbar2: false
+      signinSnackbar: false,
+      errorSnackbar: false
     };
   },
   computed: {
@@ -124,17 +119,30 @@ export default {
         ];
       }
       return items;
+    },
+    horizontalNavItems() {
+      let items = [
+        { icon: "weekend", title: "Products", link: "/products" },
+        { icon: "lock_open", title: "Sign In", link: "/signin" },
+        { icon: "create", title: "Sign Up", link: "/signup" }
+      ];
+      if (this.user)
+        items = [
+          { icon: "weekend", title: "Products", link: "/products" },
+          { icon: "account_box", title: "Profile", link: "/profile" }
+        ];
+      return items;
     }
   },
   watch: {
     user(value) {
       if (value) {
-        this.snackbar = true;
+        this.signinSnackbar = true;
       }
     },
     authError(value) {
       if (value) {
-        this.snackbar2 = true;
+        this.errorSnackbar = true;
       }
     }
   },
@@ -161,7 +169,12 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+h1 {
+  font-weight: 100;
+  font-size: 2.5rem;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition-property: opacity;
@@ -185,6 +198,7 @@ export default {
   top: 100%;
   transform: translateX(-160px);
 }
+
 #card__search {
   position: absolute;
   transition: all 0.5s;
