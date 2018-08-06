@@ -30,7 +30,7 @@ Vue.use(Vuetify, {
 Vue.component("form-alert", FormAlert);
 
 // Setup Apollo Client
-export const apolloClient = new ApolloClient({
+export const defaultClient = new ApolloClient({
   uri: "http://localhost:4000/graphql",
   fetchOptions: {
     credentials: "include"
@@ -59,9 +59,9 @@ export const apolloClient = new ApolloClient({
   }
 });
 
-const apolloProvider = new VueApollo({ apolloClient });
+const apolloProvider = new VueApollo({ defaultClient });
 
-// Vue.prototype.apollo = apolloClient;
+// Vue.prototype.$apollo = apolloClient;
 
 new Vue({
   el: "#app",

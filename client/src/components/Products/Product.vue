@@ -24,9 +24,6 @@
           <v-tooltip right>
             <span>Click to enlarge image</span>
             <v-card-media slot="activator" @click="togglePictureDialog" :src="product.imageUrl" id="product__image">
-              <v-btn icon x-large v-if="!user" @click="onUnAuthFave">
-                <v-icon x-large color="grey">favorite</v-icon>
-              </v-btn>
             </v-card-media>
           </v-tooltip>
           <v-dialog v-model="dialog">

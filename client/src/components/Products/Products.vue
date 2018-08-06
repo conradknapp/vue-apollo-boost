@@ -19,8 +19,8 @@
       </v-flex>
     </v-layout>
 
-    <v-layout row wrap>
-      <v-flex xs12 v-bind="{ [`sm${mozaicLayout && index % 3 === 0 ? 12 : 6}`]: true }" v-for="(product, index) in products" :key="product._id" hover @mouseenter="showDescription(product)" @mouseleave="description = null">
+    <v-layout row wrap v-if="productsPage">
+      <v-flex xs12 v-bind="{ [`sm${mozaicLayout && index % 3 === 0 ? 12 : 6}`]: true }" v-for="(product, index) in productsPage.products" :key="product._id" hover>
         <v-card class="mt-3 ml-1 mr-2" hover>
           <v-card-media lazy :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" tag="button" height="40vh">
             <v-container fill-height fluid>
@@ -28,15 +28,13 @@
                 <v-flex xs12 flexbox>
                   <span class="product__title headline" v-text="product.title"></span>
 
-                  <v-btn icon x-large v-if="user" @mouseenter="mouseInHeart = true" @mouseleave="mouseInHeart = false" @click="handleToggleLike(product)">
+                  <v-btn icon x-large v-if="user" @click="handleToggleLike(product)">
                     <v-icon color="red darken-4" x-large v-if="userFavorites.includes(product._id)">favorite</v-icon>
                     <v-icon color="grey" x-large v-else>favorite</v-icon>
                   </v-btn>
                   <v-btn icon x-large v-if="!user">
                     <v-icon color="grey" x-large>favorite</v-icon>
                   </v-btn>
-
-                  <span class="product__description" v-if="product.description === description" v-text="showFirstSentence(description)"></span>
                 </v-flex>
               </v-layout>
             </v-container>
@@ -44,6 +42,9 @@
         </v-card>
       </v-flex>
     </v-layout>
+
+    <!-- Show More Button (Optional) -->
+    <!-- <v-btn @click="showMore" v-if="showMoreEnabled">Fetch More</v-btn> -->
 
     <!-- Page Up Button -->
     <v-layout v-if="pageUpButton">
@@ -55,9 +56,10 @@
     </v-layout>
 
     <!-- Product Skeleton Component -->
-    <Skeleton v-show="loading && !bottom"></Skeleton>
+    <Skeleton v-show="loading"></Skeleton>
 
-    <v-layout v-if="!loading">
+    <!-- Text if No Remaining Products -->
+    <v-layout v-if="!loading && (productsPage && !productsPage.hasMore)">
       <v-flex class="text-xs-center mt-5 mb-5" xs12>
         <h1 class="warning--text">You have reached the end
           <v-icon color="warning" class="ml-3" large right>sentiment_very_dissatisfied</v-icon>
@@ -69,19 +71,32 @@
 
 <script>
 import { mapGetters } from "vuex";
+import throttle from "lodash/throttle";
+
+import { PRODUCTS_PAGE } from "../../queries";
 import Skeleton from "../Shared/Skeleton";
+
+const size = 2;
 
 export default {
   components: { Skeleton },
   data() {
     return {
+      page: 1,
+      showMoreEnabled: true,
       mozaicLayout: false,
       pageUpButton: true,
-      description: "",
-      // mouseInHeart: false,
-      unAuthFave: false,
       bottom: false
     };
+  },
+  apollo: {
+    productsPage: {
+      query: PRODUCTS_PAGE,
+      variables: {
+        page: 1,
+        size
+      }
+    }
   },
   computed: {
     ...mapGetters(["products", "loading"]),
@@ -91,40 +106,28 @@ export default {
     userFavorites() {
       return this.$store.getters.user.favorites || [];
     }
-    // userIsCreator() {
-    //   if (!this.userIsAuthenticated) {
-    //     return false
-    //   }
-    //   return this.$store.getters.user.id === this.product.creatorId
-    // },
   },
-  // watch: {
-  //   bottom(bottomOfPage) {
-  //     if (bottomOfPage) {
-  //       const throttled = throttle(this.infiniteScroll, 500);
-  //       throttled();
-  //     }
-  //   }
-  // },
+  watch: {
+    bottom(bottomOfPage) {
+      if (bottomOfPage) {
+        const throttled = throttle(this.showMore, 500);
+        throttled();
+      }
+    }
+  },
   created() {
-    this.handleGetProducts();
+    // this.handleGetProducts();
     this.showPageUpButton();
   },
   methods: {
     handleGetProducts() {
       this.$store.dispatch("getProducts");
     },
-    // infiniteScroll() {
-    //   this.$store.dispatch('infiniteScroll')
-    // },
     goToTop() {
       window.scroll({ top: 0, left: 0, behavior: "smooth" });
     },
     goToProduct(id) {
       this.$router.push(`/products/${id}`);
-      // if (!this.unAuthFave && !this.mouseInHeart) {
-      //   this.$router.push(`/products/${id}`)
-      // }
     },
     bottomVisible() {
       const scrollY = window.scrollY;
@@ -133,90 +136,53 @@ export default {
       const bottomOfPage = visible + scrollY >= pageHeight;
       return bottomOfPage || pageHeight < visible;
     },
-    showDescription(product) {
-      if (this.products.find(el => el._id === product._id)) {
-        this.description = product.description;
-      }
-    },
-    showFirstSentence(description) {
-      return description.match(/^[^.]+/)[0];
-    },
     showPageUpButton() {
       window.addEventListener("scroll", () => {
         window.scrollY > 150
           ? (this.pageUpButton = true)
           : (this.pageUpButton = false);
       });
-      // window.addEventListener("scroll", () => {
-      //   this.bottom = this.bottomVisible();
-      // });
+      window.addEventListener("scroll", () => {
+        this.bottom = this.bottomVisible();
+      });
     },
-    // onUnAuthFave() {
-    //   this.unAuthFave = true;
-    //   setTimeout(() => this.$router.push("/signup"), 1000);
-    //   setTimeout(
-    //     () =>
-    //       this.$store.dispatch("unAuthUserClick", {
-    //         message: `Sign up to save all your favorites 💖`,
-    //         submessage: `(it only takes a second ⏱)`,
-    //         icon: "info",
-    //         color: "info"
-    //       }),
-    //     1500
-    //   );
-    // },
     handleToggleLike(product) {
       if (this.userFavorites.includes(product._id)) {
         this.$store.dispatch("unfavoriteProduct", product._id);
       } else {
         this.$store.dispatch("favoriteProduct", product._id);
       }
+    },
+    showMore() {
+      if (this.productsPage && this.productsPage.hasMore) {
+        this.page += 1;
+        this.$apollo.queries.productsPage.fetchMore({
+          variables: {
+            page: this.page,
+            size
+          },
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            console.log("previousResult", previousResult.productsPage.products);
+            console.log("fetchMoreResult", fetchMoreResult);
+            const newProducts = fetchMoreResult.productsPage.products;
+            const hasMore = fetchMoreResult.productsPage.hasMore;
+
+            this.showMoreEnabled = hasMore;
+
+            return {
+              productsPage: {
+                __typename: previousResult.productsPage.__typename,
+                products: [
+                  ...previousResult.productsPage.products,
+                  ...newProducts
+                ],
+                hasMore
+              }
+            };
+          }
+        });
+      }
     }
   }
 };
 </script>
-
-<style>
-.product__title {
-  color: white;
-  background: rgba(0, 0, 0, 0.3);
-  font-weight: 400;
-  padding: 0.1em;
-}
-
-.product__title:hover {
-  background: rgba(87, 6, 104, 0.3);
-}
-
-.product__description {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  font-size: 1.1rem;
-  padding: 1em;
-  text-align: center;
-  pointer-events: none;
-  animation: showDescription 0.1s ease-in-out forwards;
-}
-
-.product__description:hover {
-  background-color: rgba(74, 20, 140, 0.4);
-}
-
-@keyframes showDescription {
-  0% {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-  50% {
-    opacity: 0.75;
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0px);
-  }
-}
-</style>

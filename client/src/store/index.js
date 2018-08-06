@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import router from "../router";
 
-import { apolloClient } from "../main";
+import { defaultClient as apolloClient } from "../main";
 
 Vue.use(Vuex);
 
