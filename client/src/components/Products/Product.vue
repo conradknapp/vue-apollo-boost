@@ -48,7 +48,9 @@
   </v-layout>
 
   <!-- Editor Component -->
-  <wysiwyg v-model="content" />
+  <v-layout row wrap v-if="user">
+    <wysiwyg v-model="content" />
+  </v-layout>
 
 </v-container>
 </template>

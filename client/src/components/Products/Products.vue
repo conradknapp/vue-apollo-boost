@@ -1,31 +1,32 @@
 <template>
-<v-container grid-list-md>
+  <v-container grid-list-md>
 
-  <!-- Layout Buttons -->
-  <v-layout class="hidden-xs-only" row wrap>
-    <v-flex xs12>
-      <v-tooltip bottom><span>Row layout</span>
-        <v-btn icon slot="activator" @click="mozaicLayout = false">
-          <v-icon :color="mozaicLayout ? 'grey' : 'primary'">view_headline</v-icon>
-        </v-btn>
-      </v-tooltip>
-      <v-tooltip bottom><span>Mozaic layout</span>
-        <v-btn icon slot="activator" @click="mozaicLayout = true">
-          <v-icon :color="mozaicLayout ? 'primary' : 'grey'">view_quilt</v-icon>
-        </v-btn>
-      </v-tooltip>
-    </v-flex>
-  </v-layout>
+    <!-- Layout Buttons -->
+    <v-layout class="hidden-xs-only" row wrap>
+      <v-flex xs12>
+        <v-tooltip bottom>
+          <span>Row layout</span>
+          <v-btn icon slot="activator" @click="mozaicLayout = false">
+            <v-icon :color="mozaicLayout ? 'grey' : 'primary'">view_headline</v-icon>
+          </v-btn>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <span>Mozaic layout</span>
+          <v-btn icon slot="activator" @click="mozaicLayout = true">
+            <v-icon :color="mozaicLayout ? 'primary' : 'grey'">view_quilt</v-icon>
+          </v-btn>
+        </v-tooltip>
+      </v-flex>
+    </v-layout>
 
-
-  <v-layout row wrap>
-    <v-flex xs12 v-bind="{ [`sm${mozaicLayout && index % 3 === 0 ? 12 : 6}`]: true }" v-for="(product, index) in products" :key="product._id" hover @mouseenter="showDescription(product)" @mouseleave="description = null">
-      <v-card class="mt-3 ml-1 mr-2" hover>
-        <v-card-media lazy :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" tag="button" height="40vh">
-          <v-container fill-height fluid>
-            <v-layout fill-height>
-              <v-flex xs12 flexbox>
-                <span class="product__title headline" v-text="product.title"></span>
+    <v-layout row wrap>
+      <v-flex xs12 v-bind="{ [`sm${mozaicLayout && index % 3 === 0 ? 12 : 6}`]: true }" v-for="(product, index) in products" :key="product._id" hover @mouseenter="showDescription(product)" @mouseleave="description = null">
+        <v-card class="mt-3 ml-1 mr-2" hover>
+          <v-card-media lazy :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" tag="button" height="40vh">
+            <v-container fill-height fluid>
+              <v-layout fill-height>
+                <v-flex xs12 flexbox>
+                  <span class="product__title headline" v-text="product.title"></span>
 
                   <v-btn icon x-large v-if="user" @mouseenter="mouseInHeart = true" @mouseleave="mouseInHeart = false" @click="handleToggleLike(product)">
                     <v-icon color="red darken-4" x-large v-if="userFavorites.includes(product._id)">favorite</v-icon>
@@ -35,35 +36,35 @@
                     <v-icon color="grey" x-large>favorite</v-icon>
                   </v-btn>
 
-                <span class="product__description" v-if="product.description === description" v-text="showFirstSentence(description)"></span>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-card-media>
-      </v-card>
-    </v-flex>
-  </v-layout>
+                  <span class="product__description" v-if="product.description === description" v-text="showFirstSentence(description)"></span>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-media>
+        </v-card>
+      </v-flex>
+    </v-layout>
 
-  <!-- Page Up Button -->
-  <v-layout v-if="pageUpButton">
-    <v-flex>
-      <v-btn color="grey darken-2" @click="goToTop" dark fixed bottom right fab>
-        <v-icon>navigation</v-icon>
-      </v-btn>
-    </v-flex>
-  </v-layout>
+    <!-- Page Up Button -->
+    <v-layout v-if="pageUpButton">
+      <v-flex>
+        <v-btn color="info" @click="goToTop" dark fixed bottom right fab>
+          <v-icon>navigation</v-icon>
+        </v-btn>
+      </v-flex>
+    </v-layout>
 
-  <!-- Product Skeleton Component -->
-  <Skeleton v-show="loading && !bottom"></Skeleton>
+    <!-- Product Skeleton Component -->
+    <Skeleton v-show="loading && !bottom"></Skeleton>
 
-  <v-layout v-if="!loading">
-    <v-flex class="text-xs-center mt-5 mb-5" xs12>
-      <h1>You have reached the end
-        <v-icon class="ml-3" large right>sentiment_very_dissatisfied</v-icon>
-      </h1>
-    </v-flex>
-  </v-layout>
-</v-container>
+    <v-layout v-if="!loading">
+      <v-flex class="text-xs-center mt-5 mb-5" xs12>
+        <h1 class="warning--text">You have reached the end
+          <v-icon color="warning" class="ml-3" large right>sentiment_very_dissatisfied</v-icon>
+        </h1>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -75,7 +76,7 @@ export default {
   data() {
     return {
       mozaicLayout: false,
-      pageUpButton: false,
+      pageUpButton: true,
       description: "",
       // mouseInHeart: false,
       unAuthFave: false,
@@ -87,15 +88,15 @@ export default {
     user() {
       this.$store.getters.user != null;
     },
+    userFavorites() {
+      return this.$store.getters.user.favorites || [];
+    }
     // userIsCreator() {
     //   if (!this.userIsAuthenticated) {
     //     return false
     //   }
     //   return this.$store.getters.user.id === this.product.creatorId
     // },
-    userFavorites() {
-      return this.$store.getters.user.favorites || [];
-    }
   },
   // watch: {
   //   bottom(bottomOfPage) {
@@ -106,17 +107,8 @@ export default {
   //   }
   // },
   created() {
-    window.addEventListener("scroll", () => {
-      window.scrollY > 150
-        ? (this.pageUpButton = true)
-        : (this.pageUpButton = false);
-    });
-    window.addEventListener("scroll", () => {
-      this.bottom = this.bottomVisible();
-    });
-  },
-  created() {
     this.handleGetProducts();
+    this.showPageUpButton();
   },
   methods: {
     handleGetProducts() {
@@ -148,6 +140,16 @@ export default {
     },
     showFirstSentence(description) {
       return description.match(/^[^.]+/)[0];
+    },
+    showPageUpButton() {
+      window.addEventListener("scroll", () => {
+        window.scrollY > 150
+          ? (this.pageUpButton = true)
+          : (this.pageUpButton = false);
+      });
+      // window.addEventListener("scroll", () => {
+      //   this.bottom = this.bottomVisible();
+      // });
     },
     // onUnAuthFave() {
     //   this.unAuthFave = true;

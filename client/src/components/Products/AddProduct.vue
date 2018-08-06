@@ -2,7 +2,7 @@
   <v-container>
   <v-layout>
     <v-flex class="text-xs-center" xs12>
-      <h1 class="primary--text">Add a new product</h1>
+      <h1 class="primary--text">Add a New Product</h1>
     </v-flex>
   </v-layout>
   <v-layout row>
@@ -10,17 +10,17 @@
       <form @submit.prevent="handleAddProduct">
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3>
-            <v-textarea name="title" label="Title" id="title" v-model.trim="title" required></v-textarea>
-          </v-flex>
-        </v-layout>
-        <v-layout row="row">
-          <v-flex xs12 sm6 offset-sm3>
-            <v-select name="categories" label="Categories" id="categories" :items="['Mid-Century Modern', 'Rustic', 'Preppy', 'Traditional', 'Arts and Crafts']" v-model="categories" multiple required></v-select>
+            <v-text-field label="Title" v-model.trim="title" required></v-text-field>
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3>
-            <v-textarea name="imageUrl" label="Image URL" id="image-url" v-model.trim="imageUrl" required></v-textarea>
+            <v-select label="Categories" :items="['Mid-Century Modern', 'Rustic', 'Preppy', 'Traditional', 'Arts and Crafts']" v-model="categories" multiple required></v-select>
+          </v-flex>
+        </v-layout>
+        <v-layout row>
+          <v-flex xs12 sm6 offset-sm3>
+            <v-text-field label="Image URL" v-model.trim="imageUrl" required></v-text-field>
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -28,7 +28,7 @@
         </v-layout>
         <v-layout row>
           <v-flex xs12 sm6 offset-sm3>
-            <v-textarea name="description" label="Description" id="description" v-model.trim="description" multi-line required></v-textarea>
+            <v-textarea label="Description" v-model.trim="description" multi-line required></v-textarea>
           </v-flex>
         </v-layout>
 

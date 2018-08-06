@@ -1,44 +1,44 @@
 <template>
-<v-layout row wrap>
-  <v-flex xs12 sm6>
-    <v-card class="mt-3 ml-1 mr-2" hover>
-      <v-card-media class="skeleton grey lighten-1" height="40vh">
-        <v-container fill-height fluid>
-          <v-layout fill-height>
-            <v-flex xs12 align-end flexbox>
-              <span class="product__skeleton--headline headline">              </span>
-              <span class="product__skeleton--description"></span>
-              <div>
-                <v-btn x-large icon>
-                  <v-icon color="grey lighten-1" x-large>favorite</v-icon>
-                </v-btn>
-              </div>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-card-media>
-    </v-card>
-  </v-flex>
-  <v-flex xs12 sm6>
-    <v-card class="mt-3 ml-1 mr-2" hover>
-      <v-card-media class="skeleton grey lighten-1" height="40vh">
-        <v-container fill-height fluid>
-          <v-layout fill-height>
-            <v-flex xs12 align-end flexbox>
-              <span class="product__skeleton--headline headline">            </span>
-              <span class="product__skeleton--description"></span>
-              <div>
-                <v-btn icon>
-                  <v-icon color="grey lighten-1" x-large>favorite</v-icon>
-                </v-btn>
-              </div>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-card-media>
-    </v-card>
-  </v-flex>
-</v-layout>
+  <v-layout row wrap>
+    <v-flex xs12 sm6>
+      <v-card class="mt-3 ml-1 mr-2" hover>
+        <v-card-media class="skeleton grey lighten-1" height="40vh">
+          <v-container fill-height fluid>
+            <v-layout fill-height>
+              <v-flex xs12 align-end flexbox>
+                <span class="product__skeleton--headline headline"> </span>
+                <span class="product__skeleton--description"></span>
+                <div>
+                  <v-btn x-large icon>
+                    <v-icon color="grey lighten-1" x-large>favorite</v-icon>
+                  </v-btn>
+                </div>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-media>
+      </v-card>
+    </v-flex>
+    <v-flex xs12 sm6>
+      <v-card class="mt-3 ml-1 mr-2" hover>
+        <v-card-media class="skeleton grey lighten-1" height="40vh">
+          <v-container fill-height fluid>
+            <v-layout fill-height>
+              <v-flex xs12 align-end flexbox>
+                <span class="product__skeleton--headline headline"> </span>
+                <span class="product__skeleton--description"></span>
+                <div>
+                  <v-btn icon>
+                    <v-icon color="grey lighten-1" x-large>favorite</v-icon>
+                  </v-btn>
+                </div>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-media>
+      </v-card>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>

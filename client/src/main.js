@@ -23,7 +23,7 @@ Vue.use(Vuetify, {
     secondary: "#8B5FBF",
     accent: "#BF653F",
     error: "#722530",
-    warning: "#FF8F00",
+    warning: "#A37513",
     info: "#396893",
     success: "#4caf50"
   }
@@ -33,7 +33,7 @@ Vue.use(Vuetify, {
 Vue.component("form-alert", FormAlert);
 
 // Setup Apollo Client
-export const defaultClient = new ApolloClient({
+export const apolloClient = new ApolloClient({
   uri: "http://localhost:4000/graphql",
   fetchOptions: {
     credentials: "include"
@@ -59,9 +59,9 @@ export const defaultClient = new ApolloClient({
   }
 });
 
-const apolloProvider = new VueApollo({ defaultClient });
+const apolloProvider = new VueApollo({ apolloClient });
 
-// Vue.prototype.apollo = defaultClient;
+// Vue.prototype.apollo = apolloClient;
 
 new Vue({
   el: "#app",

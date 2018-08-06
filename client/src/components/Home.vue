@@ -1,17 +1,17 @@
 <template>
   <v-container class="text-xs-center" fluid grid-list-md>
 
-  <!-- Explore Products Button -->
-  <v-layout row wrap v-if="!loading">
-    <v-flex xs12>
-      <v-btn class="secondary" id="products__button" to="/products" large dark>
-        Explore Products
-      </v-btn>
-    </v-flex>
-  </v-layout>
+    <!-- Explore Products Button -->
+    <v-layout row wrap v-if="!loading">
+      <v-flex xs12>
+        <v-btn class="secondary" id="products__button" to="/products" large dark>
+          Explore Products
+        </v-btn>
+      </v-flex>
+    </v-layout>
 
-  <!-- Loading Spinner -->
-  <v-layout row justify-center>
+    <!-- Loading Spinner -->
+    <v-layout row justify-center>
       <v-dialog v-model="loading" persistent fullscreen content-class="loading-dialog">
         <v-container fill-height>
           <v-layout row justify-center align-center>
@@ -21,87 +21,89 @@
       </v-dialog>
     </v-layout>
 
-  <!-- Products Carousel  -->
-  <v-layout row wrap v-if="!loading">
-    <v-flex xs12>
-      <v-carousel v-bind="{ 'cycle': cycleCarousel }" interval="3000" delimiter-icon="home" id="carousel">
-        <v-carousel-item v-for="product in shuffledProducts" :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" @mouseover="toggleCarousel" @mouseout="toggleCarousel">
-          <h1 id="carousel__title" @click="goToProduct(product._id)">{{product.title}}</h1>
-        </v-carousel-item>
-      </v-carousel>
+    <!-- Products Carousel  -->
+    <v-layout row wrap v-if="!loading">
+      <v-flex xs12>
+        <v-carousel v-bind="{ 'cycle': cycleCarousel }" interval="3000" delimiter-icon="home" id="carousel">
+          <v-carousel-item v-for="product in shuffledProducts" :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" @mouseover="toggleCarousel" @mouseout="toggleCarousel">
+            <h1 id="carousel__title" @click="goToProduct(product._id)">{{product.title}}</h1>
+          </v-carousel-item>
+        </v-carousel>
 
+        <div id="info-card" v-if="!user">
+          <v-layout row>
+            <v-flex xs12>
+              <h1>
+                <span class="font-weight-black">Love</span> Your Home</h1>
+              <h2>Find the best curated furniture and home accessories here</h2>
+            </v-flex>
+          </v-layout>
+        </div>
 
-      <div id="info-card" v-if="!user">
-        <v-layout row>
-          <v-flex xs12>
-            <h1><span class="font-weight-black">Love</span> Your Home</h1>
-            <h2>Find the best curated furniture and home accessories here</h2>
-          </v-flex>
-        </v-layout>
-      </div>
+        <v-container v-if="!user">
 
-      <v-container v-if="!user">
+          <v-layout row wrap v-if="!error">
+            <v-flex xs12 sm6 offset-sm3>
+              <h1>Let's Get Started</h1>
+              <h3>Sign up to save your favorites</h3>
+            </v-flex>
+          </v-layout>
 
-        <v-layout row wrap v-if="!error">
-          <v-flex xs12 sm6 offset-sm3>
-            <h1>Let's Get Started</h1>
-            <h3>Sign up to save your favorites</h3>
-          </v-flex>
-        </v-layout>
+          <!-- Form Error Message  -->
 
-        <!-- Form Error Message  -->
+          <v-layout row wrap v-if="error && !loading">
+            <v-flex xs12 sm6 offset-sm3>
+              <form-alert @dismiss="handleDismiss" :icon="error.icon" :color="error.color" :text="error.message"></form-alert>
+            </v-flex>
+          </v-layout>
 
-        <v-layout row wrap v-if="error && !loading">
-          <v-flex xs12 sm6 offset-sm3>
-            <form-alert @dismiss="handleDismiss" :icon="error.icon" :color="error.color" :text="error.message"></form-alert>
-          </v-flex>
-        </v-layout>
+          <!-- Signup Form -->
+          <v-layout row wrap>
+            <v-flex xs12 sm6 offset-sm3>
+              <v-card class="mt-4 mb-5" color="accent" dark>
+                <v-card-text>
+                  <v-container>
+                    <form @submit.prevent="handleSignup">
+                      <v-layout row>
+                        <v-flex xs12>
+                          <v-text-field name="username" label="Username" v-model.trim="username" type="text" prepend-icon="face" required></v-text-field>
+                        </v-flex>
+                      </v-layout>
+                      <v-layout row>
+                        <v-flex xs12>
+                          <v-text-field name="email" label="Email" v-model.trim="email" type="email" prepend-icon="email" required></v-text-field>
+                        </v-flex>
+                      </v-layout>
+                      <v-layout row>
+                        <v-flex xs12>
+                          <v-text-field name="password" label="Password" v-model.trim="password" prepend-icon="extension" type="password" required></v-text-field>
+                        </v-flex>
+                      </v-layout>
+                      <v-layout row>
+                        <v-flex xs12>
+                          <v-text-field name="passwordConfirmation" label="Confirm Password" v-model.trim="passwordConfirmation" type="password" prepend-icon="gavel" :rules="[comparePasswords]" required></v-text-field>
+                        </v-flex>
+                      </v-layout>
+                      <v-layout row>
+                        <v-flex xs12>
+                          <v-btn dark color="primary" type="submit" :disabled="loading" :loading="loading">Let's Go!
+                            <span class="custom-loader" slot="loader">
+                              <v-icon light>cached</v-icon>
+                            </span>
+                          </v-btn>
+                        </v-flex>
+                      </v-layout>
+                    </form>
+                  </v-container>
+                </v-card-text>
+              </v-card>
+            </v-flex>
+          </v-layout>
 
-        <!-- Signup Form -->
-        <v-layout row wrap>
-          <v-flex xs12 sm6 offset-sm3>
-            <v-card class="mt-4 mb-5" color="accent" dark>
-              <v-card-text>
-                <v-container>
-                  <form @submit.prevent="handleSignup">
-                    <v-layout row>
-                      <v-flex xs12>
-                        <v-text-field name="username" label="Username" v-model.trim="username" type="text" prepend-icon="face" required></v-text-field>
-                      </v-flex>
-                    </v-layout>
-                    <v-layout row>
-                      <v-flex xs12>
-                        <v-text-field name="email" label="Email" v-model.trim="email" type="email" prepend-icon="email" required></v-text-field>
-                      </v-flex>
-                    </v-layout>
-                    <v-layout row>
-                      <v-flex xs12>
-                        <v-text-field name="password" label="Password" v-model.trim="password" prepend-icon="extension" type="password" required></v-text-field>
-                      </v-flex>
-                    </v-layout>
-                    <v-layout row>
-                      <v-flex xs12>
-                        <v-text-field name="passwordConfirmation" label="Confirm Password" v-model.trim="passwordConfirmation" type="password" prepend-icon="gavel" :rules="[comparePasswords]" required></v-text-field>
-                      </v-flex>
-                    </v-layout>
-                    <v-layout row>
-                      <v-flex xs12>
-                        <v-btn dark color="primary" type="submit" :disabled="loading" :loading="loading">Let's Go!<span class="custom-loader" slot="loader">
-                            <v-icon light>cached</v-icon></span></v-btn>
-                      </v-flex>
-                    </v-layout>
-                  </form>
-                </v-container>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-
-
-      </v-container>
-    </v-flex>
-  </v-layout>
-</v-container>
+        </v-container>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>

@@ -2,18 +2,16 @@
   <v-app style="background: #E3E3EE">
     <!-- Side Navbar -->
     <v-navigation-drawer app temporary fixed v-model="sideNav">
-      <v-toolbar flat>
-        <v-list>
-          <v-list-tile>
-          <v-toolbar-side-icon @click="toggleNav"></v-toolbar-side-icon>
-          <v-list-tile-title class="title">Vue Pinterest</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
+      <v-toolbar color="accent" dark flat>
+        <v-toolbar-side-icon @click="toggleNav"></v-toolbar-side-icon>
+        <router-link tag="span" to="/">
+          <h1 class="title pl-3" style="cursor: pointer">Vue Pinterest</h1>
+        </router-link>
       </v-toolbar>
 
-        <v-divider></v-divider>
+      <v-divider></v-divider>
 
-        <v-list>
+      <v-list>
         <v-list-tile ripple v-for="item in sideNavItems" :key="item.title" :to="item.link">
           <v-list-tile-action>
             <v-icon>{{item.icon}}</v-icon>
@@ -21,85 +19,75 @@
           <v-list-tile-content>{{item.title}}</v-list-tile-content>
         </v-list-tile>
 
-      <!-- if User is Authenticated -->
+        <!-- if User is Authenticated -->
         <v-list-tile v-if="user" @click="handleSignout">
-        <v-list-tile-action>
-          <v-icon>exit_to_app</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>Signout</v-list-tile-content>
-      </v-list-tile>
+          <v-list-tile-action>
+            <v-icon>exit_to_app</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>Signout</v-list-tile-content>
+        </v-list-tile>
       </v-list>
     </v-navigation-drawer>
 
     <!-- Horizontal Navbar -->
     <v-toolbar dark fixed color="primary">
-    <v-toolbar-side-icon @click.native.stop="toggleNav"></v-toolbar-side-icon>
-    <v-toolbar-title>
-      <router-link to="/" tag="span" style="cursor: pointer">Vue Pinterest</router-link>
-    </v-toolbar-title>
+      <v-toolbar-side-icon @click="toggleNav"></v-toolbar-side-icon>
+      <v-toolbar-title>
+        <router-link to="/" tag="span" style="cursor: pointer">Vue Pinterest</router-link>
+      </v-toolbar-title>
 
-    <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
 
-    <!-- Search Input -->
-    <v-text-field v-model="searchTerm" @input="handleSearchProducts" flex prepend-icon="search" placeholder="Search styles" color="accent" single-line hide-details></v-text-field>
+      <!-- Search Input -->
+      <v-text-field v-model="searchTerm" @input="handleSearchProducts" flex prepend-icon="search" placeholder="Search styles" color="accent" single-line hide-details></v-text-field>
 
-    <!-- Search Results Card -->
-    <v-card dark v-if="searchResults.length" id="card__search">
-      <v-list>
-        <v-list-tile @click="goToResult(result._id)" v-for="result in searchResults" :key="result.title">
-          <v-list-tile-title>
-            {{ result.title }} - {{ formatDescription(result.description) }}
-          </v-list-tile-title>
-          <!-- <v-list-tile-action v-if="user && userFavorites.includes(result._id)">
+      <!-- Search Results Card -->
+      <v-card dark v-if="searchResults.length" id="card__search">
+        <v-list>
+          <v-list-tile @click="goToResult(result._id)" v-for="result in searchResults" :key="result.title">
+            <v-list-tile-title>
+              {{ result.title }} - {{ formatDescription(result.description) }}
+            </v-list-tile-title>
+            <!-- <v-list-tile-action v-if="user && userFavorites.includes(result._id)">
             <v-icon>favorite</v-icon>
           </v-list-tile-action> -->
-        </v-list-tile>
-      </v-list>
-    </v-card>
+          </v-list-tile>
+        </v-list>
+      </v-card>
 
-    <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
 
-    <v-toolbar-items dark class="hidden-sm-and-down">
-      <v-btn flat to="/products">
-      <v-icon class="hidden-sm-only" left>weekend</v-icon>Products
-      </v-btn>
-      <v-btn flat v-if="!user" to="/signin">
-      <v-icon class="hidden-sm-only" left>lock_open</v-icon>Signin
-      </v-btn>
-      <v-btn flat v-if="!user" to="/signup">
-      <v-icon class="hidden-sm-only" left>create</v-icon>Signup
-      </v-btn>
-      <v-btn flat v-if="user" @click="handleSignout">
-        <v-icon class="hidden-sm-only" left>exit_to_app</v-icon>Signout
-      </v-btn>
-    </v-toolbar-items>
-  </v-toolbar>
+      <v-toolbar-items dark class="hidden-sm-and-down">
+        <v-btn flat to="/products">
+          <v-icon class="hidden-sm-only" left>weekend</v-icon>Products
+        </v-btn>
+        <v-btn flat v-if="!user" to="/signin">
+          <v-icon class="hidden-sm-only" left>lock_open</v-icon>Signin
+        </v-btn>
+        <v-btn flat v-if="!user" to="/signup">
+          <v-icon class="hidden-sm-only" left>create</v-icon>Signup
+        </v-btn>
+        <v-btn flat v-if="user" @click="handleSignout">
+          <v-icon class="hidden-sm-only" left>exit_to_app</v-icon>Signout
+        </v-btn>
+      </v-toolbar-items>
+    </v-toolbar>
 
-  <!-- App Content -->
+    <!-- App Content -->
     <main>
       <v-container class="mt-4">
         <transition name="fade">
           <router-view/>
         </transition>
-        <v-snackbar
-          v-model="snackbar"
-          color="success"
-          bottom
-          left
-          :timeout='5000'>
+        <v-snackbar v-model="snackbar" color="success" bottom left :timeout='5000'>
           <v-icon class="mr-3">check_circle</v-icon>
           <h3>You are now signed in!</h3>
-            <v-btn dark flat @click="snackbar = false">Close</v-btn>
+          <v-btn dark flat @click="snackbar = false">Close</v-btn>
         </v-snackbar>
-        <v-snackbar
-          v-model="snackbar2"
-          color="info"
-          bottom
-          left
-          :timeout='5000'>
+        <v-snackbar v-model="snackbar2" color="info" bottom left :timeout='5000'>
           <v-icon class="mr-3">cancel</v-icon>
           <h3 v-if="authError">{{ authError.message }}</h3>
-            <v-btn dark flat to="/signin">Signin</v-btn>
+          <v-btn dark flat to="/signin">Signin</v-btn>
         </v-snackbar>
       </v-container>
     </main>

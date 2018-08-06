@@ -1,7 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import router from "../router";
 
-import { defaultClient as apolloClient } from "../main";
+import { apolloClient } from "../main";
 
 Vue.use(Vuex);
 
@@ -188,13 +189,14 @@ export const store = new Vuex.Store({
       commit("setUser", null);
       localStorage.setItem("token", "");
       await apolloClient.resetStore();
+      router.push("/");
     }
   },
   getters: {
     product: state => state.product,
     products: state => state.products,
-    shuffledProducts: state =>
-      [...state.products].sort(() => Math.random() - 0.5),
+    shuffledProducts: ({ products }) =>
+      [...products].sort(() => Math.random() - 0.5),
     searchResults: state => state.searchResults,
     user: state => state.user,
     loading: state => state.loading,
