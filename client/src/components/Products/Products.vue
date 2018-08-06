@@ -56,7 +56,7 @@
     </v-layout>
 
     <!-- Product Skeleton Component -->
-    <Skeleton v-show="loading"></Skeleton>
+    <skeleton v-show="loading"></skeleton>
 
     <!-- Text if No Remaining Products -->
     <v-layout v-if="!loading && (productsPage && !productsPage.hasMore)">
@@ -74,12 +74,12 @@ import { mapGetters } from "vuex";
 import throttle from "lodash/throttle";
 
 import { PRODUCTS_PAGE } from "../../queries";
-import Skeleton from "../Shared/Skeleton";
+import skeleton from "../Shared/Skeleton";
 
 const size = 2;
 
 export default {
-  components: { Skeleton },
+  components: { skeleton },
   data() {
     return {
       page: 1,
@@ -108,8 +108,9 @@ export default {
     }
   },
   watch: {
-    bottom(bottomOfPage) {
-      if (bottomOfPage) {
+    bottom(isPageBottom) {
+      // if this.bottom evaluates to true
+      if (isPageBottom) {
         const throttled = throttle(this.showMore, 500);
         throttled();
       }
@@ -117,7 +118,12 @@ export default {
   },
   created() {
     // this.handleGetProducts();
-    this.showPageUpButton();
+    window.addEventListener("scroll", this.showPageUpButton);
+    window.addEventListener("scroll", this.checkIfBottom);
+  },
+  beforeDestroy() {
+    window.removeEventListener("scroll", this.showPageUpButton);
+    window.removeEventListener("scroll", this.checkIfBottom);
   },
   methods: {
     handleGetProducts() {
@@ -129,22 +135,19 @@ export default {
     goToProduct(id) {
       this.$router.push(`/products/${id}`);
     },
-    bottomVisible() {
+    checkIfBottom() {
       const scrollY = window.scrollY;
       const visible = document.documentElement.clientHeight;
       const pageHeight = document.documentElement.scrollHeight;
+      // bottom of page if the browser height and amount scrolled are greater or equal to page height
       const bottomOfPage = visible + scrollY >= pageHeight;
-      return bottomOfPage || pageHeight < visible;
+      const isBottom = bottomOfPage || pageHeight < visible;
+      this.bottom = isBottom;
     },
     showPageUpButton() {
-      window.addEventListener("scroll", () => {
-        window.scrollY > 150
-          ? (this.pageUpButton = true)
-          : (this.pageUpButton = false);
-      });
-      window.addEventListener("scroll", () => {
-        this.bottom = this.bottomVisible();
-      });
+      window.scrollY > 150
+        ? (this.pageUpButton = true)
+        : (this.pageUpButton = false);
     },
     handleToggleLike(product) {
       if (this.userFavorites.includes(product._id)) {

@@ -2,12 +2,12 @@
   <v-container class="text-xs-center">
   <v-layout row wrap v-if="!user.favorites">
     <v-flex xs12>
-      <h1>You have no favorites currently. Go and add some!</h1>
+      <h2>You have no favorites currently. Go and add some!</h2>
     </v-flex>
   </v-layout>
   <v-layout class="mt-5" row v-else>
     <v-flex xs12>
-      <h1>Favorited: {{user.favorites.length}}</h1>
+      <h2>Favorited: {{user.favorites.length}}</h2>
     </v-flex>
   </v-layout>
   <v-layout class="favorites__container">

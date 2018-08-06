@@ -175,6 +175,11 @@ h1 {
   font-size: 2.5rem;
 }
 
+h2 {
+  font-weight: 100;
+  font-size: 2rem;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition-property: opacity;
