@@ -18,32 +18,32 @@
         <v-card color="accent" dark>
           <v-card-text>
             <v-container>
-              <form @submit.prevent="handleSignup">
+              <v-form @submit.prevent="handleSignup" ref="form" v-model="isFormValid" lazy-validation>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field name="username" label="Username" v-model="username" type="text" prepend-icon="face" required></v-text-field>
+                    <v-text-field name="username" label="Username" v-model="username" type="text" prepend-icon="face" :rules="usernameRules" required></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field name="email" label="Email" v-model="email" type="email" prepend-icon="email" required></v-text-field>
+                    <v-text-field name="email" label="Email" v-model="email" type="email" :rules="emailRules" prepend-icon="email" required></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field name="password" label="Password" v-model="password" prepend-icon="extension" type="password" required></v-text-field>
+                    <v-text-field label="Password" v-model="password" :rules="comparePasswords" prepend-icon="extension" type="password" required></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field name="passwordConfirmation" label="Confirm Password" v-model="passwordConfirmation" type="password" prepend-icon="gavel" :rules="[comparePasswords]" required></v-text-field>
+                    <v-text-field name="passwordConfirmation" label="Confirm Password" v-model="passwordConfirmation" type="password" prepend-icon="gavel" :rules="comparePasswords" required></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-btn color="info" dark type="submit" :disabled="loading" :loading="loading">Sign Up
+                    <v-btn color="info" dark type="submit" :disabled="!isFormValid || loading" :loading="loading">Sign Up
                       <span class="custom-loader" slot="loader">
-                        <v-icon light="light">cached</v-icon>
+                        <v-icon light>cached</v-icon>
                       </span>
                     </v-btn>
                     <h3>Already have an account?
@@ -51,7 +51,7 @@
                     </h3>
                   </v-flex>
                 </v-layout>
-              </form>
+              </v-form>
             </v-container>
           </v-card-text>
         </v-card>
@@ -66,21 +66,27 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      isFormValid: true,
       username: "",
       email: "",
       password: "",
-      passwordConfirmation: ""
+      passwordConfirmation: "",
+      usernameRules: [
+        name => !!name || "Name is required",
+        name => name.length < 10 || "Name must be less than 10 characters"
+      ],
+      emailRules: [
+        email => !!email || "E-mail is required",
+        email => /.+@.+/.test(email) || "E-mail must be valid"
+      ],
+      comparePasswords: [
+        password => !!password || "Password is required",
+        password => password === this.password || "Passwords must be equal"
+      ]
     };
   },
   computed: {
-    ...mapGetters(["user", "error", "loading"]),
-    comparePasswords() {
-      if (this.password !== this.passwordConfirmation) {
-        return "Passwords do not match";
-      } else {
-        return false;
-      }
-    }
+    ...mapGetters(["user", "error", "loading"])
   },
   watch: {
     user(value) {
@@ -91,11 +97,13 @@ export default {
   },
   methods: {
     handleSignup() {
-      this.$store.dispatch("signupUser", {
-        username: this.username,
-        email: this.email,
-        password: this.password
-      });
+      if (this.$refs.form.validate()) {
+        this.$store.dispatch("signupUser", {
+          username: this.username,
+          email: this.email,
+          password: this.password
+        });
+      }
     },
     handleDismiss() {
       this.$store.commit("clearError");

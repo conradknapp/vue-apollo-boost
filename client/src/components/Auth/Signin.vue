@@ -19,7 +19,7 @@
         <v-card color="secondary" dark>
           <v-card-text>
             <v-container>
-              <form @submit.prevent="handleSignin">
+              <v-form @submit.prevent="handleSignin">
                 <v-layout row>
                   <v-flex xs12>
                     <v-text-field name="username" prepend-icon="face" label="Username" v-model.trim="username" type="text" required></v-text-field>
@@ -42,7 +42,7 @@
                     </h3>
                   </v-flex>
                 </v-layout>
-              </form>
+              </v-form>
             </v-container>
           </v-card-text>
         </v-card>

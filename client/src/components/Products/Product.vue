@@ -1,7 +1,7 @@
 <template>
   <v-container class="mt-5 mb-5" flexbox center>
 
-  <v-layout row justify-center>
+    <v-layout row justify-center>
       <v-dialog v-model="loading" persistent fullscreen content-class="loading-dialog">
         <v-container fill-height>
           <v-layout row justify-center align-center>
@@ -11,48 +11,49 @@
       </v-dialog>
     </v-layout>
 
-  <v-layout row wrap v-if="!loading">
-    <v-flex xs12>
-      <v-card hover>
-        <v-card-title>
-          <h1>{{product.title}}</h1>
-          <v-spacer></v-spacer>
-          <v-btn dark color="primary" @click="goBack">
-            <v-icon>arrow_back</v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-tooltip right><span>Click to enlarge image</span>
-          <v-card-media slot="activator" @click="togglePictureDialog" :src="product.imageUrl" id="product__image">
-            <v-btn icon x-large v-if="user" @mouseenter="mouseEnterHeart = true" @mouseleave="mouseEnterHeart = false" @click="onAgree">
-              <v-icon color="red darken-4" x-large v-if="onProductLiked">favorite</v-icon>
-              <v-icon color="grey" x-large v-else>favorite</v-icon>
+    <v-layout row wrap v-if="!loading">
+      <v-flex xs12>
+        <v-card hover>
+          <v-card-title>
+            <h1>{{product.title}}</h1>
+            <v-spacer></v-spacer>
+            <v-btn dark color="primary" @click="goBack">
+              <v-icon>arrow_back</v-icon>
             </v-btn>
-            <v-btn icon x-large v-if="!user" @click="onUnAuthFave">
-              <v-icon x-large color="grey">favorite</v-icon>
-            </v-btn>
-          </v-card-media>
-        </v-tooltip>
-        <v-dialog v-model="dialog">
-          <v-card>
-            <v-card-media :src="product.imageUrl" height="500px"></v-card-media>
-          </v-card>
-        </v-dialog>
-        <v-card-text>
-          <p>{{product.description}}</p>
-        </v-card-text>
-        <!-- <v-card-actions>
+          </v-card-title>
+          <v-tooltip right>
+            <span>Click to enlarge image</span>
+            <v-card-media slot="activator" @click="togglePictureDialog" :src="product.imageUrl" id="product__image">
+              <v-btn icon x-large v-if="user" @mouseenter="mouseEnterHeart = true" @mouseleave="mouseEnterHeart = false" @click="onAgree">
+                <v-icon color="red darken-4" x-large v-if="onProductLiked">favorite</v-icon>
+                <v-icon color="grey" x-large v-else>favorite</v-icon>
+              </v-btn>
+              <v-btn icon x-large v-if="!user" @click="onUnAuthFave">
+                <v-icon x-large color="grey">favorite</v-icon>
+              </v-btn>
+            </v-card-media>
+          </v-tooltip>
+          <v-dialog v-model="dialog">
+            <v-card>
+              <v-card-media :src="product.imageUrl" height="500px"></v-card-media>
+            </v-card>
+          </v-dialog>
+          <v-card-text>
+            <p>{{product.description}}</p>
+          </v-card-text>
+          <!-- <v-card-actions>
           <v-btn class="deep-purple darken-2" flat dark round :href="link.linkUrl" v-for="link in product.links" :key="link.linkTitle">{{link.linkTitle}}</v-btn>
         </v-card-actions> -->
-      </v-card>
-    </v-flex>
-  </v-layout>
+        </v-card>
+      </v-flex>
+    </v-layout>
 
-  <!-- Editor Component -->
-  <v-layout row wrap v-if="user">
-    <wysiwyg v-model="content" />
-  </v-layout>
+    <!-- Editor Component -->
+    <v-layout row wrap v-if="user">
+      <wysiwyg v-model="content" />
+    </v-layout>
 
-</v-container>
+  </v-container>
 </template>
 
 <script>
@@ -146,7 +147,7 @@ export default {
   object-fit: contain;
 }
 
-@media screen and (min-width: 350px) {
+@media screen and (min-width: 250px) {
   #product__image {
     height: 180px !important;
   }

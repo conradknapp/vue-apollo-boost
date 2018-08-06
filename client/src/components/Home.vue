@@ -24,12 +24,13 @@
     <!-- Products Carousel  -->
     <v-layout row wrap v-if="!loading">
       <v-flex xs12>
-        <v-carousel v-bind="{ 'cycle': cycleCarousel }" interval="3000" delimiter-icon="home" id="carousel">
+        <v-carousel v-bind="{ 'cycle': cycleCarousel }" interval="3000">
           <v-carousel-item v-for="product in shuffledProducts" :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" @mouseover="toggleCarousel" @mouseout="toggleCarousel">
             <h1 id="carousel__title" @click="goToProduct(product._id)">{{product.title}}</h1>
           </v-carousel-item>
         </v-carousel>
 
+        <!-- Info Card -->
         <div id="info-card" v-if="!user">
           <v-layout row>
             <v-flex xs12>
@@ -42,6 +43,7 @@
 
         <v-container v-if="!user">
 
+          <!-- Signup Form Header -->
           <v-layout row wrap v-if="!error">
             <v-flex xs12 sm6 offset-sm3>
               <h1>Let's Get Started</h1>
@@ -63,37 +65,40 @@
               <v-card class="mt-4 mb-5" color="accent" dark>
                 <v-card-text>
                   <v-container>
-                    <form @submit.prevent="handleSignup">
+                    <v-form @submit.prevent="handleSignup" ref="form" v-model="isFormValid" lazy-validation>
                       <v-layout row>
                         <v-flex xs12>
-                          <v-text-field name="username" label="Username" v-model.trim="username" type="text" prepend-icon="face" required></v-text-field>
+                          <v-text-field name="username" label="Username" v-model="username" type="text" prepend-icon="face" :rules="usernameRules" required></v-text-field>
                         </v-flex>
                       </v-layout>
                       <v-layout row>
                         <v-flex xs12>
-                          <v-text-field name="email" label="Email" v-model.trim="email" type="email" prepend-icon="email" required></v-text-field>
+                          <v-text-field name="email" label="Email" v-model="email" type="email" :rules="emailRules" prepend-icon="email" required></v-text-field>
                         </v-flex>
                       </v-layout>
                       <v-layout row>
                         <v-flex xs12>
-                          <v-text-field name="password" label="Password" v-model.trim="password" prepend-icon="extension" type="password" required></v-text-field>
+                          <v-text-field label="Password" v-model="password" :rules="comparePasswords" prepend-icon="extension" type="password" required></v-text-field>
                         </v-flex>
                       </v-layout>
                       <v-layout row>
                         <v-flex xs12>
-                          <v-text-field name="passwordConfirmation" label="Confirm Password" v-model.trim="passwordConfirmation" type="password" prepend-icon="gavel" :rules="[comparePasswords]" required></v-text-field>
+                          <v-text-field name="passwordConfirmation" label="Confirm Password" v-model="passwordConfirmation" type="password" prepend-icon="gavel" :rules="comparePasswords" required></v-text-field>
                         </v-flex>
                       </v-layout>
                       <v-layout row>
                         <v-flex xs12>
-                          <v-btn dark color="primary" type="submit" :disabled="loading" :loading="loading">Let's Go!
+                          <v-btn color="info" dark type="submit" :disabled="loading" :loading="loading">Sign Up
                             <span class="custom-loader" slot="loader">
                               <v-icon light>cached</v-icon>
                             </span>
                           </v-btn>
+                          <h3>Already have an account?
+                            <router-link to="/signin">Sign in</router-link>
+                          </h3>
                         </v-flex>
                       </v-layout>
-                    </form>
+                    </v-form>
                   </v-container>
                 </v-card-text>
               </v-card>
@@ -113,24 +118,30 @@ export default {
   name: "Home",
   data() {
     return {
+      cycleCarousel: true,
+      isFormValid: true,
       username: "",
       email: "",
       password: "",
       passwordConfirmation: "",
-      cycleCarousel: true
+      usernameRules: [
+        name => !!name || "Name is required",
+        name => name.length < 10 || "Name must be less than 10 characters"
+      ],
+      emailRules: [
+        email => !!email || "E-mail is required",
+        email => /.+@.+/.test(email) || "E-mail must be valid"
+      ],
+      comparePasswords: [
+        password => !!password || "Password is required",
+        password => password === this.password || "Passwords must be equal"
+      ]
     };
   },
   computed: {
     ...mapGetters(["loading", "error", "shuffledProducts"]),
     user() {
       return this.$store.getters.user != null;
-    },
-    comparePasswords() {
-      if (this.password !== this.passwordConfirmation) {
-        return "Passwords do not match";
-      } else {
-        return false;
-      }
     }
   },
   created() {
@@ -144,11 +155,13 @@ export default {
       this.$store.commit("clearError");
     },
     handleSignup() {
-      this.$store.dispatch("signupUser", {
-        username: this.username,
-        email: this.email,
-        password: this.password
-      });
+      if (this.$refs.form.validate()) {
+        this.$store.dispatch("signupUser", {
+          username: this.username,
+          email: this.email,
+          password: this.password
+        });
+      }
     },
     goToProduct(id) {
       console.log(id);
