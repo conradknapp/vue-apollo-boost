@@ -23,3 +23,4 @@ Useful
 - https://github.com/vuejs/vetur/blob/master/docs/FAQ.md#formatting-doesnt-work-in-template-section
 - https://stackoverflow.com/questions/47091262/vue-2-on-scroll-event-not-working
 - https://codepen.io/CSWApps/pen/aVoBPW
+- https://blog.strapi.io/cooking-a-deliveroo-clone-with-nuxt-vue-js-graphql-strapi-and-stripe-setup-part-1-7/

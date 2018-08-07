@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const md5 = require('md5');
 
 const UserSchema = new mongoose.Schema({
   username: {
@@ -16,15 +17,23 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  avatar: {
+    type: String
+  },
   joinDate: {
     type: Date,
     default: Date.now
+  },
+  favorites: {
+    type: [mongoose.Schema.Types.ObjectId],
+    required: true,
+    ref: "Product"
   }
-  // favorites: {
-  //   type: [Schema.Types.ObjectId],
-  //   required: true,
-  //   ref: "Product"
-  // }
+});
+
+UserSchema.pre('save', function(next) {
+  this.avatar = `http://gravatar.com/avatar/${md5(this.username)}?d=identicon`;
+  next();
 });
 
 UserSchema.pre("save", function(next) {

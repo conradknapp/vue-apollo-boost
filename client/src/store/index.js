@@ -237,6 +237,7 @@ export const store = new Vuex.Store({
       [...products].sort(() => Math.random() - 0.5),
     searchResults: state => state.searchResults,
     user: state => state.user,
+    userFavorites: state => state.user && state.user.favorites,
     loading: state => state.loading,
     error: state => state.error,
     authError: state => state.authError

@@ -72,7 +72,7 @@
         <!-- Profile Button -->
         <v-btn flat @mouseenter="showFavorites = true" @mouseleave="showFavorites = false" to="/profile" v-if="user">
           <v-badge color="blue" :class="{ 'animate': badgeAnimated }">
-            <span slot="badge" v-if="userFavorites">{{userFavorites}}</span>
+            <span slot="badge" v-if="userFavorites.length">{{userFavorites.length}}</span>
             <v-icon class="hidden-sm-only" left>account_box</v-icon>
             Profile
           </v-badge>
@@ -122,7 +122,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["searchResults", "user", "authError"]),
+    ...mapGetters(["searchResults", "user", "authError", 'userFavorites']),
     sideNavItems() {
       let items = [
         { icon: "weekend", title: "Products", link: "/products" },
@@ -147,11 +147,6 @@ export default {
       if (this.user)
         items = [{ icon: "weekend", title: "Products", link: "/products" }];
       return items;
-    },
-    userFavorites() {
-      if (this.user) {
-        return this.user.favorites;
-      }
     }
   },
   watch: {
