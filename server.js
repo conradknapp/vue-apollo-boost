@@ -23,6 +23,7 @@ mongoose
   .then(() => console.log("DB connected"))
   .catch(err => console.error(err));
 
+// Verify user token
 const getUser = async token => {
   if (token) {
     try {

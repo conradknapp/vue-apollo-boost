@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-md>
+  <v-container v-scroll="onScroll" grid-list-md>
 
     <!-- Layout Buttons -->
     <v-layout class="hidden-xs-only" row wrap>
@@ -19,15 +19,15 @@
       </v-flex>
     </v-layout>
 
+    <!-- Product Cards -->
     <v-layout row wrap v-if="productsPage">
       <v-flex xs12 v-bind="{ [`sm${mozaicLayout && index % 3 === 0 ? 12 : 6}`]: true }" v-for="(product, index) in productsPage.products" :key="product._id" hover>
         <v-card class="mt-3 ml-1 mr-2" hover>
           <v-card-media lazy :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" tag="button" height="40vh">
             <v-container fill-height fluid>
               <v-layout fill-height>
-                <v-flex xs12 flexbox>
+                <!-- <v-flex xs12 flexbox>
                   <span class="product__title headline" v-text="product.title"></span>
-
                   <v-btn icon x-large v-if="user" @click="handleToggleLike(product)">
                     <v-icon color="red darken-4" x-large v-if="userFavorites.includes(product._id)">favorite</v-icon>
                     <v-icon color="grey" x-large v-else>favorite</v-icon>
@@ -35,7 +35,7 @@
                   <v-btn icon x-large v-if="!user">
                     <v-icon color="grey" x-large>favorite</v-icon>
                   </v-btn>
-                </v-flex>
+                </v-flex> -->
               </v-layout>
             </v-container>
           </v-card-media>
@@ -59,7 +59,7 @@
     <skeleton v-show="loading"></skeleton>
 
     <!-- Text if No Remaining Products -->
-    <v-layout v-if="!loading && (productsPage && !productsPage.hasMore)">
+    <v-layout v-if="!loading && !showMoreEnabled">
       <v-flex class="text-xs-center mt-5 mb-5" xs12>
         <h1 class="warning--text">You have reached the end
           <v-icon color="warning" class="ml-3" large right>sentiment_very_dissatisfied</v-icon>
@@ -83,10 +83,10 @@ export default {
   data() {
     return {
       page: 1,
-      showMoreEnabled: true,
       mozaicLayout: false,
-      pageUpButton: true,
-      bottom: false
+      pageUpButton: false,
+      isBottom: false,
+      amountScrolled: 0
     };
   },
   apollo: {
@@ -105,29 +105,31 @@ export default {
     },
     userFavorites() {
       return this.$store.getters.user.favorites || [];
+    },
+    showMoreEnabled() {
+      return this.productsPage && this.productsPage.hasMore;
     }
   },
   watch: {
-    bottom(isPageBottom) {
+    isBottom(value) {
       // if this.bottom evaluates to true
-      if (isPageBottom) {
+      if (value) {
         const throttled = throttle(this.showMore, 500);
         throttled();
       }
     }
   },
-  created() {
-    // this.handleGetProducts();
-    window.addEventListener("scroll", this.showPageUpButton);
-    window.addEventListener("scroll", this.checkIfBottom);
-  },
-  beforeDestroy() {
-    window.removeEventListener("scroll", this.showPageUpButton);
-    window.removeEventListener("scroll", this.checkIfBottom);
-  },
   methods: {
     handleGetProducts() {
       this.$store.dispatch("getProducts");
+    },
+    onScroll() {
+      this.checkIfPageBottom();
+      this.showPageUpButton();
+    },
+    showPageUpButton() {
+      this.amountScrolled = window.scrollY;
+      this.pageUpButton = this.amountScrolled > 250;
     },
     goToTop() {
       window.scroll({ top: 0, left: 0, behavior: "smooth" });
@@ -135,19 +137,13 @@ export default {
     goToProduct(id) {
       this.$router.push(`/products/${id}`);
     },
-    checkIfBottom() {
-      const scrollY = window.scrollY;
-      const visible = document.documentElement.clientHeight;
+    checkIfPageBottom() {
+      const browserHeight = document.documentElement.clientHeight;
       const pageHeight = document.documentElement.scrollHeight;
       // bottom of page if the browser height and amount scrolled are greater or equal to page height
-      const bottomOfPage = visible + scrollY >= pageHeight;
-      const isBottom = bottomOfPage || pageHeight < visible;
-      this.bottom = isBottom;
-    },
-    showPageUpButton() {
-      window.scrollY > 150
-        ? (this.pageUpButton = true)
-        : (this.pageUpButton = false);
+      const scrolledToBottom =
+        browserHeight + this.amountScrolled >= pageHeight;
+      this.isBottom = scrolledToBottom || browserHeight > pageHeight;
     },
     handleToggleLike(product) {
       if (this.userFavorites.includes(product._id)) {
@@ -157,7 +153,7 @@ export default {
       }
     },
     showMore() {
-      if (this.productsPage && this.productsPage.hasMore) {
+      if (this.showMoreEnabled) {
         this.page += 1;
         this.$apollo.queries.productsPage.fetchMore({
           variables: {
@@ -169,8 +165,6 @@ export default {
             console.log("fetchMoreResult", fetchMoreResult);
             const newProducts = fetchMoreResult.productsPage.products;
             const hasMore = fetchMoreResult.productsPage.hasMore;
-
-            this.showMoreEnabled = hasMore;
 
             return {
               productsPage: {
