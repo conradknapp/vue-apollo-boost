@@ -82,6 +82,28 @@ module.exports = {
       }).save();
       return newProduct;
     },
+    likeProduct: async (_, { _id, username }, { Product, User }) => {
+      const product = await Product.findOneAndUpdate(
+        { _id },
+        { $inc: { likes: 1 } }
+      );
+      await User.findOneAndUpdate(
+        { username },
+        { $addToSet: { favorites: _id } }
+      );
+      return product;
+    },
+    unlikeProduct: async (_, { _id, username }, { Product, User }) => {
+      const product = await Product.findOneAndUpdate(
+        { _id },
+        { $inc: { likes: -1 } }
+      );
+      await User.findOneAndUpdate(
+        { username },
+        { $pull: { favorites: _id } }
+      );
+      return product;
+    },
     signinUser: async (_, { username, password }, { User }) => {
       const user = await User.findOne({ username });
       if (!user) {

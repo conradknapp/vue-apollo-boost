@@ -19,20 +19,20 @@
         <v-card color="secondary" dark>
           <v-card-text>
             <v-container>
-              <v-form @submit.prevent="handleSignin">
+              <v-form @submit.prevent="handleSignin" ref="form" v-model="isFormValid" lazy-validation>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field name="username" prepend-icon="face" label="Username" v-model.trim="username" type="text" required></v-text-field>
+                    <v-text-field prepend-icon="face" label="Username" v-model.trim="username" type="text" :rules="usernameRules" required></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-text-field name="password" label="Password" v-model.trim="password" prepend-icon="extension" type="password" required></v-text-field>
+                    <v-text-field label="Password" v-model.trim="password" prepend-icon="extension" type="password" :rules="passwordRules" required></v-text-field>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex xs12>
-                    <v-btn type="submit" :disabled="loading" :loading="loading" color="orange">Sign in
+                    <v-btn type="submit" :disabled="!isFormValid || loading" :loading="loading" color="accent">Sign in
                       <span class="custom-loader" slot="loader">
                         <v-icon light>cached</v-icon>
                       </span>
@@ -58,8 +58,11 @@ export default {
   name: "Signin",
   data() {
     return {
+      isFormValid: true,
       username: "",
-      password: ""
+      password: "",
+      usernameRules: [username => !!username || "Username is required"],
+      passwordRules: [password => !!password || "Password is required"]
     };
   },
   computed: {
@@ -74,10 +77,12 @@ export default {
   },
   methods: {
     handleSignin() {
-      this.$store.dispatch("signinUser", {
-        username: this.username,
-        password: this.password
-      });
+      if (this.$refs.form.validate()) {
+        this.$store.dispatch("signinUser", {
+          username: this.username,
+          password: this.password
+        });
+      }
     },
     onDismiss() {
       this.$store.commit("clearError");

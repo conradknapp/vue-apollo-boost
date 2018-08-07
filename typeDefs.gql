@@ -43,6 +43,9 @@ type Mutation {
     description: String!
     categories: [String]!
   ): Product!
+  likeProduct(_id: ID, username: String): Product
+  unlikeProduct(_id: ID, username: String): Product
+
   signinUser(username: String!, password: String!): Token
   signupUser(username: String!, email: String!, password: String!): Token
 }

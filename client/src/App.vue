@@ -1,7 +1,10 @@
 <template>
   <v-app style="background: #E3E3EE">
+
     <!-- Side Navbar -->
     <v-navigation-drawer app temporary fixed v-model="sideNav">
+
+      <!-- Side Navbar Header -->
       <v-toolbar color="accent" dark flat>
         <v-toolbar-side-icon @click="toggleNav"></v-toolbar-side-icon>
         <router-link tag="span" to="/">
@@ -11,6 +14,7 @@
 
       <v-divider></v-divider>
 
+      <!-- Side Navbar Links -->
       <v-list>
         <v-list-tile ripple v-for="item in sideNavItems" :key="item.title" :to="item.link">
           <v-list-tile-action>
@@ -19,7 +23,7 @@
           <v-list-tile-content>{{item.title}}</v-list-tile-content>
         </v-list-tile>
 
-        <!-- if User is Authenticated -->
+        <!-- Signout Button (if user is signed in) -->
         <v-list-tile v-if="user" @click="handleSignout">
           <v-list-tile-action>
             <v-icon>exit_to_app</v-icon>
@@ -31,6 +35,8 @@
 
     <!-- Horizontal Navbar -->
     <v-toolbar dark fixed color="primary">
+
+      <!-- App Title -->
       <v-toolbar-side-icon @click="toggleNav"></v-toolbar-side-icon>
       <v-toolbar-title>
         <router-link to="/" tag="span" style="cursor: pointer">Vue Pinterest</router-link>
@@ -62,6 +68,17 @@
         <v-btn flat v-for="item in horizontalNavItems" :key="item.title" :to="item.link">
           <v-icon class="hidden-sm-only" left>{{item.icon}}</v-icon>{{item.title}}
         </v-btn>
+
+        <!-- Profile Button -->
+        <v-btn flat @mouseenter="showFavorites = true" @mouseleave="showFavorites = false" to="/profile" v-if="user">
+          <v-badge color="blue" :class="{ 'animate': badgeAnimated }">
+            <span slot="badge" v-if="userFavorites">{{userFavorites}}</span>
+            <v-icon class="hidden-sm-only" left>account_box</v-icon>
+            Profile
+          </v-badge>
+        </v-btn>
+
+        <!-- Signout Button -->
         <v-btn flat v-if="user" @click="handleSignout">
           <v-icon class="hidden-sm-only" left>exit_to_app</v-icon>Signout
         </v-btn>
@@ -100,7 +117,8 @@ export default {
       sideNav: false,
       searchTerm: "",
       signinSnackbar: false,
-      errorSnackbar: false
+      errorSnackbar: false,
+      badgeAnimated: false
     };
   },
   computed: {
@@ -127,11 +145,13 @@ export default {
         { icon: "create", title: "Sign Up", link: "/signup" }
       ];
       if (this.user)
-        items = [
-          { icon: "weekend", title: "Products", link: "/products" },
-          { icon: "account_box", title: "Profile", link: "/profile" }
-        ];
+        items = [{ icon: "weekend", title: "Products", link: "/products" }];
       return items;
+    },
+    userFavorites() {
+      if (this.user) {
+        return this.user.favorites;
+      }
     }
   },
   watch: {
@@ -144,6 +164,10 @@ export default {
       if (value) {
         this.errorSnackbar = true;
       }
+    },
+    userFavorites(value) {
+      this.badgeAnimated = true;
+      setTimeout(() => (this.badgeAnimated = false), 1000);
     }
   },
   methods: {

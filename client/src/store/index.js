@@ -11,6 +11,8 @@ import {
   GET_PRODUCT,
   GET_PRODUCTS,
   ADD_PRODUCT,
+  LIKE_PRODUCT,
+  UNLIKE_PRODUCT,
   SIGNIN_USER,
   SIGNUP_USER,
   SEARCH_PRODUCTS
@@ -139,6 +141,44 @@ export const store = new Vuex.Store({
           commit("setError", err);
           console.error(err);
         });
+    },
+    likeProduct: ({ state, commit }, payload) => {
+      apolloClient
+        .mutate({
+          mutation: LIKE_PRODUCT,
+          variables: {
+            username: state.user.username,
+            _id: payload
+          }
+        })
+        .then(({ data }) => {
+          console.log(data.likeRecipe);
+        })
+        .catch(err => {
+          console.error(err);
+          commit('setError', err);
+          commit('setLoading', false);
+        })
+    },
+    unlikeProduct: ({ state, commit }, payload) => {
+      commit('setLoading', true);
+      apolloClient
+        .mutate({
+          mutation: UNLIKE_PRODUCT,
+          variables: {
+            username: state.user.username,
+            _id: payload
+          }
+        })
+        .then(({ data }) => {
+          console.log(data.likeRecipe);
+          commit('setLoading', false);
+        })
+        .catch(err => {
+          console.error(err);
+          commit('setError', err);
+          commit('setLoading', false);
+        })
     },
     signinUser: ({ commit }, payload) => {
       commit("setLoading", true);

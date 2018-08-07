@@ -24,9 +24,9 @@
       <v-flex xs12 v-bind="{ [`sm${mozaicLayout && index % 3 === 0 ? 12 : 6}`]: true }" v-for="(product, index) in productsPage.products" :key="product._id" hover>
         <v-card class="mt-3 ml-1 mr-2" hover>
           <v-card-media lazy :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" tag="button" height="40vh">
-            <v-container fill-height fluid>
+            <!-- <v-container fill-height fluid>
               <v-layout fill-height>
-                <!-- <v-flex xs12 flexbox>
+                <v-flex xs12 flexbox>
                   <span class="product__title headline" v-text="product.title"></span>
                   <v-btn icon x-large v-if="user" @click="handleToggleLike(product)">
                     <v-icon color="red darken-4" x-large v-if="userFavorites.includes(product._id)">favorite</v-icon>
@@ -35,10 +35,47 @@
                   <v-btn icon x-large v-if="!user">
                     <v-icon color="grey" x-large>favorite</v-icon>
                   </v-btn>
-                </v-flex> -->
+                </v-flex>
               </v-layout>
-            </v-container>
+            </v-container> -->
           </v-card-media>
+          <v-card-actions>
+            <v-card-title primary-title>
+              <div>
+                <div class="headline">{{product.title}}</div>
+                <span class="grey--text">5 Likes • 2 comments</span>
+              </div>
+            </v-card-title>
+            <v-spacer></v-spacer>
+            <v-btn v-if="user" large icon @click="handleLikeProduct(product._id)">
+              <v-icon large color="grey">favorite</v-icon>
+            </v-btn>
+            <v-btn icon @click="show = !show">
+              <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
+            </v-btn>
+          </v-card-actions>
+
+          <v-slide-y-transition>
+            <v-card-text v-show="show" class="grey lighten-4">
+              <v-list-tile avatar>
+                <v-list-tile-avatar>
+                  <img src="https://cdn.vuetifyjs.com/images/lists/2.jpg">
+                </v-list-tile-avatar>
+
+                <v-list-tile-content>
+                  <v-list-tile-title class="text--primary">John Davis</v-list-tile-title>
+                  <v-list-tile-sub-title>Posted 9-4-18</v-list-tile-sub-title>
+                </v-list-tile-content>
+
+                <v-list-tile-action>
+                  <v-btn icon ripple>
+                    <v-icon color="grey lighten-1">info</v-icon>
+                  </v-btn>
+                </v-list-tile-action>
+              </v-list-tile>
+            </v-card-text>
+          </v-slide-y-transition>
+
         </v-card>
       </v-flex>
     </v-layout>
@@ -84,6 +121,7 @@ export default {
     return {
       page: 1,
       mozaicLayout: false,
+      show: false,
       pageUpButton: false,
       isBottom: false,
       amountScrolled: 0
@@ -101,7 +139,7 @@ export default {
   computed: {
     ...mapGetters(["products", "loading"]),
     user() {
-      this.$store.getters.user != null;
+      return this.$store.getters.user != null;
     },
     userFavorites() {
       return this.$store.getters.user.favorites || [];
@@ -122,6 +160,9 @@ export default {
   methods: {
     handleGetProducts() {
       this.$store.dispatch("getProducts");
+    },
+    handleLikeProduct(id) {
+      this.$store.dispatch("likeProduct", id);
     },
     onScroll() {
       this.checkIfPageBottom();
@@ -161,8 +202,6 @@ export default {
             size
           },
           updateQuery: (previousResult, { fetchMoreResult }) => {
-            console.log("previousResult", previousResult.productsPage.products);
-            console.log("fetchMoreResult", fetchMoreResult);
             const newProducts = fetchMoreResult.productsPage.products;
             const hasMore = fetchMoreResult.productsPage.hasMore;
 

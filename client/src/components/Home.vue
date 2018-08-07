@@ -88,14 +88,12 @@
                       </v-layout>
                       <v-layout row>
                         <v-flex xs12>
-                          <v-btn color="info" dark type="submit" :disabled="loading" :loading="loading">Sign Up
+                          <v-btn color="info" dark type="submit" :disabled="!isFormValid || loading" :loading="loading">Let's Go!
+                            <v-icon dark right>check_circle</v-icon>
                             <span class="custom-loader" slot="loader">
                               <v-icon light>cached</v-icon>
                             </span>
                           </v-btn>
-                          <h3>Already have an account?
-                            <router-link to="/signin">Sign in</router-link>
-                          </h3>
                         </v-flex>
                       </v-layout>
                     </v-form>
@@ -164,7 +162,6 @@ export default {
       }
     },
     goToProduct(id) {
-      console.log(id);
       this.$router.push(`/products/${id}`);
     },
     toggleCarousel() {

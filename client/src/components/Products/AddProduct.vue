@@ -7,7 +7,7 @@
     </v-layout>
     <v-layout row>
       <v-flex xs12>
-        <v-form @submit.prevent="handleAddProduct" valid="isFormValid" ref="form" lazy-validation>
+        <v-form @submit.prevent="handleAddProduct" v-model="isFormValid" ref="form" lazy-validation>
           <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
               <v-text-field label="Title" v-model.trim="title" required :rules="titleRules"></v-text-field>

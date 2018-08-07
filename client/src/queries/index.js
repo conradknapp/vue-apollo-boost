@@ -75,7 +75,6 @@ export const GET_CURRENT_USER = gql`
 `;
 
 /* Product Mutations */
-
 export const ADD_PRODUCT = gql`
   mutation(
     $title: String!
@@ -94,6 +93,24 @@ export const ADD_PRODUCT = gql`
       description
       categories
       createdDate
+      likes
+    }
+  }
+`;
+
+export const LIKE_PRODUCT = gql`
+  mutation($_id: ID, $username: String) {
+    likeProduct(_id: $_id, username: $username) {
+      _id
+      likes
+    }
+  }
+`;
+
+export const UNLIKE_PRODUCT = gql`
+  mutation($_id: ID, $username: String) {
+    unlikeProduct(_id: $_id, username: $username) {
+      _id
       likes
     }
   }
