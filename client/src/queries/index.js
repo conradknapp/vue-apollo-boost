@@ -11,6 +11,9 @@ export const PRODUCTS_PAGE = gql`
         description
         likes
         createdDate
+        messages {
+          _id
+        }
         createdBy {
           _id
           username
@@ -33,6 +36,16 @@ export const GET_PRODUCT = gql`
       description
       likes
       createdDate
+      messages {
+        _id
+        messageBody
+        messageDate
+        messageUser {
+          _id
+          username
+          avatar
+        }
+      }
     }
   }
 `;

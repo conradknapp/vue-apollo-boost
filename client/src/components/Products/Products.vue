@@ -43,7 +43,7 @@
             <v-card-title primary-title>
               <div>
                 <div class="headline">{{product.title}}</div>
-                <span class="grey--text">5 Likes • 2 comments</span>
+                <span class="grey--text">{{product.likes}} likes • {{product.messages.length}} comments</span>
               </div>
             </v-card-title>
             <v-spacer></v-spacer>
@@ -140,6 +140,9 @@ export default {
     ...mapGetters(["products", "loading", "userFavorites"]),
     user() {
       return this.$store.getters.user != null;
+    },
+    productComments() {
+      return this.product && this.product.comments;
     },
     showMoreEnabled() {
       return this.productsPage && this.productsPage.hasMore;

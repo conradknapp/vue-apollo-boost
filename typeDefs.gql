@@ -55,7 +55,11 @@ type Mutation {
     # takes a creatorId and returns 'createdBy' populated with User
     creatorId: String!
   ): Product!
-  addProductMessage(messageBody: String!, userId: String!, productId: String!): Product!
+  addProductMessage(
+    messageBody: String!
+    userId: String!
+    productId: String!
+  ): Product!
 
   likeProduct(_id: ID, username: String): Product
   unlikeProduct(_id: ID, username: String): Product

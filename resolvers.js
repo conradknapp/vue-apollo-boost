@@ -17,19 +17,23 @@ module.exports = {
           .populate({ path: "createdBy", model: "User" });
       } else {
         const skips = size * (page - 1);
-        products = await Product.find({}).populate({
-          path: "createdBy",
-          model: "User"
-        });
-        // .skip(skips)
-        // .limit(size);
+        products = await Product.find({})
+          .populate({
+            path: "createdBy",
+            model: "User"
+          })
+          .skip(skips)
+          .limit(size);
       }
       const countDocs = await Product.countDocuments();
       const hasMore = countDocs > size * page;
       return { products, hasMore };
     },
     getProduct: async (_, { _id }, { Product }) => {
-      const product = await Product.findOne({ _id });
+      const product = await Product.findOne({ _id }).populate({
+        path: "messages.messageUser",
+        model: "User"
+      });
       return product;
     },
     getProducts: async (_, { size }, { Product }) => {

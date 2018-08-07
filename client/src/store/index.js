@@ -159,7 +159,7 @@ export const store = new Vuex.Store({
         })
         .catch(err => {
           console.error(err);
-        })
+        });
     },
     likeProduct: ({ state, commit }, payload) => {
       apolloClient
@@ -251,6 +251,7 @@ export const store = new Vuex.Store({
   },
   getters: {
     product: state => state.product,
+    productMessages: state => state.product && state.product.messages,
     products: state => state.products,
     shuffledProducts: ({ products }) =>
       [...products].sort(() => Math.random() - 0.5),

@@ -1,6 +1,7 @@
 <template>
   <v-container class="mt-5 mb-5" flexbox center>
 
+    <!-- Loading Component -->
     <v-layout row justify-center>
       <v-dialog v-model="loading" persistent fullscreen content-class="loading-dialog">
         <v-container fill-height>
@@ -11,6 +12,7 @@
       </v-dialog>
     </v-layout>
 
+    <!-- Product Card -->
     <v-layout row wrap v-if="!loading && product">
       <v-flex xs12>
         <v-card hover>
@@ -41,14 +43,50 @@
       </v-flex>
     </v-layout>
 
-    <!-- Editor Component -->
-    <v-container flexbox center v-if="!loading && user">
-      <v-layout class="mt-3 pb-5">
+    <!-- Message Component -->
+    <v-container flexbox center>
+
+      <!-- Message Input -->
+      <v-layout class="mt-3 pb-5" v-if="!loading && user">
         <v-flex xs12>
           <v-form @submit.prevent="handleAddProductMessage" v-model="isFormValid" ref="form" lazy-validation>
-            <v-text-field label="Add Message" v-model="message" type="text" prepend-icon="email" :rules="messageRules" required></v-text-field>
-            <v-btn @click="handleAddProductMessage">Submit</v-btn>
+            <v-layout row>
+              <v-flex xs12>
+                <v-text-field label="Add Message" v-model="message" type="text" prepend-icon="email" :rules="messageRules" required></v-text-field>
+              </v-flex>
+            </v-layout>
+            <v-layout row>
+              <v-flex xs12>
+                <v-btn type="submit" :disabled="!isFormValid || loading" color="info">Submit</v-btn>
+              </v-flex>
+            </v-layout>
           </v-form>
+        </v-flex>
+      </v-layout>
+
+      <!-- Messages -->
+      <v-layout row v-if="!loading && productMessages">
+        <v-flex xs12>
+          <v-list subheader three-line>
+            <v-subheader>Messages</v-subheader>
+            <template v-for="message in productMessages">
+              <v-divider :key="message._id"></v-divider>
+
+              <v-list-tile :key="message.title">
+                <v-list-tile-avatar>
+                  <img :src="message.messageUser.avatar">
+                </v-list-tile-avatar>
+                <v-list-tile-content>
+                  <v-list-tile-title>{{message.messageBody}}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{message.messageUser.username}}</v-list-tile-sub-title>
+                </v-list-tile-content>
+
+                <v-list-tile-action>
+                  <v-icon :color="user && message.messageUser._id === user._id ? 'accent' : 'grey'">chat_bubble</v-icon>
+                </v-list-tile-action>
+              </v-list-tile>
+            </template>
+          </v-list>
         </v-flex>
       </v-layout>
     </v-container>
@@ -76,18 +114,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["user", "loading", "product"])
-    // userIsCreator() {
-    //   if (!this.user) {
-    //     return false
-    //   }
-    //   return this.$store.getters.user.id === this.product.creatorId
-    // },
-    // onProductLiked() {
-    //   return this.$store.getters.user.favoritedProducts.includes(
-    //     this.product._id
-    //   );
-    // },
+    ...mapGetters(["user", "loading", "product", "productMessages"])
   },
   watch: {
     $route() {
@@ -103,7 +130,6 @@ export default {
     },
     handleAddProductMessage() {
       if (this.$refs.form.validate()) {
-        // console.log(this.message, this._id, this.user._id);
         this.$store.dispatch("addProductMessage", {
           messageBody: this.message,
           userId: this.user._id,
@@ -111,19 +137,6 @@ export default {
         });
       }
     },
-    // onAgree() {
-    //   if (this.onProductLiked) {
-    //     if (window.scrollY > 25) {
-    //      this.isAnimating = true
-    //     }
-    //     this.$store.dispatch('unfavoriteProduct', this.product.id)
-    //   } else {
-    //     if (window.scrollY > 25) {
-    //       this.isAnimating = true
-    //     }
-    //     this.$store.dispatch('favoriteProduct', this.product.id)
-    //   }
-    // },
     togglePictureDialog() {
       if (window.innerWidth > 500) {
         this.dialog = !this.dialog;
