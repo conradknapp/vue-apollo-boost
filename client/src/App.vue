@@ -122,7 +122,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["searchResults", "user", "authError", 'userFavorites']),
+    ...mapGetters(["searchResults", "user", "authError", "userFavorites"]),
     sideNavItems() {
       let items = [
         { icon: "weekend", title: "Products", link: "/products" },

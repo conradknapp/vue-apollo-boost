@@ -23,7 +23,7 @@
     <v-layout row wrap v-if="productsPage">
       <v-flex xs12 v-bind="{ [`sm${mozaicLayout && index % 3 === 0 ? 12 : 6}`]: true }" v-for="(product, index) in productsPage.products" :key="product._id" hover>
         <v-card class="mt-3 ml-1 mr-2" hover>
-          <v-card-media lazy :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" tag="button" height="40vh">
+          <v-card-media lazy :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" tag="button" height="30vh">
             <!-- <v-container fill-height fluid>
               <v-layout fill-height>
                 <v-flex xs12 flexbox>
@@ -51,7 +51,7 @@
               <v-icon large color="grey">favorite</v-icon>
             </v-btn>
             <v-btn icon @click="show = !show">
-              <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
+              <v-icon>{{`keyboard_arrow_${show ? 'down' : 'up'}`}}</v-icon>
             </v-btn>
           </v-card-actions>
 
@@ -59,12 +59,12 @@
             <v-card-text v-show="show" class="grey lighten-4">
               <v-list-tile avatar>
                 <v-list-tile-avatar>
-                  <img src="https://cdn.vuetifyjs.com/images/lists/2.jpg">
+                  <img :src="product.createdBy.avatar">
                 </v-list-tile-avatar>
 
                 <v-list-tile-content>
-                  <v-list-tile-title class="text--primary">John Davis</v-list-tile-title>
-                  <v-list-tile-sub-title>Posted 9-4-18</v-list-tile-sub-title>
+                  <v-list-tile-title class="text--primary">{{product.createdBy.username}}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{product.createdDate}}</v-list-tile-sub-title>
                 </v-list-tile-content>
 
                 <v-list-tile-action>
@@ -137,12 +137,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["products", "loading"]),
+    ...mapGetters(["products", "loading", "userFavorites"]),
     user() {
       return this.$store.getters.user != null;
-    },
-    userFavorites() {
-      return this.$store.getters.user.favorites || [];
     },
     showMoreEnabled() {
       return this.productsPage && this.productsPage.hasMore;

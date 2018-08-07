@@ -32,21 +32,24 @@
             </v-card>
           </v-dialog>
           <v-card-text>
-            <p>{{product.description}}</p>
+            <span v-for="(category, index) in product.categories" :key="index">
+              <v-chip class="mb-3" color="accent" text-color="white">{{category}}</v-chip>
+            </span>
+            <h3>{{product.description}}</h3>
           </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
 
     <!-- Editor Component -->
-    <v-container flexbox center v-if="user">
+    <v-container flexbox center v-if="!loading && user">
       <v-layout class="mt-3 pb-5">
         <v-flex xs12>
-          <vue-editor style="width: 100%; min-height: 20px; height: 80px" v-model="content" :editorToolbar="customToolbar"></vue-editor>
+          <v-form @submit.prevent="handleAddProductMessage" v-model="isFormValid" ref="form" lazy-validation>
+            <v-text-field label="Add Message" v-model="message" type="text" prepend-icon="email" :rules="messageRules" required></v-text-field>
+            <v-btn @click="handleAddProductMessage">Submit</v-btn>
+          </v-form>
         </v-flex>
-      </v-layout>
-      <v-layout column align-center>
-        <v-btn color="info" @click="handleAddMessage">Add Message</v-btn>
       </v-layout>
     </v-container>
 
@@ -54,27 +57,26 @@
 </template>
 
 <script>
-import { VueEditor } from "vue2-editor";
 import { mapGetters } from "vuex";
 
 export default {
   name: "Product",
-  components: { VueEditor },
   props: ["_id"],
   data() {
     return {
+      isFormValid: true,
       dialog: false,
-      content: "",
-      unAuthFave: false,
+      message: "",
       mouseEnterHeart: false,
-      customToolbar: [["bold", "italic", "underline"]]
+      messageRules: [
+        message => !!message || "Comment is required",
+        message =>
+          message.length < 20 || "Comment must be less than 20 characters"
+      ]
     };
   },
   computed: {
-    ...mapGetters(["user", "loading", "product"]),
-    user() {
-      return this.$store.getters.user != null;
-    }
+    ...mapGetters(["user", "loading", "product"])
     // userIsCreator() {
     //   if (!this.user) {
     //     return false
@@ -99,7 +101,16 @@ export default {
     handleGetProduct() {
       this.$store.dispatch("getProduct", this._id);
     },
-    handleAddMessage() {},
+    handleAddProductMessage() {
+      if (this.$refs.form.validate()) {
+        // console.log(this.message, this._id, this.user._id);
+        this.$store.dispatch("addProductMessage", {
+          messageBody: this.message,
+          userId: this.user._id,
+          productId: this._id
+        });
+      }
+    },
     // onAgree() {
     //   if (this.onProductLiked) {
     //     if (window.scrollY > 25) {
@@ -113,23 +124,10 @@ export default {
     //     this.$store.dispatch('favoriteProduct', this.product.id)
     //   }
     // },
-    onUnAuthFave() {
-      console.log("fave");
-      // if (scrollY > 25) {
-      //  this.isAnimating = true
-      //  this.unAuthFave = true
-      // }
-      // this.unAuthFave = true
-      // setTimeout(() => this.$router.push('/signup'), 1000)
-      // setTimeout(() => this.$store.dispatch('unAuthUserClick', {message: `Sign up to save all your favorites 💖`, submessage: `(it only takes a second ⏱)`, icon: 'info', color: "info"}), 1500)
-    },
     togglePictureDialog() {
       if (window.innerWidth > 500) {
         this.dialog = !this.dialog;
       }
-      // if (window.innerWidth > 500 && !this.unAuthFave && !this.mouseEnterHeart) {
-      //   this.dialog = !this.dialog
-      // }
     },
     goBack() {
       this.$router.go(-1);

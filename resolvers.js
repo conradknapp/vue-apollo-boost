@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -11,12 +12,17 @@ module.exports = {
     productsPage: async (_, { page, size }, { Product }) => {
       let products;
       if (page === 1) {
-        products = await Product.find({}).limit(size);
+        products = await Product.find({})
+          .limit(size)
+          .populate({ path: "createdBy", model: "User" });
       } else {
         const skips = size * (page - 1);
-        products = await Product.find({})
-          .skip(skips)
-          .limit(size);
+        products = await Product.find({}).populate({
+          path: "createdBy",
+          model: "User"
+        });
+        // .skip(skips)
+        // .limit(size);
       }
       const countDocs = await Product.countDocuments();
       const hasMore = countDocs > size * page;
@@ -30,10 +36,19 @@ module.exports = {
       let products;
       if (size) {
         products = await Product.find({})
+          .populate({
+            path: "createdBy",
+            model: "User"
+          })
           .sort({ createdDate: "desc" })
           .limit(size);
       } else {
-        products = await Product.find({}).sort({ createdDate: "desc" });
+        products = await Product.find({})
+          .populate({
+            path: "createdBy",
+            model: "User"
+          })
+          .sort({ createdDate: "desc" });
       }
       return products;
     },
@@ -61,26 +76,41 @@ module.exports = {
       }
       const user = await User.findOne({
         username: currentUser.username
-      }).populate({
-        path: "favorites",
-        model: "Product"
-      });
+      }).populate({ path: "favorites", model: "Product" });
       return user;
     }
   },
   Mutation: {
     addProduct: async (
       _,
-      { title, imageUrl, description, categories },
+      { title, imageUrl, description, categories, creatorId },
       { Product }
     ) => {
       const newProduct = await new Product({
         title,
         imageUrl,
         description,
-        categories
+        categories,
+        createdBy: mongoose.Types.ObjectId(creatorId)
       }).save();
       return newProduct;
+    },
+    addProductMessage: async (
+      _,
+      { messageBody, userId, productId },
+      { Product }
+    ) => {
+      const newMessage = {
+        messageBody,
+        messageUser: userId
+      };
+      const product = await Product.findOne({ _id: productId }).then(
+        product => {
+          product.messages.unshift(newMessage);
+          return product.save();
+        }
+      );
+      return product;
     },
     likeProduct: async (_, { _id, username }, { Product, User }) => {
       const product = await Product.findOneAndUpdate(
@@ -98,10 +128,7 @@ module.exports = {
         { _id },
         { $inc: { likes: -1 } }
       );
-      await User.findOneAndUpdate(
-        { username },
-        { $pull: { favorites: _id } }
-      );
+      await User.findOneAndUpdate({ username }, { $pull: { favorites: _id } });
       return product;
     },
     signinUser: async (_, { username, password }, { User }) => {

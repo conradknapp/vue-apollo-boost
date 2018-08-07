@@ -15,7 +15,8 @@ import {
   UNLIKE_PRODUCT,
   SIGNIN_USER,
   SIGNUP_USER,
-  SEARCH_PRODUCTS
+  SEARCH_PRODUCTS,
+  ADD_PRODUCT_MESSAGE
 } from "../queries";
 
 export const store = new Vuex.Store({
@@ -118,7 +119,7 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    addProduct: ({ commit }, payload) => {
+    addProduct: ({ state, commit }, payload) => {
       commit("setLoading", true);
       commit("clearError");
       apolloClient
@@ -128,7 +129,8 @@ export const store = new Vuex.Store({
             title: payload.title,
             imageUrl: payload.imageUrl,
             categories: payload.categories,
-            description: payload.description
+            description: payload.description,
+            creatorId: state.user._id
           }
         })
         .then(({ data }) => {
@@ -142,6 +144,23 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
+    addProductMessage: (_, payload) => {
+      apolloClient
+        .mutate({
+          mutation: ADD_PRODUCT_MESSAGE,
+          variables: {
+            messageBody: payload.messageBody,
+            productId: payload.productId,
+            userId: payload.userId
+          }
+        })
+        .then(({ data }) => {
+          console.log(data);
+        })
+        .catch(err => {
+          console.error(err);
+        })
+    },
     likeProduct: ({ state, commit }, payload) => {
       apolloClient
         .mutate({
@@ -152,16 +171,16 @@ export const store = new Vuex.Store({
           }
         })
         .then(({ data }) => {
-          console.log(data.likeRecipe);
+          console.log(data.likeProduct);
         })
         .catch(err => {
           console.error(err);
-          commit('setError', err);
-          commit('setLoading', false);
-        })
+          commit("setError", err);
+          commit("setLoading", false);
+        });
     },
     unlikeProduct: ({ state, commit }, payload) => {
-      commit('setLoading', true);
+      commit("setLoading", true);
       apolloClient
         .mutate({
           mutation: UNLIKE_PRODUCT,
@@ -172,13 +191,13 @@ export const store = new Vuex.Store({
         })
         .then(({ data }) => {
           console.log(data.likeRecipe);
-          commit('setLoading', false);
+          commit("setLoading", false);
         })
         .catch(err => {
           console.error(err);
-          commit('setError', err);
-          commit('setLoading', false);
-        })
+          commit("setError", err);
+          commit("setLoading", false);
+        });
     },
     signinUser: ({ commit }, payload) => {
       commit("setLoading", true);

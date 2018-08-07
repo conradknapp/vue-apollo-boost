@@ -11,6 +11,11 @@ export const PRODUCTS_PAGE = gql`
         description
         likes
         createdDate
+        createdBy {
+          _id
+          username
+          avatar
+        }
       }
       hasMore
     }
@@ -42,6 +47,11 @@ export const GET_PRODUCTS = gql`
       description
       likes
       createdDate
+      createdBy {
+        _id
+        username
+        avatar
+      }
     }
   }
 `;
@@ -66,9 +76,11 @@ export const GET_CURRENT_USER = gql`
       username
       email
       joinDate
+      avatar
       favorites {
         _id
         title
+        imageUrl
       }
     }
   }
@@ -81,12 +93,14 @@ export const ADD_PRODUCT = gql`
     $imageUrl: String!
     $description: String!
     $categories: [String]!
+    $creatorId: String!
   ) {
     addProduct(
       title: $title
       imageUrl: $imageUrl
       description: $description
       categories: $categories
+      creatorId: $creatorId
     ) {
       title
       imageUrl
@@ -94,6 +108,32 @@ export const ADD_PRODUCT = gql`
       categories
       createdDate
       likes
+      createdBy {
+        _id
+        avatar
+      }
+    }
+  }
+`;
+
+export const ADD_PRODUCT_MESSAGE = gql`
+  mutation($messageBody: String!, $userId: String!, $productId: String!) {
+    addProductMessage(
+      messageBody: $messageBody
+      userId: $userId
+      productId: $productId
+    ) {
+      _id
+      title
+      likes
+      messages {
+        _id
+        messageBody
+        messageDate
+        messageUser {
+          _id
+        }
+      }
     }
   }
 `;

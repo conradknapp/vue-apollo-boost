@@ -1,0 +1,62 @@
+[
+  {
+    "_id": {
+      "$oid": "5b631248e199dd0532d8ff89"
+    },
+    "categories": ["Rustic", "Preppy"],
+    "likes": 0,
+    "title": "Cool Credenza",
+    "imageUrl":
+      "https://images.crateandbarrel.com/is/image/Crate/ClybournIICredenza3QF16/?$web_zoom_furn_av$&180802085137&wid=1008&hei=567",
+    "description": "Sweeeett",
+    "createdDate": {
+      "$date": "2018-08-02T14:16:40.806Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "5b6322609c78c3084f293119"
+    },
+    "categories": ["Rustic"],
+    "likes": 1,
+    "title": "Cabinet",
+    "imageUrl":
+      "https://images.crateandbarrel.com/is/image/Crate/MarinLrgBrMediaCabS14/?$web_zoom_furn_av$&150512092020&wid=1008&hei=567",
+    "description": "Sweeeet cabinet",
+    "createdDate": {
+      "$date": "2018-08-02T15:25:20.175Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "5b633030e7cb130890b1c99f"
+    },
+    "categories": ["Traditional"],
+    "likes": 0,
+    "title": "Chair",
+    "imageUrl":
+      "https://images.crateandbarrel.com/is/image/Crate/CooperChairGranite3QS18/?$web_zoom_furn_av$&180802093616&wid=1008&hei=567",
+    "description": "Really neat chair",
+    "createdDate": {
+      "$date": "2018-08-02T16:24:16.860Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "5b63c9769de2df17c5f172e8"
+    },
+    "categories": ["Traditional"],
+    "likes": 0,
+    "title": "Chaise",
+    "imageUrl":
+      "https://images.crateandbarrel.com/is/image/Crate/PetrieLeatherChaiseCarbon3QS18/?$web_zoom_furn_av$&180802124218&wid=1008&hei=567",
+    "description": "Cool chaise!",
+    "createdDate": {
+      "$date": "2018-08-03T03:18:14.436Z"
+    },
+    "__v": 0
+  }
+]

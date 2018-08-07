@@ -6,11 +6,8 @@ type Product {
   categories: [String]!
   createdDate: String
   likes: Int
-}
-
-type ProductsPage {
-  products: [Product]
-  hasMore: Boolean!
+  createdBy: User
+  messages: [Message]
 }
 
 type User {
@@ -23,8 +20,20 @@ type User {
   favorites: [Product]
 }
 
+type Message {
+  _id: ID
+  messageBody: String!
+  messageUser: User!
+  messageDate: String
+}
+
 type Token {
   token: String!
+}
+
+type ProductsPage {
+  products: [Product]
+  hasMore: Boolean!
 }
 
 type Query {
@@ -43,7 +52,11 @@ type Mutation {
     imageUrl: String!
     description: String!
     categories: [String]!
+    # takes a creatorId and returns 'createdBy' populated with User
+    creatorId: String!
   ): Product!
+  addProductMessage(messageBody: String!, userId: String!, productId: String!): Product!
+
   likeProduct(_id: ID, username: String): Product
   unlikeProduct(_id: ID, username: String): Product
 
