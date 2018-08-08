@@ -39,7 +39,7 @@ type ProductsPage {
 type Query {
   getCurrentUser: User
 
-  getProduct(_id: ID!): Product!
+  getProduct(_id: String!): Product!
   getProducts(size: Int): [Product]!
   searchProducts(searchTerm: String): [Product]
 

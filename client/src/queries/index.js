@@ -27,7 +27,7 @@ export const PRODUCTS_PAGE = gql`
 
 /* Product Queries */
 export const GET_PRODUCT = gql`
-  query($_id: ID!) {
+  query($_id: String!) {
     getProduct(_id: $_id) {
       _id
       title

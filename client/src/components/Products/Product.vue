@@ -1,5 +1,5 @@
 <template>
-  <v-container class="mt-5 mb-5" flexbox center>
+  <v-container v-if="getProduct" class="mt-5 mb-5" flexbox center>
 
     <!-- Loading Component -->
     <v-layout row justify-center>
@@ -13,14 +13,14 @@
     </v-layout>
 
     <!-- Product Card -->
-    <v-layout row wrap v-if="!loading && product">
+    <v-layout row wrap v-if="!loading && getProduct">
       <v-flex xs12>
         <v-card hover>
           <v-card-title>
-            <h1>{{product.title}}</h1>
-            <v-btn large icon v-if="userFavorites" @click="handleToggleLike(product._id)">
-              <v-icon large :color="userFavorites.some(el => el._id === product._id) ? 'red' : 'grey'">favorite</v-icon>
-              {{product.likes}}
+            <h1>{{getProduct.title}}</h1>
+            <v-btn large icon @click="handleToggleLike(getProduct._id)">
+              <v-icon large :color="liked ? 'red' : 'grey'">favorite</v-icon>
+              {{getProduct.likes}}
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn dark color="primary" @click="goBack">
@@ -29,19 +29,19 @@
           </v-card-title>
           <v-tooltip right>
             <span>Click to enlarge image</span>
-            <v-card-media slot="activator" @click="togglePictureDialog" :src="product.imageUrl" id="product__image">
+            <v-card-media slot="activator" @click="togglePictureDialog" :src="getProduct.imageUrl" id="product__image">
             </v-card-media>
           </v-tooltip>
           <v-dialog v-model="dialog">
             <v-card>
-              <v-card-media :src="product.imageUrl" height="500px"></v-card-media>
+              <v-card-media :src="getProduct.imageUrl" height="500px"></v-card-media>
             </v-card>
           </v-dialog>
           <v-card-text>
-            <span v-for="(category, index) in product.categories" :key="index">
+            <span v-for="(category, index) in getProduct.categories" :key="index">
               <v-chip class="mb-3" color="accent" text-color="white">{{category}}</v-chip>
             </span>
-            <h3>{{product.description}}</h3>
+            <h3>{{getProduct.description}}</h3>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -104,6 +104,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { LIKE_PRODUCT, UNLIKE_PRODUCT, GET_PRODUCT } from "../../queries";
 
 export default {
   name: "Product",
@@ -111,6 +112,7 @@ export default {
   data() {
     return {
       isFormValid: true,
+      liked: false,
       dialog: false,
       message: "",
       mouseEnterHeart: false,
@@ -121,9 +123,19 @@ export default {
       ]
     };
   },
+  apollo: {
+    getProduct: {
+      query: GET_PRODUCT,
+      variables() {
+        return {
+          _id: this._id
+        };
+      }
+    }
+  },
   computed: {
     // prettier-ignore
-    ...mapGetters(["user", "loading", "product", "productMessages", 'userFavorites'])
+    ...mapGetters(["user", "loading", "productMessages", 'userFavorites'])
   },
   watch: {
     $route() {
@@ -131,18 +143,81 @@ export default {
     }
   },
   created() {
-    this.handleGetProduct();
+    // this.handleGetProduct();
+    console.log(this.$route);
+    if (
+      this.userFavorites &&
+      this.userFavorites.some(el => el._id === this._id)
+    ) {
+      this.liked = true;
+    }
   },
   methods: {
     handleGetProduct() {
       this.$store.dispatch("getProduct", this._id);
     },
     handleToggleLike(productId) {
-      if (this.userFavorites.some(el => el._id === productId)) {
-        this.$store.dispatch("unlikeProduct", productId);
+      if (this.liked) {
+        this.handleUnlikeProduct();
+        this.liked = false;
       } else {
-        this.$store.dispatch("likeProduct", productId);
+        this.handleLikeProduct();
+        this.liked = true;
       }
+    },
+    handleLikeProduct() {
+      const variables = {
+        username: this.user.username,
+        _id: this._id
+      };
+
+      this.$apollo
+        .mutate({
+          mutation: LIKE_PRODUCT,
+          variables,
+          update: (store, { data: { likeProduct } }) => {
+            const { getProduct } = store.readQuery({
+              query: GET_PRODUCT,
+              variables: { _id: this._id }
+            });
+
+            store.writeQuery({
+              query: GET_PRODUCT,
+              variables: { _id: this._id },
+              data: {
+                getProduct: { ...getProduct, likes: getProduct.likes + 1 }
+              }
+            });
+          }
+        })
+        .then(data => console.log(data));
+    },
+    handleUnlikeProduct() {
+      const variables = {
+        username: this.user.username,
+        _id: this._id
+      };
+
+      this.$apollo
+        .mutate({
+          mutation: UNLIKE_PRODUCT,
+          variables,
+          update: (store, { data: { unlikeProduct } }) => {
+            const { getProduct } = store.readQuery({
+              query: GET_PRODUCT,
+              variables: { _id: this._id }
+            });
+
+            store.writeQuery({
+              query: GET_PRODUCT,
+              variables: { _id: this._id },
+              data: {
+                getProduct: { ...getProduct, likes: getProduct.likes - 1 }
+              }
+            });
+          }
+        })
+        .then(data => console.log(data));
     },
     handleAddProductMessage() {
       if (this.$refs.form.validate()) {

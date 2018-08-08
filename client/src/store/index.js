@@ -187,40 +187,6 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    likeProduct: ({ state, commit }, payload) => {
-      apolloClient
-        .mutate({
-          mutation: LIKE_PRODUCT,
-          variables: {
-            username: state.user.username,
-            _id: payload
-          }
-        })
-        .then(({ data }) => {
-          console.log(data.likeProduct);
-        })
-        .catch(err => {
-          console.error(err);
-          commit("setError", err);
-        });
-    },
-    unlikeProduct: ({ state, commit }, payload) => {
-      apolloClient
-        .mutate({
-          mutation: UNLIKE_PRODUCT,
-          variables: {
-            username: state.user.username,
-            _id: payload
-          }
-        })
-        .then(({ data }) => {
-          console.log(data.unlikeProduct);
-        })
-        .catch(err => {
-          console.error(err);
-          commit("setError", err);
-        });
-    },
     signinUser: ({ commit }, payload) => {
       commit("setLoading", true);
       commit("clearError");
