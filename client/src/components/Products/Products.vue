@@ -47,8 +47,8 @@
               </div>
             </v-card-title>
             <v-spacer></v-spacer>
-            <v-btn v-if="user" large icon @click="handleLikeProduct(product._id)">
-              <v-icon large color="grey">favorite</v-icon>
+            <v-btn v-if="user" large icon @click="handleToggleLike(product._id)">
+              <v-icon large :color="userFavorites.some(el => el._id === product._id) ? 'red': 'grey'">favorite</v-icon>
             </v-btn>
             <v-btn icon @click="show = !show">
               <v-icon>{{`keyboard_arrow_${show ? 'down' : 'up'}`}}</v-icon>
@@ -161,9 +161,6 @@ export default {
     handleGetProducts() {
       this.$store.dispatch("getProducts");
     },
-    handleLikeProduct(id) {
-      this.$store.dispatch("likeProduct", id);
-    },
     onScroll() {
       this.checkIfPageBottom();
       this.showPageUpButton();
@@ -173,7 +170,7 @@ export default {
       this.pageUpButton = this.amountScrolled > 250;
     },
     goToTop() {
-      window.scroll({ top: 0, left: 0, behavior: "smooth" });
+      window.scroll({ top: 0, behavior: "smooth" });
     },
     goToProduct(id) {
       this.$router.push(`/products/${id}`);
@@ -184,13 +181,13 @@ export default {
       // bottom of page if the browser height and amount scrolled are greater or equal to page height
       const scrolledToBottom =
         browserHeight + this.amountScrolled >= pageHeight;
-      this.isBottom = scrolledToBottom || browserHeight > pageHeight;
+      this.isBottom = scrolledToBottom;
     },
-    handleToggleLike(product) {
-      if (this.userFavorites.includes(product._id)) {
-        this.$store.dispatch("unfavoriteProduct", product._id);
+    handleToggleLike(productId) {
+      if (this.userFavorites.some(el => el._id === productId)) {
+        this.$store.dispatch("unlikeProduct", productId);
       } else {
-        this.$store.dispatch("favoriteProduct", product._id);
+        this.$store.dispatch("likeProduct", productId);
       }
     },
     showMore() {

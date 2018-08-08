@@ -6,7 +6,6 @@
           <v-container fill-height fluid>
             <v-layout fill-height>
               <v-flex xs12 align-end flexbox>
-                <span class="product__skeleton--headline headline"> </span>
                 <span class="product__skeleton--description"></span>
                 <div>
                   <v-btn x-large icon>
@@ -25,7 +24,6 @@
           <v-container fill-height fluid>
             <v-layout fill-height>
               <v-flex xs12 align-end flexbox>
-                <span class="product__skeleton--headline headline"> </span>
                 <span class="product__skeleton--description"></span>
                 <div>
                   <v-btn icon>
@@ -71,15 +69,10 @@ export default {
   );
 }
 
-.product__skeleton--headline {
-  background: rgba(57, 57, 57, 0.3);
-  color: rgba(57, 57, 57, 0.3);
-}
-
 .product__skeleton--description {
   background: rgba(57, 57, 57, 0.3);
   color: rgba(57, 57, 57, 0.3);
-  min-height: 4em;
+  min-height: 5em;
   position: absolute;
   bottom: 0;
   left: 0;

@@ -77,8 +77,12 @@
                   <img :src="message.messageUser.avatar">
                 </v-list-tile-avatar>
                 <v-list-tile-content>
-                  <v-list-tile-title>{{message.messageBody}}</v-list-tile-title>
-                  <v-list-tile-sub-title>{{message.messageUser.username}}</v-list-tile-sub-title>
+                  <v-list-tile-title>
+                    {{message.messageBody}}
+                  </v-list-tile-title>
+                  <v-list-tile-sub-title>{{message.messageUser.username}}
+                    <span class="grey--text text--lighten-1">{{message.messageDate}}</span>
+                  </v-list-tile-sub-title>
                 </v-list-tile-content>
 
                 <v-list-tile-action>

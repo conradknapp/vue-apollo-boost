@@ -176,11 +176,9 @@ export const store = new Vuex.Store({
         .catch(err => {
           console.error(err);
           commit("setError", err);
-          commit("setLoading", false);
         });
     },
     unlikeProduct: ({ state, commit }, payload) => {
-      commit("setLoading", true);
       apolloClient
         .mutate({
           mutation: UNLIKE_PRODUCT,
@@ -190,13 +188,11 @@ export const store = new Vuex.Store({
           }
         })
         .then(({ data }) => {
-          console.log(data.likeRecipe);
-          commit("setLoading", false);
+          console.log(data.unlikeProduct);
         })
         .catch(err => {
           console.error(err);
           commit("setError", err);
-          commit("setLoading", false);
         });
     },
     signinUser: ({ commit }, payload) => {
