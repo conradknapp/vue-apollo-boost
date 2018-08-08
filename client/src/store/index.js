@@ -156,35 +156,32 @@ export const store = new Vuex.Store({
           mutation: ADD_PRODUCT_MESSAGE,
           variables: payload,
           update: (cache, { data: { addProductMessage } }) => {
-            const data = cache.readQuery({
+            const { getProduct } = cache.readQuery({
               query: GET_PRODUCT,
               variables: {
                 _id: state.product._id
               }
             });
-            data.getProduct.messages.push(addProductMessage);
             cache.writeQuery({
               query: GET_PRODUCT,
               variables: {
                 _id: state.product._id
               },
-              data
+              data: {
+                getProduct: {
+                  ...getProduct,
+                  messages: [addProductMessage, ...getProduct.messages]
+                }
+              }
             });
-            return data;
           }
-          // optimisticResponse: {
-          //   __typename: "Mutation",
-          //   addProductMessage: {
-          //     __typename: "Product",
-          //     ...payload
-          //   }
-          // }
         })
         .then(({ data }) => {
-          commit("setProduct", {
-            ...state.product,
-            messages: data.addProductMessage.messages
-          });
+          console.log(data);
+          // commit("setProduct", {
+          //   ...state.product,
+          //   messages: data.addProductMessage.messages
+          // });
         })
         .catch(err => {
           console.error(err);

@@ -27,3 +27,4 @@ Useful
 - https://stackoverflow.com/questions/44299649/optimistic-ui-not-updating-apollo
 - https://github.com/apollographql/apollo-client/issues/2919
 - https://medium.com/yld-engineering-blog/using-vue-with-apollo-65e2b1297592
+- https://stackoverflow.com/questions/44299649/optimistic-ui-not-updating-apollo
