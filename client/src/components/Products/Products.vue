@@ -24,20 +24,6 @@
       <v-flex xs12 v-bind="{ [`sm${mozaicLayout && index % 3 === 0 ? 12 : 6}`]: true }" v-for="(product, index) in productsPage.products" :key="product._id" hover>
         <v-card class="mt-3 ml-1 mr-2" hover>
           <v-card-media lazy :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" tag="button" height="30vh">
-            <!-- <v-container fill-height fluid>
-              <v-layout fill-height>
-                <v-flex xs12 flexbox>
-                  <span class="product__title headline" v-text="product.title"></span>
-                  <v-btn icon x-large v-if="user" @click="handleToggleLike(product)">
-                    <v-icon color="red darken-4" x-large v-if="userFavorites.includes(product._id)">favorite</v-icon>
-                    <v-icon color="grey" x-large v-else>favorite</v-icon>
-                  </v-btn>
-                  <v-btn icon x-large v-if="!user">
-                    <v-icon color="grey" x-large>favorite</v-icon>
-                  </v-btn>
-                </v-flex>
-              </v-layout>
-            </v-container> -->
           </v-card-media>
           <v-card-actions>
             <v-card-title primary-title>
@@ -47,9 +33,7 @@
               </div>
             </v-card-title>
             <v-spacer></v-spacer>
-            <v-btn v-if="user" large icon @click="handleToggleLike(product._id)">
-              <v-icon large :color="userFavorites.some(el => el._id === product._id) ? 'red': 'grey'">favorite</v-icon>
-            </v-btn>
+            <!-- <v-icon large :color="userFavorites.some(el => el._id === product._id) ? 'red': 'grey'">favorite</v-icon> -->
             <v-btn icon @click="show = !show">
               <v-icon>{{`keyboard_arrow_${show ? 'down' : 'up'}`}}</v-icon>
             </v-btn>
@@ -152,7 +136,7 @@ export default {
     isBottom(value) {
       // if this.bottom evaluates to true
       if (value) {
-        const throttled = throttle(this.showMore, 500);
+        const throttled = throttle(this.showMore, 250);
         throttled();
       }
     }
@@ -182,13 +166,6 @@ export default {
       const scrolledToBottom =
         browserHeight + this.amountScrolled >= pageHeight;
       this.isBottom = scrolledToBottom;
-    },
-    handleToggleLike(productId) {
-      if (this.userFavorites.some(el => el._id === productId)) {
-        this.$store.dispatch("unlikeProduct", productId);
-      } else {
-        this.$store.dispatch("likeProduct", productId);
-      }
     },
     showMore() {
       if (this.showMoreEnabled) {

@@ -53,6 +53,7 @@ export const defaultClient = new ApolloClient({
       for (let err of graphQLErrors) {
         if (err.name === "AuthenticationError") {
           store.commit("setAuthError", err);
+          store.dispatch("signoutUser");
         }
       }
       localStorage.setItem("token", "");

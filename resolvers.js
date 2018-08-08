@@ -13,11 +13,13 @@ module.exports = {
       let products;
       if (page === 1) {
         products = await Product.find({})
+          .sort({ createdDate: "desc" })
           .limit(size)
           .populate({ path: "createdBy", model: "User" });
       } else {
         const skips = size * (page - 1);
         products = await Product.find({})
+          .sort({ createdDate: "desc" })
           .populate({
             path: "createdBy",
             model: "User"
@@ -40,19 +42,19 @@ module.exports = {
       let products;
       if (size) {
         products = await Product.find({})
+          .sort({ createdDate: "desc" })
+          .limit(size)
           .populate({
             path: "createdBy",
             model: "User"
-          })
-          .sort({ createdDate: "desc" })
-          .limit(size);
+          });
       } else {
         products = await Product.find({})
+          .sort({ createdDate: "desc" })
           .populate({
             path: "createdBy",
             model: "User"
-          })
-          .sort({ createdDate: "desc" });
+          });
       }
       return products;
     },
@@ -95,7 +97,7 @@ module.exports = {
         imageUrl,
         description,
         categories,
-        createdBy: mongoose.Types.ObjectId(creatorId)
+        createdBy: creatorId
       }).save();
       return newProduct;
     },

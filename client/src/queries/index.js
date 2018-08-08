@@ -145,6 +145,8 @@ export const ADD_PRODUCT_MESSAGE = gql`
         messageDate
         messageUser {
           _id
+          avatar
+          username
         }
       }
     }

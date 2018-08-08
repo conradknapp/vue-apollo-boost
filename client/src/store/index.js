@@ -131,7 +131,13 @@ export const store = new Vuex.Store({
             categories: payload.categories,
             description: payload.description,
             creatorId: state.user._id
-          }
+          },
+          refetchQueries: [
+            {
+              query: GET_PRODUCTS,
+              variables: { size: null }
+            }
+          ]
         })
         .then(({ data }) => {
           commit("setLoading", false);
@@ -144,18 +150,41 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    addProductMessage: (_, payload) => {
+    addProductMessage: ({ state, commit }, payload) => {
       apolloClient
         .mutate({
           mutation: ADD_PRODUCT_MESSAGE,
-          variables: {
-            messageBody: payload.messageBody,
-            productId: payload.productId,
-            userId: payload.userId
+          variables: payload,
+          update: (cache, { data: { addProductMessage } }) => {
+            const data = cache.readQuery({
+              query: GET_PRODUCT,
+              variables: {
+                _id: state.product._id
+              }
+            });
+            data.getProduct.messages.push(addProductMessage);
+            cache.writeQuery({
+              query: GET_PRODUCT,
+              variables: {
+                _id: state.product._id
+              },
+              data
+            });
+            return data;
           }
+          // optimisticResponse: {
+          //   __typename: "Mutation",
+          //   addProductMessage: {
+          //     __typename: "Product",
+          //     ...payload
+          //   }
+          // }
         })
         .then(({ data }) => {
-          console.log(data);
+          commit("setProduct", {
+            ...state.product,
+            messages: data.addProductMessage.messages
+          });
         })
         .catch(err => {
           console.error(err);

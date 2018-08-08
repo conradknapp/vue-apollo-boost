@@ -25,3 +25,5 @@ Useful
 - https://codepen.io/CSWApps/pen/aVoBPW
 - https://blog.strapi.io/cooking-a-deliveroo-clone-with-nuxt-vue-js-graphql-strapi-and-stripe-setup-part-1-7
 - https://stackoverflow.com/questions/44299649/optimistic-ui-not-updating-apollo
+- https://github.com/apollographql/apollo-client/issues/2919
+- https://medium.com/yld-engineering-blog/using-vue-with-apollo-65e2b1297592

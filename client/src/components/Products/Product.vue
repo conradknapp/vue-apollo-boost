@@ -18,6 +18,10 @@
         <v-card hover>
           <v-card-title>
             <h1>{{product.title}}</h1>
+            <v-btn large icon v-if="userFavorites" @click="handleToggleLike(product._id)">
+              <v-icon large :color="userFavorites.some(el => el._id === product._id) ? 'red' : 'grey'">favorite</v-icon>
+              {{product.likes}}
+            </v-btn>
             <v-spacer></v-spacer>
             <v-btn dark color="primary" @click="goBack">
               <v-icon>arrow_back</v-icon>
@@ -118,7 +122,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["user", "loading", "product", "productMessages"])
+    // prettier-ignore
+    ...mapGetters(["user", "loading", "product", "productMessages", 'userFavorites'])
   },
   watch: {
     $route() {
@@ -131,6 +136,13 @@ export default {
   methods: {
     handleGetProduct() {
       this.$store.dispatch("getProduct", this._id);
+    },
+    handleToggleLike(productId) {
+      if (this.userFavorites.some(el => el._id === productId)) {
+        this.$store.dispatch("unlikeProduct", productId);
+      } else {
+        this.$store.dispatch("likeProduct", productId);
+      }
     },
     handleAddProductMessage() {
       if (this.$refs.form.validate()) {

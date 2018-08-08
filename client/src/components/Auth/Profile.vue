@@ -1,5 +1,30 @@
 <template>
   <v-container class="text-xs-center">
+    <v-flex sm6 offset-sm3>
+      <v-card color="secondary" class="white--text">
+        <v-layout>
+          <v-flex xs5>
+            <v-card-media :src="user.avatar" height="125px" contain></v-card-media>
+          </v-flex>
+          <v-flex xs7>
+            <v-card-title primary-title>
+              <div>
+                <div class="headline">{{user.username}}</div>
+                <div>Join Date: {{user.joinDate}}</div>
+                <div>Favorites: {{user.favorites.length}}</div>
+              </div>
+            </v-card-title>
+          </v-flex>
+        </v-layout>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-flex class="pl-3" xs12>
+            <v-switch dark label="Toggle Profile Card" v-model="switch1"></v-switch>
+          </v-flex>
+        </v-card-actions>
+      </v-card>
+    </v-flex>
+
     <v-layout row wrap v-if="!userFavorites.length">
       <v-flex xs12>
         <h2>You have no favorites currently. Go and add some!</h2>
@@ -26,6 +51,11 @@
 import { mapGetters } from "vuex";
 
 export default {
+  data() {
+    return {
+      switch1: false
+    };
+  },
   computed: {
     ...mapGetters(["user", "error", "loading", "products", "userFavorites"])
   },

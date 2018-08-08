@@ -59,7 +59,8 @@ export default {
       ],
       imageRules: [image => !!image || "Image is required"],
       categoriesRules: [
-        categories => !!categories || "At least one category is required"
+        categories =>
+          categories.length >= 1 || "At least one category is required"
       ],
       descRules: [
         desc => !!desc || "Description is required",
