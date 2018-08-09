@@ -33,14 +33,13 @@
               </div>
             </v-card-title>
             <v-spacer></v-spacer>
-            <!-- <v-icon large :color="userFavorites.some(el => el._id === product._id) ? 'red': 'grey'">favorite</v-icon> -->
-            <v-btn icon @click="show = !show">
-              <v-icon>{{`keyboard_arrow_${show ? 'down' : 'up'}`}}</v-icon>
+            <v-btn icon @click="showCreator = !showCreator">
+              <v-icon>{{`keyboard_arrow_${showCreator ? 'down' : 'up'}`}}</v-icon>
             </v-btn>
           </v-card-actions>
 
           <v-slide-y-transition>
-            <v-card-text v-show="show" class="grey lighten-4">
+            <v-card-text v-show="showCreator" class="grey lighten-4">
               <v-list-tile avatar>
                 <v-list-tile-avatar>
                   <img :src="product.createdBy.avatar">
@@ -105,7 +104,7 @@ export default {
     return {
       page: 1,
       mozaicLayout: false,
-      show: false,
+      showCreator: false,
       pageUpButton: false,
       isBottom: false,
       amountScrolled: 0

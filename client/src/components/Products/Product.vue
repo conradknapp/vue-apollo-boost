@@ -1,17 +1,6 @@
 <template>
   <v-container v-if="getProduct" class="mt-5 mb-5" flexbox center>
 
-    <!-- Loading Component -->
-    <v-layout row justify-center>
-      <v-dialog v-model="loading" persistent fullscreen content-class="loading-dialog">
-        <v-container fill-height>
-          <v-layout row justify-center align-center>
-            <v-progress-circular indeterminate :size="70" :width="7" color="secondary"></v-progress-circular>
-          </v-layout>
-        </v-container>
-      </v-dialog>
-    </v-layout>
-
     <!-- Product Card -->
     <v-layout row wrap v-if="!loading && getProduct">
       <v-flex xs12>
@@ -104,7 +93,12 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { LIKE_PRODUCT, UNLIKE_PRODUCT, GET_PRODUCT } from "../../queries";
+import {
+  LIKE_PRODUCT,
+  UNLIKE_PRODUCT,
+  GET_PRODUCT,
+  GET_CURRENT_USER
+} from "../../queries";
 
 export default {
   name: "Product",
@@ -144,7 +138,6 @@ export default {
   },
   created() {
     // this.handleGetProduct();
-    console.log(this.$route);
     if (
       this.userFavorites &&
       this.userFavorites.some(el => el._id === this._id)
@@ -188,9 +181,15 @@ export default {
                 getProduct: { ...getProduct, likes: getProduct.likes + 1 }
               }
             });
-          }
+          },
+          refetchQueries: [
+            {
+              query: GET_CURRENT_USER
+            }
+          ]
         })
-        .then(data => console.log(data));
+        .then(data => console.log(data))
+        .catch(err => console.error(err));
     },
     handleUnlikeProduct() {
       const variables = {
@@ -215,9 +214,15 @@ export default {
                 getProduct: { ...getProduct, likes: getProduct.likes - 1 }
               }
             });
-          }
+          },
+          refetchQueries: [
+            {
+              query: GET_CURRENT_USER
+            }
+          ]
         })
-        .then(data => console.log(data));
+        .then(data => console.log(data))
+        .catch(err => console.error(err));
     },
     handleAddProductMessage() {
       if (this.$refs.form.validate()) {
@@ -241,10 +246,6 @@ export default {
 </script>
 
 <style scoped>
-.loading-dialog {
-  background-color: #303030;
-}
-
 #product__image {
   height: 200px;
   width: 100%;

@@ -6,7 +6,7 @@
 
       <!-- Side Navbar Header -->
       <v-toolbar color="accent" dark flat>
-        <v-toolbar-side-icon @click="toggleNav"></v-toolbar-side-icon>
+        <v-toolbar-side-icon @click="toggleSideNav"></v-toolbar-side-icon>
         <router-link tag="span" to="/">
           <h1 class="title pl-3" style="cursor: pointer">Vue Pinterest</h1>
         </router-link>
@@ -37,7 +37,7 @@
     <v-toolbar dark fixed color="primary">
 
       <!-- App Title -->
-      <v-toolbar-side-icon @click="toggleNav"></v-toolbar-side-icon>
+      <v-toolbar-side-icon @click="toggleSideNav"></v-toolbar-side-icon>
       <v-toolbar-title>
         <router-link to="/" tag="span" style="cursor: pointer">Vue Pinterest</router-link>
       </v-toolbar-title>
@@ -118,7 +118,8 @@ export default {
       searchTerm: "",
       signinSnackbar: false,
       errorSnackbar: false,
-      badgeAnimated: false
+      badgeAnimated: false,
+      showFavorites: false
     };
   },
   computed: {
@@ -161,6 +162,7 @@ export default {
       }
     },
     userFavorites(value) {
+      console.log(value);
       this.badgeAnimated = true;
       setTimeout(() => (this.badgeAnimated = false), 1000);
     }
@@ -169,7 +171,7 @@ export default {
     formatDescription(desc) {
       return desc.length > 30 ? `${desc.slice(0, 30)}...` : desc;
     },
-    toggleNav() {
+    toggleSideNav() {
       this.sideNav = !this.sideNav;
     },
     goToResult(id) {
@@ -214,23 +216,14 @@ h2 {
   opacity: 0;
 }
 
-#card__favorites {
+/* #card__favorites {
   position: absolute;
   transition: all 0.5s;
   width: 200px;
   z-index: 8;
   top: 100%;
   transform: translateX(-160px);
-}
-
-#card__search {
-  position: absolute;
-  transition: all 0.5s;
-  width: 100vw;
-  z-index: 8;
-  top: 100%;
-  left: 0%;
-}
+} */
 
 /* .card__favorites--image__container {
   display: flex;
@@ -242,7 +235,17 @@ h2 {
 .card__favorites--image {
   max-width: 100%;
   max-height: 100%;
+} */
+
+#card__search {
+  position: absolute;
+  transition: all 0.5s;
+  width: 100vw;
+  z-index: 8;
+  top: 100%;
+  left: 0%;
 }
+
 .animate {
   animation: bounce 1s both;
 }
@@ -264,5 +267,5 @@ h2 {
   90% {
     transform: translate3d(0, -4px, 0);
   }
-} */
+}
 </style>

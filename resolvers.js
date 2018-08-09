@@ -123,7 +123,7 @@ module.exports = {
         { _id },
         { $inc: { likes: 1 } }
       );
-      await User.findOneAndUpdate(
+      const user = await User.findOneAndUpdate(
         { username },
         { $addToSet: { favorites: _id } }
       );
@@ -134,7 +134,10 @@ module.exports = {
         { _id },
         { $inc: { likes: -1 } }
       );
-      await User.findOneAndUpdate({ username }, { $pull: { favorites: _id } });
+      const user = await User.findOneAndUpdate(
+        { username },
+        { $pull: { favorites: _id } }
+      );
       return product;
     },
     signinUser: async (_, { username, password }, { User }) => {

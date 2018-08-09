@@ -12,7 +12,7 @@
 
     <!-- Loading Spinner -->
     <v-layout row justify-center>
-      <v-dialog v-model="loading" persistent fullscreen content-class="loading-dialog">
+      <v-dialog v-model="loading" persistent fullscreen>
         <v-container fill-height>
           <v-layout row justify-center align-center>
             <v-progress-circular indeterminate :size="70" :width="7" color="secondary"></v-progress-circular>
@@ -172,10 +172,6 @@ export default {
 </script>
 
 <style scoped>
-.loading-dialog {
-  background-color: #303030;
-}
-
 #carousel {
   cursor: pointer;
   animation-play-state: paused;

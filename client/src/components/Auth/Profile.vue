@@ -66,13 +66,7 @@ export default {
   //     }
   //   }
   // },
-  created() {
-    this.handleGetProducts();
-  },
   methods: {
-    handleGetProducts() {
-      this.$store.dispatch("getProducts");
-    },
     goToProduct(id) {
       this.$store.dispatch("getProduct", id);
       this.$router.push(`/products/${id}`);
