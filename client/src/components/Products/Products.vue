@@ -157,7 +157,6 @@ export default {
     },
     goToProduct(id) {
       this.$router.push(`/products/${id}`);
-      this.$store.commit("setProductId", id);
     },
     checkIfPageBottom() {
       const browserHeight = document.documentElement.clientHeight;

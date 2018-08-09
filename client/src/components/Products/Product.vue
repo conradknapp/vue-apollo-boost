@@ -1,14 +1,16 @@
 <template>
   <v-container v-if="getProduct" class="mt-5 mb-5" flexbox center>
 
+    <div v-if="$apollo.loading">Loading</div>
+
     <!-- Product Card -->
-    <v-layout row wrap v-if="!loading && getProduct">
+    <v-layout row wrap v-else>
       <v-flex xs12>
         <v-card hover>
           <v-card-title>
             <h1>{{getProduct.title}}</h1>
             <v-btn large icon @click="handleToggleLike(getProduct._id)">
-              <v-icon large v-if="!loading && userFavorites" :color="checkIfLiked(getProduct._id) || liked ? 'red' : 'grey'">favorite</v-icon>
+              <v-icon large v-if="userFavorites" :color="checkIfLiked(getProduct._id) || liked ? 'red' : 'grey'">favorite</v-icon>
               {{getProduct.likes}}
             </v-btn>
             <v-spacer></v-spacer>
@@ -40,7 +42,7 @@
     <v-container flexbox center>
 
       <!-- Message Input -->
-      <v-layout class="mt-3 pb-5" v-if="!loading && user">
+      <v-layout class="mt-3 pb-5" v-if="user">
         <v-flex xs12>
           <v-form @submit.prevent="handleAddProductMessage" v-model="isFormValid" ref="form" lazy-validation>
             <v-layout row>
@@ -58,11 +60,11 @@
       </v-layout>
 
       <!-- Messages -->
-      <v-layout row v-if="!loading && productMessages">
+      <v-layout row>
         <v-flex xs12>
           <v-list subheader three-line>
             <v-subheader>Messages</v-subheader>
-            <template v-for="message in productMessages">
+            <template v-for="message in getProduct.messages">
               <v-divider :key="message._id"></v-divider>
 
               <v-list-tile :key="message.title">
@@ -106,6 +108,7 @@ export default {
   data() {
     return {
       isFormValid: true,
+      firstLoad: false,
       liked: false,
       dialog: false,
       message: "",
@@ -129,7 +132,7 @@ export default {
   },
   computed: {
     // prettier-ignore
-    ...mapGetters(["user", "loading", "productMessages", 'userFavorites', 'productId'])
+    ...mapGetters(["user", "loading", 'userFavorites'])
   },
   watch: {
     $route() {
@@ -234,12 +237,15 @@ export default {
       }
     },
     checkIfLiked(getProductId) {
-      if (this.userFavorites.some(el => el._id === getProductId)) {
-        console.log("run");
-        this.liked = true;
-        return true;
-      } else {
-        return false;
+      if (!this.firstLoad) {
+        if (this.userFavorites.some(el => el._id === getProductId)) {
+          this.liked = true;
+          this.firstLoad = true;
+          return true;
+        } else {
+          this.firstLoad = true;
+          return false;
+        }
       }
     },
     goBack() {
