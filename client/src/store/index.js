@@ -22,6 +22,7 @@ import {
 export const store = new Vuex.Store({
   state: {
     product: null,
+    productId: "",
     products: [],
     searchResults: [],
     user: null,
@@ -32,6 +33,9 @@ export const store = new Vuex.Store({
   mutations: {
     setProduct: (state, payload) => {
       state.product = payload;
+    },
+    setProductId: (state, payload) => {
+      state.productId = payload;
     },
     setProducts: (state, payload) => {
       state.products = payload;
@@ -241,6 +245,7 @@ export const store = new Vuex.Store({
     product: state => state.product,
     productMessages: state => state.product && state.product.messages,
     products: state => state.products,
+    productId: state => state.productId,
     shuffledProducts: ({ products }) =>
       [...products].sort(() => Math.random() - 0.5),
     searchResults: state => state.searchResults,

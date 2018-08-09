@@ -8,7 +8,7 @@
           <v-card-title>
             <h1>{{getProduct.title}}</h1>
             <v-btn large icon @click="handleToggleLike(getProduct._id)">
-              <v-icon large :color="liked ? 'red' : 'grey'">favorite</v-icon>
+              <v-icon large v-if="!loading && userFavorites" :color="checkIfLiked(getProduct._id) || liked ? 'red' : 'grey'">favorite</v-icon>
               {{getProduct.likes}}
             </v-btn>
             <v-spacer></v-spacer>
@@ -129,7 +129,7 @@ export default {
   },
   computed: {
     // prettier-ignore
-    ...mapGetters(["user", "loading", "productMessages", 'userFavorites'])
+    ...mapGetters(["user", "loading", "productMessages", 'userFavorites', 'productId'])
   },
   watch: {
     $route() {
@@ -138,24 +138,19 @@ export default {
   },
   created() {
     // this.handleGetProduct();
-    if (
-      this.userFavorites &&
-      this.userFavorites.some(el => el._id === this._id)
-    ) {
-      this.liked = true;
-    }
   },
   methods: {
     handleGetProduct() {
       this.$store.dispatch("getProduct", this._id);
     },
-    handleToggleLike(productId) {
-      if (this.liked) {
-        this.handleUnlikeProduct();
+    handleToggleLike() {
+      if (this.liked === true) {
         this.liked = false;
+        console.log("run!");
+        this.handleUnlikeProduct();
       } else {
-        this.handleLikeProduct();
         this.liked = true;
+        this.handleLikeProduct();
       }
     },
     handleLikeProduct() {
@@ -236,6 +231,15 @@ export default {
     togglePictureDialog() {
       if (window.innerWidth > 500) {
         this.dialog = !this.dialog;
+      }
+    },
+    checkIfLiked(getProductId) {
+      if (this.userFavorites.some(el => el._id === getProductId)) {
+        console.log("run");
+        this.liked = true;
+        return true;
+      } else {
+        return false;
       }
     },
     goBack() {
