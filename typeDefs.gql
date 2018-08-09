@@ -36,6 +36,11 @@ type ProductsPage {
   hasMore: Boolean!
 }
 
+type LikesFaves {
+  likes: Int
+  favorites: [Product]
+}
+
 type Query {
   getCurrentUser: User
 
@@ -61,8 +66,8 @@ type Mutation {
     productId: String!
   ): Product!
 
-  likeProduct(_id: ID, username: String): Product
-  unlikeProduct(_id: ID, username: String): Product
+  likeProduct(_id: ID, username: String): LikesFaves
+  unlikeProduct(_id: ID, username: String): LikesFaves
 
   signinUser(username: String!, password: String!): Token
   signupUser(username: String!, email: String!, password: String!): Token

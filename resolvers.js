@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -20,12 +19,12 @@ module.exports = {
         const skips = size * (page - 1);
         products = await Product.find({})
           .sort({ createdDate: "desc" })
+          .skip(skips)
+          .limit(size)
           .populate({
             path: "createdBy",
             model: "User"
-          })
-          .skip(skips)
-          .limit(size);
+          });
       }
       const countDocs = await Product.countDocuments();
       const hasMore = countDocs > size * page;
@@ -121,24 +120,28 @@ module.exports = {
     likeProduct: async (_, { _id, username }, { Product, User }) => {
       const product = await Product.findOneAndUpdate(
         { _id },
-        { $inc: { likes: 1 } }
+        { $inc: { likes: 1 } },
+        { new: true }
       );
       const user = await User.findOneAndUpdate(
         { username },
-        { $addToSet: { favorites: _id } }
-      );
-      return product;
+        { $addToSet: { favorites: _id } },
+        { new: true }
+      ).populate({ path: "favorites", model: "Product" });
+      return { likes: product.likes, favorites: user.favorites };
     },
     unlikeProduct: async (_, { _id, username }, { Product, User }) => {
       const product = await Product.findOneAndUpdate(
         { _id },
-        { $inc: { likes: -1 } }
+        { $inc: { likes: -1 } },
+        { new: true }
       );
       const user = await User.findOneAndUpdate(
         { username },
-        { $pull: { favorites: _id } }
-      );
-      return product;
+        { $pull: { favorites: _id } },
+        { new: true }
+      ).populate({ path: "favorites", model: "Product" });
+      return { likes: product.likes, favorites: user.favorites };
     },
     signinUser: async (_, { username, password }, { User }) => {
       const user = await User.findOne({ username });

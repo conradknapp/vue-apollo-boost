@@ -151,8 +151,8 @@ export default {
     }
   },
   watch: {
-    user(value) {
-      if (value) {
+    user(newValue, oldValue) {
+      if (oldValue === null) {
         this.signinSnackbar = true;
       }
     },

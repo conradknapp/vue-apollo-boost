@@ -30,3 +30,4 @@ Useful
 - https://stackoverflow.com/questions/44299649/optimistic-ui-not-updating-apollo
 - https://scotch.io/tutorials/build-a-blog-with-vue-graphql-and-apollo-client
 - https://stackoverflow.com/questions/50366713/vue-vuetify-validation-issue-when-clearing-form
+- https://stackoverflow.com/questions/46414494/leveraging-both-graphql-and-mongoose/46414578#46414578

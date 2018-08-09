@@ -154,8 +154,12 @@ export const ADD_PRODUCT_MESSAGE = gql`
 export const LIKE_PRODUCT = gql`
   mutation($_id: ID, $username: String) {
     likeProduct(_id: $_id, username: $username) {
-      _id
       likes
+      favorites {
+        _id
+        title
+        imageUrl
+      }
     }
   }
 `;
@@ -163,8 +167,12 @@ export const LIKE_PRODUCT = gql`
 export const UNLIKE_PRODUCT = gql`
   mutation($_id: ID, $username: String) {
     unlikeProduct(_id: $_id, username: $username) {
-      _id
       likes
+      favorites {
+        _id
+        title
+        imageUrl
+      }
     }
   }
 `;

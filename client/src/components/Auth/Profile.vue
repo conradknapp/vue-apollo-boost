@@ -59,16 +59,6 @@ export default {
   computed: {
     ...mapGetters(["user", "error", "loading", "products", "userFavorites"])
   },
-  // watch: {
-  //   user(value) {
-  //     if (value !== null && value !== undefined) {
-  //       this.$router.push('/')
-  //     }
-  //   }
-  // },
-  created() {
-    this.$store.dispatch("getCurrentUser");
-  },
   methods: {
     goToProduct(id) {
       this.$router.push(`/products/${id}`);

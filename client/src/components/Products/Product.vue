@@ -183,14 +183,15 @@ export default {
                 }
               }
             });
-          },
-          refetchQueries: [
-            {
-              query: GET_CURRENT_USER
-            }
-          ]
+          }
         })
-        .then(data => console.log(data))
+        .then(({ data }) => {
+          console.log(data.likeProduct);
+          this.$store.commit("setUser", {
+            ...this.user,
+            favorites: data.likeProduct.favorites
+          });
+        })
         .catch(err => console.error(err));
     },
     handleUnlikeProduct() {
@@ -219,15 +220,14 @@ export default {
                 }
               }
             });
-          },
-          refetchQueries: [
-            {
-              query: GET_CURRENT_USER
-            }
-          ]
+          }
         })
-        .then(data => {
+        .then(({ data }) => {
           console.log(data);
+          this.$store.commit("setUser", {
+            ...this.user,
+            favorites: data.unlikeProduct.favorites
+          });
         })
         .catch(err => console.error(err));
     },
@@ -262,7 +262,6 @@ export default {
                   }
                 }
               });
-              return;
             }
           })
           .then(({ data }) => {
