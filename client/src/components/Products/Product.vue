@@ -99,7 +99,8 @@ import {
   LIKE_PRODUCT,
   UNLIKE_PRODUCT,
   GET_PRODUCT,
-  GET_CURRENT_USER
+  GET_CURRENT_USER,
+  ADD_PRODUCT_MESSAGE
 } from "../../queries";
 
 export default {
@@ -149,7 +150,6 @@ export default {
     handleToggleLike() {
       if (this.liked === true) {
         this.liked = false;
-        console.log("run!");
         this.handleUnlikeProduct();
       } else {
         this.liked = true;
@@ -176,7 +176,10 @@ export default {
               query: GET_PRODUCT,
               variables: { _id: this._id },
               data: {
-                getProduct: { ...getProduct, likes: getProduct.likes + 1 }
+                getProduct: {
+                  ...getProduct,
+                  likes: getProduct.likes + 1
+                }
               }
             });
           },
@@ -209,7 +212,10 @@ export default {
               query: GET_PRODUCT,
               variables: { _id: this._id },
               data: {
-                getProduct: { ...getProduct, likes: getProduct.likes - 1 }
+                getProduct: {
+                  ...getProduct,
+                  likes: getProduct.likes - 1
+                }
               }
             });
           },
@@ -219,16 +225,51 @@ export default {
             }
           ]
         })
-        .then(data => console.log(data))
+        .then(data => {
+          console.log(data);
+        })
         .catch(err => console.error(err));
     },
     handleAddProductMessage() {
       if (this.$refs.form.validate()) {
-        this.$store.dispatch("addProductMessage", {
+        const variables = {
           messageBody: this.message,
           userId: this.user._id,
           productId: this._id
-        });
+        };
+        this.$apollo
+          .mutate({
+            mutation: ADD_PRODUCT_MESSAGE,
+            variables,
+            update: (cache, { data: { addProductMessage } }) => {
+              const { getProduct } = cache.readQuery({
+                query: GET_PRODUCT,
+                variables: {
+                  _id: this._id
+                }
+              });
+
+              cache.writeQuery({
+                query: GET_PRODUCT,
+                variables: {
+                  _id: this._id
+                },
+                data: {
+                  getProduct: {
+                    ...getProduct,
+                    messages: [...addProductMessage, ...getProduct.messages]
+                  }
+                }
+              });
+              return;
+            }
+          })
+          .then(({ data }) => {
+            console.log(data);
+          })
+          .catch(err => {
+            console.error(err);
+          });
       }
     },
     togglePictureDialog() {

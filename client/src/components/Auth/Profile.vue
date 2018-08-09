@@ -66,9 +66,11 @@ export default {
   //     }
   //   }
   // },
+  created() {
+    this.$store.dispatch("getCurrentUser");
+  },
   methods: {
     goToProduct(id) {
-      this.$store.dispatch("getProduct", id);
       this.$router.push(`/products/${id}`);
     }
   }

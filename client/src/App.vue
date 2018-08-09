@@ -70,7 +70,7 @@
         </v-btn>
 
         <!-- Profile Button -->
-        <v-btn flat @mouseenter="showFavorites = true" @mouseleave="showFavorites = false" to="/profile" v-if="user">
+        <v-btn flat to="/profile" v-if="user">
           <v-badge color="blue" :class="{ 'animate': badgeAnimated }">
             <span slot="badge" v-if="userFavorites.length">{{userFavorites.length}}</span>
             <v-icon class="hidden-sm-only" left>account_box</v-icon>
@@ -109,6 +109,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { GET_CURRENT_USER } from "./queries";
 
 export default {
   name: "App",
@@ -118,8 +119,7 @@ export default {
       searchTerm: "",
       signinSnackbar: false,
       errorSnackbar: false,
-      badgeAnimated: false,
-      showFavorites: false
+      badgeAnimated: false
     };
   },
   computed: {

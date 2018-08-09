@@ -13,8 +13,7 @@ import {
   ADD_PRODUCT,
   SIGNIN_USER,
   SIGNUP_USER,
-  SEARCH_PRODUCTS,
-  ADD_PRODUCT_MESSAGE
+  SEARCH_PRODUCTS
 } from "../queries";
 
 export const store = new Vuex.Store({
@@ -145,43 +144,6 @@ export const store = new Vuex.Store({
         .catch(err => {
           commit("setLoading", false);
           commit("setError", err);
-          console.error(err);
-        });
-    },
-    addProductMessage: ({ state, commit }, payload) => {
-      apolloClient
-        .mutate({
-          mutation: ADD_PRODUCT_MESSAGE,
-          variables: payload,
-          update: (cache, { data: { addProductMessage } }) => {
-            const { getProduct } = cache.readQuery({
-              query: GET_PRODUCT,
-              variables: {
-                _id: state.product._id
-              }
-            });
-            cache.writeQuery({
-              query: GET_PRODUCT,
-              variables: {
-                _id: state.product._id
-              },
-              data: {
-                getProduct: {
-                  ...getProduct,
-                  messages: [addProductMessage, ...getProduct.messages]
-                }
-              }
-            });
-          }
-        })
-        .then(({ data }) => {
-          console.log(data);
-          // commit("setProduct", {
-          //   ...state.product,
-          //   messages: data.addProductMessage.messages
-          // });
-        })
-        .catch(err => {
           console.error(err);
         });
     },
