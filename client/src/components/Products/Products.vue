@@ -76,10 +76,10 @@
     </v-layout>
 
     <!-- Product Skeleton Component -->
-    <skeleton v-show="loading"></skeleton>
+    <skeleton v-show="$apollo.loading"></skeleton>
 
     <!-- Text if No Remaining Products -->
-    <v-layout v-if="!loading && !showMoreEnabled">
+    <v-layout v-if="!$apollo.loading && !showMoreEnabled">
       <v-flex class="text-xs-center mt-5 mb-5" xs12>
         <h1 class="warning--text">You have reached the end
           <v-icon color="warning" class="ml-3" large right>sentiment_very_dissatisfied</v-icon>
@@ -120,12 +120,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["products", "loading", "userFavorites"]),
+    ...mapGetters(["products", "userFavorites"]),
     user() {
       return this.$store.getters.user != null;
-    },
-    productComments() {
-      return this.product && this.product.comments;
     },
     showMoreEnabled() {
       return this.productsPage && this.productsPage.hasMore;
@@ -134,16 +131,16 @@ export default {
   watch: {
     isBottom(value) {
       // if this.bottom evaluates to true
-      if (value) {
+      if (value === true) {
         const throttled = throttle(this.showMore, 250);
         throttled();
       }
     }
   },
   methods: {
-    handleGetProducts() {
-      this.$store.dispatch("getProducts");
-    },
+    // handleGetProducts() {
+    //   this.$store.dispatch("getProducts");
+    // },
     onScroll() {
       this.checkIfPageBottom();
       this.showPageUpButton();

@@ -44,7 +44,7 @@
       <!-- Message Input -->
       <v-layout class="mt-3 pb-5" v-if="user">
         <v-flex xs12>
-          <v-form @submit.prevent="handleAddProductMessage" v-model="isFormValid" ref="form" lazy-validation>
+          <v-form v-model="isFormValid" ref="form" lazy-validation>
             <v-layout row>
               <v-flex xs12>
                 <v-text-field label="Add Message" v-model="message" type="text" prepend-icon="email" :rules="messageRules" required></v-text-field>
@@ -52,7 +52,7 @@
             </v-layout>
             <v-layout row>
               <v-flex xs12>
-                <v-btn type="submit" :disabled="!isFormValid || loading" color="info">Submit</v-btn>
+                <v-btn @click="handleAddProductMessage" :disabled="!isFormValid || loading" color="info">Submit</v-btn>
               </v-flex>
             </v-layout>
           </v-form>
@@ -117,7 +117,8 @@ export default {
       messageRules: [
         message => !!message || "Comment is required",
         message =>
-          message.length < 20 || "Comment must be less than 20 characters"
+          (message && message.length < 20) ||
+          "Comment must be less than 20 characters"
       ]
     };
   },
@@ -266,6 +267,7 @@ export default {
           })
           .then(({ data }) => {
             console.log(data);
+            this.$refs.form.reset();
           })
           .catch(err => {
             console.error(err);
