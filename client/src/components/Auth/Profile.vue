@@ -10,9 +10,9 @@
             <v-card-title primary-title>
               <div>
                 <div class="headline">{{user.username}}</div>
-                <div>Join Date: {{formatJoinDate(user.joinDate)}}</div>
-                <div class='hidden-xs-only'>Favorites: {{user.favorites.length}}</div>
-                <div class='hidden-xs-only'>Products Added: {{userProducts.length}}</div>
+                <div>Joined {{formatJoinDate(user.joinDate)}}</div>
+                <div class='hidden-xs-only font-weight-thin'>{{user.favorites.length}} Favorites</div>
+                <div class='hidden-xs-only font-weight-thin'>{{userProducts.length}} Products Added</div>
               </div>
             </v-card-title>
           </v-flex>

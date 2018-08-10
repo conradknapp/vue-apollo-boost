@@ -1,22 +1,20 @@
 <template>
   <v-container v-if="getProduct" class="mt-5 mb-5" flexbox center>
 
-    <div v-if="$apollo.loading">Loading</div>
-
     <!-- Product Card -->
-    <v-layout row wrap v-else>
+    <v-layout row wrap>
       <v-flex xs12>
         <v-card hover>
           <v-card-title>
             <h1>{{getProduct.title}}</h1>
             <v-btn large icon @click="handleToggleLike(getProduct._id)">
-              <v-icon large v-if="userFavorites" :color="checkIfLiked(getProduct._id) || liked ? 'red' : 'grey'">favorite</v-icon>
+              <v-icon large v-if="userFavorites" :color="checkIfLiked(getProduct._id) || productLiked ? 'red' : 'grey'">favorite</v-icon>
               {{getProduct.likes}}
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn dark color="primary" @click="goBack">
-              <v-icon>arrow_back</v-icon>
-            </v-btn>
+            <v-icon color="info" large @click="goToPreviousPage">
+              arrow_back
+            </v-icon>
           </v-card-title>
           <v-tooltip right>
             <span>Click to enlarge image</span>
@@ -41,17 +39,12 @@
     <!-- Message Component -->
     <div class="mt-3">
       <!-- Message Input -->
-      <v-layout v-if="user">
+      <v-layout class="mb-3" v-if="user">
         <v-flex xs12>
-          <v-form v-model="isFormValid" ref="form" lazy-validation>
+          <v-form @submit.prevent="handleAddProductMessage" v-model="isFormValid" ref="form" lazy-validation>
             <v-layout row>
               <v-flex xs12>
-                <v-text-field label="Add Message" v-model="message" type="text" prepend-icon="email" :rules="messageRules" required></v-text-field>
-              </v-flex>
-            </v-layout>
-            <v-layout row>
-              <v-flex xs12>
-                <v-btn @click="handleAddProductMessage" :disabled="!isFormValid || $apollo.loading" color="info">Submit</v-btn>
+                <v-text-field clearable :append-outer-icon="messageBody && 'send'" @click:append-outer="handleAddProductMessage" label="Add Message" v-model="messageBody" type="text" prepend-icon="email" :rules="messageRules" required></v-text-field>
               </v-flex>
             </v-layout>
           </v-form>
@@ -61,12 +54,13 @@
       <!-- Messages -->
       <v-layout row wrap>
         <v-flex xs12>
-          <v-list subheader three-line>
-            <v-subheader>Messages ({{getProduct.messages.length}})</v-subheader>
+          <v-list subheader two-line>
+            <v-subheader>Messages ({{getProduct.messages.length}})
+            </v-subheader>
             <template v-for="message in getProduct.messages">
               <v-divider :key="message._id"></v-divider>
 
-              <v-list-tile :key="message.title">
+              <v-list-tile avatar inset :key="message.title">
                 <v-list-tile-avatar>
                   <img :src="message.messageUser.avatar">
                 </v-list-tile-avatar>
@@ -80,7 +74,7 @@
                 </v-list-tile-content>
 
                 <v-list-tile-action class="hidden-xs-only">
-                  <v-icon :color="user && message.messageUser._id === user._id ? 'accent' : 'grey'">chat_bubble</v-icon>
+                  <v-icon :color="checkIfOwnMessage(message) ? 'accent' : 'grey'">chat_bubble</v-icon>
                 </v-list-tile-action>
               </v-list-tile>
             </template>
@@ -111,9 +105,9 @@ export default {
     return {
       isFormValid: true,
       firstLoad: false,
-      liked: false,
+      productLiked: false,
       dialog: false,
-      message: "",
+      messageBody: "",
       mouseEnterHeart: false,
       messageRules: [
         message => !!message || "Comment is required",
@@ -145,15 +139,18 @@ export default {
     // this.handleGetProduct();
   },
   methods: {
+    checkIfOwnMessage(message) {
+      return this.user && this.user._id === message.messageUser._id;
+    },
     handleGetProduct() {
       this.$store.dispatch("getProduct", this._id);
     },
     handleToggleLike() {
-      if (this.liked === true) {
-        this.liked = false;
+      if (this.productLiked) {
+        this.productLiked = false;
         this.handleUnlikeProduct();
       } else {
-        this.liked = true;
+        this.productLiked = true;
         this.handleLikeProduct();
       }
     },
@@ -234,7 +231,7 @@ export default {
     handleAddProductMessage() {
       if (this.$refs.form.validate()) {
         const variables = {
-          messageBody: this.message,
+          messageBody: this.messageBody,
           userId: this.user._id,
           productId: this._id
         };
@@ -281,10 +278,10 @@ export default {
     getTimeFromNow(time) {
       return moment(new Date(time)).fromNow();
     },
-    checkIfLiked(getProductId) {
+    checkIfLiked(productId) {
       if (!this.firstLoad) {
-        if (this.userFavorites.some(el => el._id === getProductId)) {
-          this.liked = true;
+        if (this.userFavorites.some(favorite => favorite._id === productId)) {
+          this.productLiked = true;
           this.firstLoad = true;
           return true;
         } else {
@@ -293,7 +290,7 @@ export default {
         }
       }
     },
-    goBack() {
+    goToPreviousPage() {
       this.$router.go(-1);
     }
   }

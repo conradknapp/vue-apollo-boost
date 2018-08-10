@@ -47,7 +47,7 @@
 
                 <v-list-tile-content>
                   <v-list-tile-title class="text--primary">{{product.createdBy.username}}</v-list-tile-title>
-                  <v-list-tile-sub-title>{{formatProductDate(product.createdDate)}}</v-list-tile-sub-title>
+                  <v-list-tile-sub-title class="font-weight-thin">Added {{formatProductDate(product.createdDate)}}</v-list-tile-sub-title>
                 </v-list-tile-content>
 
                 <v-list-tile-action>
@@ -67,11 +67,13 @@
     <!-- <v-btn @click="showMoreProducts" v-if="showMoreEnabled">Fetch More</v-btn> -->
 
     <!-- Page Up Button -->
-    <v-layout v-if="pageUpButton">
+    <v-layout>
       <v-flex>
-        <v-btn color="info" @click="goToTop" dark fixed bottom right fab>
-          <v-icon>navigation</v-icon>
-        </v-btn>
+        <v-fab-transition>
+          <v-btn color="info" v-show="pageUpButton" @click="goToTop" dark fixed bottom right fab>
+            <v-icon>navigation</v-icon>
+          </v-btn>
+        </v-fab-transition>
       </v-flex>
     </v-layout>
 

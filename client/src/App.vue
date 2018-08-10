@@ -8,7 +8,7 @@
       <v-toolbar color="accent" dark flat>
         <v-toolbar-side-icon @click="toggleSideNav"></v-toolbar-side-icon>
         <router-link tag="span" to="/">
-          <h1 class="title pl-3" style="cursor: pointer">Vue Pinterest</h1>
+          <h1 class="title font-weight-light pl-3" style="cursor: pointer">Vue Pinterest</h1>
         </router-link>
       </v-toolbar>
 
@@ -38,7 +38,7 @@
 
       <!-- App Title -->
       <v-toolbar-side-icon @click="toggleSideNav"></v-toolbar-side-icon>
-      <v-toolbar-title class="hidden-xs-only">
+      <v-toolbar-title class="hidden-xs-only font-weight-light">
         <router-link to="/" tag="span" style="cursor: pointer">Vue Pinterest</router-link>
       </v-toolbar-title>
 
@@ -71,9 +71,9 @@
 
         <!-- Profile Button -->
         <v-btn flat to="/profile" v-if="user">
-          <v-badge color="blue" :class="{ 'bounce__profile': badgeAnimated }">
+          <v-icon class="hidden-sm-only" left>account_box</v-icon>
+          <v-badge right color="blue darken-2" :class="{ 'bounce': badgeAnimated }">
             <span slot="badge" v-if="userFavorites.length">{{userFavorites.length}}</span>
-            <v-icon class="hidden-sm-only" left>account_box</v-icon>
             Profile
           </v-badge>
         </v-btn>
@@ -91,6 +91,8 @@
         <transition name="fade">
           <router-view/>
         </transition>
+
+        <!-- Alert Snackbars -->
         <v-snackbar v-model="signinSnackbar" color="success" bottom left :timeout='5000'>
           <v-icon class="mr-3">check_circle</v-icon>
           <h3>You are now signed in!</h3>
@@ -101,6 +103,7 @@
           <h3 v-if="authError">{{authError.message}}</h3>
           <v-btn dark flat to="/signin">Signin</v-btn>
         </v-snackbar>
+
       </v-container>
     </main>
 
@@ -215,27 +218,6 @@ h2 {
   opacity: 0;
 }
 
-/* #card__favorites {
-  position: absolute;
-  transition: all 0.5s;
-  width: 200px;
-  z-index: 8;
-  top: 100%;
-  transform: translateX(-160px);
-} */
-
-/* .card__favorites--image__container {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  cursor: pointer;
-}
-
-.card__favorites--image {
-  max-width: 100%;
-  max-height: 100%;
-} */
-
 #card__search {
   position: absolute;
   transition: all 0.5s;
@@ -247,7 +229,7 @@ h2 {
 
 /* Profile Tab Animation */
 
-.bounce__profile {
+.bounce {
   animation: bounce 1s both;
 }
 
