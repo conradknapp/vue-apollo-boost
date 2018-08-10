@@ -99,6 +99,20 @@ export const GET_CURRENT_USER = gql`
   }
 `;
 
+export const GET_USER_PRODUCTS = gql`
+  query($userId: String!) {
+    getUserProducts(userId: $userId) {
+      _id
+      title
+      imageUrl
+      description
+      categories
+      createdDate
+      likes
+    }
+  }
+`;
+
 /* Product Mutations */
 export const ADD_PRODUCT = gql`
   mutation(

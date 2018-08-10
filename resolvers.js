@@ -57,6 +57,12 @@ module.exports = {
       }
       return products;
     },
+    getUserProducts: async (_, { userId }, { Product }) => {
+      const products = await Product.find({
+        createdBy: userId
+      });
+      return products;
+    },
     searchProducts: async (_, { searchTerm }, { Product }) => {
       if (searchTerm) {
         const searchResults = await Product.find(

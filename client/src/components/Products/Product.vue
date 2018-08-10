@@ -39,10 +39,9 @@
     </v-layout>
 
     <!-- Message Component -->
-    <v-container flexbox center>
-
+    <div class="mt-3">
       <!-- Message Input -->
-      <v-layout class="mt-3 pb-5" v-if="user">
+      <v-layout v-if="user">
         <v-flex xs12>
           <v-form v-model="isFormValid" ref="form" lazy-validation>
             <v-layout row>
@@ -52,7 +51,7 @@
             </v-layout>
             <v-layout row>
               <v-flex xs12>
-                <v-btn @click="handleAddProductMessage" :disabled="!isFormValid || loading" color="info">Submit</v-btn>
+                <v-btn @click="handleAddProductMessage" :disabled="!isFormValid || $apollo.loading" color="info">Submit</v-btn>
               </v-flex>
             </v-layout>
           </v-form>
@@ -60,10 +59,10 @@
       </v-layout>
 
       <!-- Messages -->
-      <v-layout row>
+      <v-layout row wrap>
         <v-flex xs12>
           <v-list subheader three-line>
-            <v-subheader>Messages</v-subheader>
+            <v-subheader>Messages ({{getProduct.messages.length}})</v-subheader>
             <template v-for="message in getProduct.messages">
               <v-divider :key="message._id"></v-divider>
 
@@ -76,11 +75,11 @@
                     {{message.messageBody}}
                   </v-list-tile-title>
                   <v-list-tile-sub-title>{{message.messageUser.username}}
-                    <span class="grey--text text--lighten-1">{{message.messageDate}}</span>
+                    <span class="grey--text text--lighten-1 hidden-xs-only">{{getTimeFromNow(message.messageDate)}}</span>
                   </v-list-tile-sub-title>
                 </v-list-tile-content>
 
-                <v-list-tile-action>
+                <v-list-tile-action class="hidden-xs-only">
                   <v-icon :color="user && message.messageUser._id === user._id ? 'accent' : 'grey'">chat_bubble</v-icon>
                 </v-list-tile-action>
               </v-list-tile>
@@ -88,13 +87,15 @@
           </v-list>
         </v-flex>
       </v-layout>
-    </v-container>
+    </div>
 
   </v-container>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import moment from "moment";
+
 import {
   LIKE_PRODUCT,
   UNLIKE_PRODUCT,
@@ -133,14 +134,13 @@ export default {
     }
   },
   computed: {
-    // prettier-ignore
-    ...mapGetters(["user", "loading", 'userFavorites'])
+    ...mapGetters(["user", "loading", "userFavorites"])
   },
-  watch: {
-    $route() {
-      this.handleGetProduct();
-    }
-  },
+  // watch: {
+  //   $route() {
+  //     this.handleGetProduct();
+  //   }
+  // },
   created() {
     // this.handleGetProduct();
   },
@@ -277,6 +277,9 @@ export default {
       if (window.innerWidth > 500) {
         this.dialog = !this.dialog;
       }
+    },
+    getTimeFromNow(time) {
+      return moment(new Date(time)).fromNow();
     },
     checkIfLiked(getProductId) {
       if (!this.firstLoad) {

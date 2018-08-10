@@ -10,8 +10,9 @@
             <v-card-title primary-title>
               <div>
                 <div class="headline">{{user.username}}</div>
-                <div>Join Date: {{user.joinDate}}</div>
-                <div>Favorites: {{user.favorites.length}}</div>
+                <div>Join Date: {{formatJoinDate(user.joinDate)}}</div>
+                <div class='hidden-xs-only'>Favorites: {{user.favorites.length}}</div>
+                <div class='hidden-xs-only'>Products Added: {{userProducts.length}}</div>
               </div>
             </v-card-title>
           </v-flex>
@@ -19,7 +20,7 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-flex class="pl-3" xs12>
-            <v-switch dark label="Toggle Profile Card" v-model="switch1"></v-switch>
+            <v-btn flat color="primary" @click="handleChangeAvatar">Change Avatar</v-btn>
           </v-flex>
         </v-card-actions>
       </v-card>
@@ -30,53 +31,71 @@
         <h2>You have no favorites currently. Go and add some!</h2>
       </v-flex>
     </v-layout>
-    <v-layout class="mt-5" row v-else>
+    <v-container class="mt-3" row v-else>
       <v-flex xs12>
         <h2>Favorited: {{userFavorites.length}}</h2>
       </v-flex>
-    </v-layout>
-    <v-layout class="favorites__container">
-      <v-flex v-for="favorite in userFavorites" :key="favorite.title">
-        <v-card hover>
-          <v-card-media style="cursor: pointer" @click="goToProduct(favorite._id)" :src="favorite.imageUrl" height="200px" min-width="100px"></v-card-media>
-          <v-card-text>{{favorite.title}}</v-card-text>
-        </v-card>
+      <v-layout row wrap>
+        <v-flex xs12 sm6 v-for="favorite in userFavorites" :key="favorite._id">
+          <v-card class="mt-3 ml-1 mr-2" hover>
+            <v-card-media lazy style="cursor: pointer" @click="goToProduct(favorite._id)" tag="button" height="30vh" :src="favorite.imageUrl"></v-card-media>
+            <v-card-text>{{favorite.title}}</v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
+
+    <!-- Products Created By User -->
+    <v-layout row wrap v-if="!userProducts.length">
+      <v-flex xs12>
+        <h2>You have no products currently. Go and add some!</h2>
       </v-flex>
     </v-layout>
+    <v-container class="mt-3" row v-else>
+      <v-flex xs12>
+        <h2>Your Products: {{userProducts.length}}</h2>
+      </v-flex>
+      <v-layout row wrap>
+        <v-flex xs12 sm6 v-for="product in userProducts" :key="product._id">
+          <v-card class="mt-3 ml-1 mr-2" hover>
+            <v-card-media lazy style="cursor: pointer" @click="goToProduct(product._id)" tag="button" height="30vh" :src="product.imageUrl"></v-card-media>
+            <v-card-text>{{product.title}}</v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
+
   </v-container>
 </template>
 
 
 <script>
 import { mapGetters } from "vuex";
+import moment from "moment";
 
 export default {
-  data() {
-    return {
-      switch1: false
-    };
-  },
+  name: "Profile",
   computed: {
-    ...mapGetters(["user", "error", "loading", "products", "userFavorites"])
+    ...mapGetters(["loading", "error", "user", "userProducts", "userFavorites"])
+  },
+  created() {
+    this.handleGetUserProducts();
   },
   methods: {
+    handleGetUserProducts() {
+      this.$store.dispatch("getUserProducts", {
+        userId: this.user._id
+      });
+    },
     goToProduct(id) {
       this.$router.push(`/products/${id}`);
+    },
+    formatJoinDate(date) {
+      return moment(new Date(date)).format("ll");
+    },
+    handleChangeAvatar() {
+      console.log("changing avatar");
     }
   }
 };
 </script>
-
-<style>
-.favorites__container {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 1em;
-}
-
-@media screen and (min-width: 500px) {
-  .favorites__container {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-</style>

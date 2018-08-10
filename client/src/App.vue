@@ -38,7 +38,7 @@
 
       <!-- App Title -->
       <v-toolbar-side-icon @click="toggleSideNav"></v-toolbar-side-icon>
-      <v-toolbar-title>
+      <v-toolbar-title class="hidden-xs-only">
         <router-link to="/" tag="span" style="cursor: pointer">Vue Pinterest</router-link>
       </v-toolbar-title>
 
@@ -50,13 +50,13 @@
       <!-- Search Results Card -->
       <v-card dark v-if="searchResults.length" id="card__search">
         <v-list>
-          <v-list-tile @click="goToResult(result._id)" v-for="result in searchResults" :key="result.title">
+          <v-list-tile @click="goToResult(result._id)" v-for="result in searchResults" :key="result._id">
             <v-list-tile-title>
-              {{ result.title }} - {{ formatDescription(result.description) }}
+              {{result.title}} - {{formatDescription(result.description)}}
             </v-list-tile-title>
-            <!-- <v-list-tile-action v-if="user && userFavorites.includes(result._id)">
-            <v-icon>favorite</v-icon>
-          </v-list-tile-action> -->
+            <v-list-tile-action v-if="user && userFavorites.some(el => el._id === result._id)">
+              <v-icon>favorite</v-icon>
+            </v-list-tile-action>
           </v-list-tile>
         </v-list>
       </v-card>
@@ -71,7 +71,7 @@
 
         <!-- Profile Button -->
         <v-btn flat to="/profile" v-if="user">
-          <v-badge color="blue" :class="{ 'animate': badgeAnimated }">
+          <v-badge color="blue" :class="{ 'bounce__profile': badgeAnimated }">
             <span slot="badge" v-if="userFavorites.length">{{userFavorites.length}}</span>
             <v-icon class="hidden-sm-only" left>account_box</v-icon>
             Profile
@@ -162,7 +162,6 @@ export default {
       }
     },
     userFavorites(value) {
-      console.log(value);
       this.badgeAnimated = true;
       setTimeout(() => (this.badgeAnimated = false), 1000);
     }
@@ -246,9 +245,12 @@ h2 {
   left: 0%;
 }
 
-.animate {
+/* Profile Tab Animation */
+
+.bounce__profile {
   animation: bounce 1s both;
 }
+
 @keyframes bounce {
   0%,
   100%,

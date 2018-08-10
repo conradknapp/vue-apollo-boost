@@ -21,7 +21,7 @@
 
     <!-- Product Cards -->
     <v-layout row wrap v-if="productsPage">
-      <v-flex xs12 v-bind="{ [`sm${mozaicLayout && index % 3 === 0 ? 12 : 6}`]: true }" v-for="(product, index) in productsPage.products" :key="product._id" hover>
+      <v-flex xs12 v-for="(product, index) in productsPage.products" v-bind="{ [`sm${mozaicLayout && index % 3 === 0 ? 12 : 6}`]: true }" :key="product._id">
         <v-card class="mt-3 ml-1 mr-2" hover>
           <v-card-media lazy :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" tag="button" height="30vh">
           </v-card-media>
@@ -47,7 +47,7 @@
 
                 <v-list-tile-content>
                   <v-list-tile-title class="text--primary">{{product.createdBy.username}}</v-list-tile-title>
-                  <v-list-tile-sub-title>{{product.createdDate}}</v-list-tile-sub-title>
+                  <v-list-tile-sub-title>{{formatProductDate(product.createdDate)}}</v-list-tile-sub-title>
                 </v-list-tile-content>
 
                 <v-list-tile-action>
@@ -64,7 +64,7 @@
     </v-layout>
 
     <!-- Show More Button (Optional) -->
-    <!-- <v-btn @click="showMore" v-if="showMoreEnabled">Fetch More</v-btn> -->
+    <!-- <v-btn @click="showMoreProducts" v-if="showMoreEnabled">Fetch More</v-btn> -->
 
     <!-- Page Up Button -->
     <v-layout v-if="pageUpButton">
@@ -92,6 +92,7 @@
 <script>
 import { mapGetters } from "vuex";
 import throttle from "lodash/throttle";
+import moment from "moment";
 
 import { PRODUCTS_PAGE } from "../../queries";
 import skeleton from "../Shared/Skeleton";
@@ -99,6 +100,7 @@ import skeleton from "../Shared/Skeleton";
 const size = 2;
 
 export default {
+  name: "Products",
   components: { skeleton },
   data() {
     return {
@@ -132,7 +134,7 @@ export default {
     isBottom(value) {
       // if this.bottom evaluates to true
       if (value === true) {
-        const throttled = throttle(this.showMore, 250);
+        const throttled = throttle(this.showMoreProducts, 250);
         throttled();
       }
     }
@@ -155,15 +157,17 @@ export default {
     goToProduct(id) {
       this.$router.push(`/products/${id}`);
     },
+    formatProductDate(date) {
+      return moment(new Date(date)).format("ll");
+    },
     checkIfPageBottom() {
       const browserHeight = document.documentElement.clientHeight;
       const pageHeight = document.documentElement.scrollHeight;
-      // bottom of page if the browser height and amount scrolled are greater or equal to page height
       const scrolledToBottom =
         browserHeight + this.amountScrolled >= pageHeight;
       this.isBottom = scrolledToBottom;
     },
-    showMore() {
+    showMoreProducts() {
       if (this.showMoreEnabled) {
         this.page += 1;
         this.$apollo.queries.productsPage.fetchMore({

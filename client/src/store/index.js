@@ -8,6 +8,7 @@ Vue.use(Vuex);
 
 import {
   GET_CURRENT_USER,
+  GET_USER_PRODUCTS,
   GET_PRODUCT,
   GET_PRODUCTS,
   ADD_PRODUCT,
@@ -22,6 +23,7 @@ export const store = new Vuex.Store({
     products: [],
     searchResults: [],
     user: null,
+    userProducts: [],
     loading: false,
     error: null,
     authError: null
@@ -32,6 +34,9 @@ export const store = new Vuex.Store({
     },
     setProducts: (state, payload) => {
       state.products = payload;
+    },
+    setUserProducts: (state, payload) => {
+      state.userProducts = payload;
     },
     setNewProduct: (state, payload) => {
       state.products = [payload, ...state.products];
@@ -96,6 +101,23 @@ export const store = new Vuex.Store({
         .then(({ data }) => {
           commit("setLoading", false);
           commit("setProducts", data.getProducts);
+        })
+        .catch(err => {
+          commit("setLoading", false);
+          commit("setError", err);
+          console.error(err);
+        });
+    },
+    getUserProducts: ({ commit }, payload) => {
+      commit("setLoading", true);
+      apolloClient
+        .query({
+          query: GET_USER_PRODUCTS,
+          variables: payload
+        })
+        .then(({ data }) => {
+          commit("setLoading", false);
+          commit("setUserProducts", data.getUserProducts);
         })
         .catch(err => {
           commit("setLoading", false);
@@ -205,6 +227,7 @@ export const store = new Vuex.Store({
     searchResults: state => state.searchResults,
     user: state => state.user,
     userFavorites: state => state.user && state.user.favorites,
+    userProducts: state => state.userProducts,
     loading: state => state.loading,
     error: state => state.error,
     authError: state => state.authError

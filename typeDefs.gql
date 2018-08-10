@@ -43,11 +43,10 @@ type LikesFaves {
 
 type Query {
   getCurrentUser: User
-
   getProduct(_id: String!): Product!
   getProducts(size: Int): [Product]!
+  getUserProducts(userId: String!): [Product]
   searchProducts(searchTerm: String): [Product]
-
   productsPage(page: Int!, size: Int!): ProductsPage
 }
 
@@ -57,7 +56,6 @@ type Mutation {
     imageUrl: String!
     description: String!
     categories: [String]!
-    # takes a creatorId and returns 'createdBy' populated with User
     creatorId: String!
   ): Product!
   addProductMessage(
