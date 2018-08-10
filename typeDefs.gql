@@ -64,6 +64,15 @@ type Mutation {
     productId: String!
   ): Product!
 
+  updateUserProduct(
+    productId: String!
+    userId: String!
+    title: String!
+    imageUrl: String!
+    categories: [String]!
+    description: String!
+  ): Product!
+
   likeProduct(_id: ID, username: String): LikesFaves
   unlikeProduct(_id: ID, username: String): LikesFaves
 

@@ -55,7 +55,7 @@ export default {
       categories: [],
       titleRules: [
         title => !!title || "Product title is required",
-        name => name.length < 10 || "Title must be less than 10 characters"
+        title => title.length < 10 || "Title must be less than 10 characters"
       ],
       imageRules: [image => !!image || "Image is required"],
       categoriesRules: [
@@ -75,13 +75,12 @@ export default {
   methods: {
     handleAddProduct() {
       if (this.$refs.form.validate()) {
-        const newProduct = {
+        this.$store.dispatch("addProduct", {
           title: this.title,
           categories: this.categories,
           imageUrl: this.imageUrl,
           description: this.description
-        };
-        this.$store.dispatch("addProduct", newProduct);
+        });
         this.$router.push("/products");
       }
     }

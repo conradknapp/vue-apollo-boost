@@ -8,7 +8,7 @@
           <v-card-title>
             <h1>{{getProduct.title}}</h1>
             <v-btn large icon @click="handleToggleLike(getProduct._id)">
-              <v-icon large v-if="userFavorites" :color="checkIfLiked(getProduct._id) || productLiked ? 'red' : 'grey'">favorite</v-icon>
+              <v-icon large v-if="userFavorites" :color="checkIfLiked(getProduct._id) ? 'red' : 'grey'">favorite</v-icon>
               {{getProduct.likes}}
             </v-btn>
             <v-spacer></v-spacer>
@@ -104,16 +104,14 @@ export default {
   data() {
     return {
       isFormValid: true,
-      firstLoad: false,
       productLiked: false,
       dialog: false,
       messageBody: "",
-      mouseEnterHeart: false,
       messageRules: [
         message => !!message || "Comment is required",
         message =>
-          (message && message.length < 20) ||
-          "Comment must be less than 20 characters"
+          (message && message.length < 50) ||
+          "Comment must be less than 50 characters"
       ]
     };
   },
@@ -139,11 +137,22 @@ export default {
     // this.handleGetProduct();
   },
   methods: {
+    checkIfLiked(productId) {
+      if (this.userFavorites.some(fave => fave._id === productId)) {
+        this.productLiked = true;
+        return true;
+      } else {
+        this.productLiked = false;
+        return false;
+      }
+    },
     checkIfOwnMessage(message) {
       return this.user && this.user._id === message.messageUser._id;
     },
     handleGetProduct() {
-      this.$store.dispatch("getProduct", this._id);
+      this.$store.dispatch("getProduct", {
+        _id: this._id
+      });
     },
     handleToggleLike() {
       if (this.productLiked) {
@@ -278,18 +287,6 @@ export default {
     getTimeFromNow(time) {
       return moment(new Date(time)).fromNow();
     },
-    checkIfLiked(productId) {
-      if (!this.firstLoad) {
-        if (this.userFavorites.some(favorite => favorite._id === productId)) {
-          this.productLiked = true;
-          this.firstLoad = true;
-          return true;
-        } else {
-          this.firstLoad = true;
-          return false;
-        }
-      }
-    },
     goToPreviousPage() {
       this.$router.go(-1);
     }
@@ -317,17 +314,12 @@ export default {
 @media screen and (min-width: 550px) {
   #product__image {
     font-size: 2rem;
-    height: 300px !important;
-  }
-}
-@media screen and (min-width: 630px) {
-  #product__image {
-    height: 400px !important;
+    height: 350px !important;
   }
 }
 @media screen and (min-width: 800px) {
   #product__image {
-    height: 500px !important;
+    height: 350px !important;
   }
 }
 </style>

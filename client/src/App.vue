@@ -50,11 +50,12 @@
       <!-- Search Results Card -->
       <v-card dark v-if="searchResults.length" id="card__search">
         <v-list>
-          <v-list-tile @click="goToResult(result._id)" v-for="result in searchResults" :key="result._id">
+          <v-list-tile @click="goToSearchResult(result._id)" v-for="result in searchResults" :key="result._id">
             <v-list-tile-title>
-              {{result.title}} - {{formatDescription(result.description)}}
+              {{result.title}} •
+              <span class='font-weight-thin'>{{formatDescription(result.description)}}</span>
             </v-list-tile-title>
-            <v-list-tile-action v-if="user && userFavorites.some(el => el._id === result._id)">
+            <v-list-tile-action v-if="checkIfUserFavorite(result._id)">
               <v-icon>favorite</v-icon>
             </v-list-tile-action>
           </v-list-tile>
@@ -92,11 +93,11 @@
           <router-view/>
         </transition>
 
-        <!-- Alert Snackbars -->
-        <v-snackbar v-model="signinSnackbar" color="success" bottom left :timeout='5000'>
+        <!-- Auth / Error Snackbars -->
+        <v-snackbar v-model="authSnackbar" color="success" bottom left :timeout='5000'>
           <v-icon class="mr-3">check_circle</v-icon>
           <h3>You are now signed in!</h3>
-          <v-btn dark flat @click="signinSnackbar = false">Close</v-btn>
+          <v-btn dark flat @click="authSnackbar = false">Close</v-btn>
         </v-snackbar>
         <v-snackbar v-model="errorSnackbar" color="info" bottom left :timeout='5000'>
           <v-icon class="mr-3">cancel</v-icon>
@@ -120,7 +121,7 @@ export default {
     return {
       sideNav: false,
       searchTerm: "",
-      signinSnackbar: false,
+      authSnackbar: false,
       errorSnackbar: false,
       badgeAnimated: false
     };
@@ -155,16 +156,19 @@ export default {
   },
   watch: {
     user(newValue, oldValue) {
+      // if we previously had no value for user,show snackbar
       if (oldValue === null) {
-        this.signinSnackbar = true;
+        this.authSnackbar = true;
       }
     },
     authError(value) {
-      if (value) {
+      // if we have an error, show the error snackbar
+      if (value !== null) {
         this.errorSnackbar = true;
       }
     },
     userFavorites(value) {
+      // true if user favorites value changed at all
       this.badgeAnimated = true;
       setTimeout(() => (this.badgeAnimated = false), 1000);
     }
@@ -176,17 +180,26 @@ export default {
     toggleSideNav() {
       this.sideNav = !this.sideNav;
     },
-    goToResult(id) {
+    goToSearchResult(resultId) {
       this.searchTerm = "";
-      this.$router.push(`/products/${id}`);
-      this.$store.dispatch("getProduct", id);
-      this.$store.commit("setSearchResults", []);
+      this.$router.push(`/products/${resultId}`);
+      this.$store.dispatch("getProduct", {
+        _id: resultId
+      });
+      this.$store.commit("clearSearchResults");
     },
     handleSearchProducts() {
-      this.$store.dispatch("searchProducts", this.searchTerm);
+      this.$store.dispatch("searchProducts", {
+        searchTerm: this.searchTerm
+      });
     },
     handleSignout() {
       this.$store.dispatch("signoutUser");
+    },
+    checkIfUserFavorite(resultId) {
+      if (this.user) {
+        return this.userFavorites.some(favorite => favorite._id === resultId);
+      }
     }
   }
 };

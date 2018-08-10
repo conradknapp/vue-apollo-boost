@@ -68,12 +68,12 @@
                     <v-form @submit.prevent="handleSignup" ref="form" v-model="isFormValid" lazy-validation>
                       <v-layout row>
                         <v-flex xs12>
-                          <v-text-field name="username" label="Username" v-model="username" type="text" prepend-icon="face" :rules="usernameRules" required></v-text-field>
+                          <v-text-field label="Username" v-model="username" type="text" prepend-icon="face" :rules="usernameRules" required></v-text-field>
                         </v-flex>
                       </v-layout>
                       <v-layout row>
                         <v-flex xs12>
-                          <v-text-field name="email" label="Email" v-model="email" type="email" :rules="emailRules" prepend-icon="email" required></v-text-field>
+                          <v-text-field label="Email" v-model="email" type="email" :rules="emailRules" prepend-icon="email" required></v-text-field>
                         </v-flex>
                       </v-layout>
                       <v-layout row>
@@ -147,7 +147,9 @@ export default {
   },
   methods: {
     handleGetCarouselProducts() {
-      this.$store.dispatch("getProducts", 3);
+      this.$store.dispatch("getProducts", {
+        size: 3
+      });
     },
     handleDismiss() {
       this.$store.commit("clearError");

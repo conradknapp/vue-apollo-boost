@@ -123,6 +123,20 @@ module.exports = {
       );
       return product;
     },
+    updateUserProduct: async (
+      _,
+      { productId, userId, title, imageUrl, categories, description },
+      { Product }
+    ) => {
+      const product = await Product.findOneAndUpdate(
+        { _id: productId, createdBy: userId },
+        {
+          $set: { title, imageUrl, categories, description }
+        },
+        { new: true }
+      );
+      return product;
+    },
     likeProduct: async (_, { _id, username }, { Product, User }) => {
       const product = await Product.findOneAndUpdate(
         { _id },

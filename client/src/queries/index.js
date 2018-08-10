@@ -143,6 +143,38 @@ export const ADD_PRODUCT = gql`
   }
 `;
 
+export const UPDATE_USER_PRODUCT = gql`
+  mutation(
+    $productId: String!
+    $userId: String!
+    $title: String!
+    $imageUrl: String!
+    $categories: [String]!
+    $description: String!
+  ) {
+    updateUserProduct(
+      productId: $productId
+      userId: $userId
+      title: $title
+      imageUrl: $imageUrl
+      categories: $categories
+      description: $description
+    ) {
+      _id
+      title
+      imageUrl
+      description
+      categories
+      createdDate
+      likes
+      createdBy {
+        _id
+        avatar
+      }
+    }
+  }
+`;
+
 export const ADD_PRODUCT_MESSAGE = gql`
   mutation($messageBody: String!, $userId: String!, $productId: String!) {
     addProductMessage(

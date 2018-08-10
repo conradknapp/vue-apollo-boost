@@ -32,13 +32,16 @@ Vue.component("form-alert", FormAlert);
 // Setup Apollo Client
 export const defaultClient = new ApolloClient({
   uri: "http://localhost:4000/graphql",
+  // include auth token to request to backend
   fetchOptions: {
     credentials: "include"
   },
   request: operation => {
+    // If no key-value pair called 'token' in LocalStorage, add it
     if (!localStorage.token) {
       localStorage.setItem("token", "");
     }
+    // Send token from localStorage to backend for verification
     operation.setContext({
       headers: {
         authorization: localStorage.getItem("token")
@@ -47,17 +50,18 @@ export const defaultClient = new ApolloClient({
   },
   onError: ({ graphQLErrors, networkError }) => {
     if (networkError) {
-      console.log("Network Error:", networkError);
+      console.log("[Network Error]:", networkError);
     }
     if (graphQLErrors) {
       for (let err of graphQLErrors) {
-        console.dir("[GraphQL error]:", err);
+        console.dir("[GraphQL error]:", err.name, err.message);
         if (err.name === "AuthenticationError") {
           store.commit("setAuthError", err);
           store.dispatch("signoutUser");
+          // Reset Auth Token if GraphQL Error (in case of malformed token)
+          localStorage.setItem("token", "");
         }
       }
-      localStorage.setItem("token", "");
     }
   }
 });
