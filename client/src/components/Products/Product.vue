@@ -9,8 +9,8 @@
             <h1>{{getProduct.title}}</h1>
             <v-btn large icon @click="handleToggleLike(getProduct._id)">
               <v-icon large v-if="userFavorites" :color="checkIfLiked(getProduct._id) ? 'red' : 'grey'">favorite</v-icon>
-              {{getProduct.likes}}
             </v-btn>
+            <h3 class="font-weight-thin">{{getProduct.likes}} LIKES</h3>
             <v-spacer></v-spacer>
             <v-icon color="info" large @click="goToPreviousPage">
               arrow_back

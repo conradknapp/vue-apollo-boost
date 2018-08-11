@@ -182,7 +182,6 @@ export default {
       });
     },
     handleDeleteUserProduct(productId) {
-      console.log(productId);
       const deleteProduct = window.confirm(
         "Are you sure you want to delete this product?"
       );

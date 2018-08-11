@@ -34,8 +34,7 @@
         <div id="info-card" v-if="!user">
           <v-layout row>
             <v-flex xs12>
-              <h1>
-                <span class="font-weight-black">Love</span> Your Home</h1>
+              <!-- <h1><span class="font-weight-black">Love</span> Your Home</h1> -->
               <h2>Find the best curated furniture and home accessories here</h2>
             </v-flex>
           </v-layout>
