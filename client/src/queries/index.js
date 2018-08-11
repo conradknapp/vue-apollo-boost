@@ -175,6 +175,14 @@ export const UPDATE_USER_PRODUCT = gql`
   }
 `;
 
+export const DELETE_USER_PRODUCT = gql`
+  mutation($productId: String!) {
+    deleteUserProduct(productId: $productId) {
+      _id
+    }
+  }
+`;
+
 export const ADD_PRODUCT_MESSAGE = gql`
   mutation($messageBody: String!, $userId: String!, $productId: String!) {
     addProductMessage(

@@ -137,6 +137,11 @@ module.exports = {
       );
       return product;
     },
+    deleteUserProduct: async (_, { productId }, { Product }) => {
+      const product = await Product.findOneAndRemove({ _id: productId });
+      return product;
+    },
+
     likeProduct: async (_, { _id, username }, { Product, User }) => {
       const product = await Product.findOneAndUpdate(
         { _id },

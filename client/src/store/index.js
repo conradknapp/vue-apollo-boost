@@ -15,7 +15,8 @@ import {
   SIGNIN_USER,
   SIGNUP_USER,
   SEARCH_PRODUCTS,
-  UPDATE_USER_PRODUCT
+  UPDATE_USER_PRODUCT,
+  DELETE_USER_PRODUCT
 } from "../queries";
 
 export const store = new Vuex.Store({
@@ -163,6 +164,26 @@ export const store = new Vuex.Store({
         .catch(err => {
           commit("setLoading", false);
           commit("setError", err);
+          console.error(err);
+        });
+    },
+    deleteUserProduct: ({ state, commit }, payload) => {
+      apolloClient
+        .mutate({
+          mutation: DELETE_USER_PRODUCT,
+          variables: payload
+        })
+        .then(({ data }) => {
+          const index = state.userProducts.findIndex(
+            product => product._id === data.deleteUserProduct._id
+          );
+          const userProducts = [
+            ...state.userProducts.slice(0, index),
+            ...state.userProducts.slice(index + 1)
+          ];
+          commit("setUserProducts", userProducts);
+        })
+        .catch(err => {
           console.error(err);
         });
     },

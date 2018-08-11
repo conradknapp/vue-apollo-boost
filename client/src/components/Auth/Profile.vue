@@ -68,7 +68,7 @@
             <v-btn @click="loadProduct(product)" color="info" floating fab small dark>
               <v-icon>edit</v-icon>
             </v-btn>
-            <v-btn color="error" floating fab small dark>
+            <v-btn @click="handleDeleteUserProduct(product._id)" color="error" floating fab small dark>
               <v-icon>delete</v-icon>
             </v-btn>
             <v-card-media lazy style="cursor: pointer" @click="goToProduct(product._id)" tag="button" height="30vh" :src="product.imageUrl"></v-card-media>
@@ -174,11 +174,24 @@ export default {
         categories: this.categories,
         description: this.description
       });
+      this.editDialog = false;
     },
     handleGetUserProducts() {
       this.$store.dispatch("getUserProducts", {
         userId: this.user._id
       });
+    },
+    handleDeleteUserProduct(productId) {
+      console.log(productId);
+      const deleteProduct = window.confirm(
+        "Are you sure you want to delete this product?"
+      );
+
+      if (deleteProduct) {
+        this.$store.dispatch("deleteUserProduct", {
+          productId
+        });
+      }
     },
     goToProduct(productId) {
       this.$router.push(`/products/${productId}`);
