@@ -1,9 +1,9 @@
 import { gql } from "apollo-boost";
 
-export const PRODUCTS_PAGE = gql`
+export const POSTS_PAGE = gql`
   query($page: Int!, $size: Int!) {
-    productsPage(page: $page, size: $size) {
-      products {
+    postsPage(page: $page, size: $size) {
+      posts {
         _id
         title
         imageUrl
@@ -25,10 +25,10 @@ export const PRODUCTS_PAGE = gql`
   }
 `;
 
-/* Product Queries */
-export const GET_PRODUCT = gql`
-  query($_id: String!) {
-    getProduct(_id: $_id) {
+/* Post Queries */
+export const GET_POST = gql`
+  query($postId: ID!) {
+    getPost(postId: $postId) {
       _id
       title
       imageUrl
@@ -50,9 +50,9 @@ export const GET_PRODUCT = gql`
   }
 `;
 
-export const GET_PRODUCTS = gql`
+export const GET_POSTS = gql`
   query($size: Int) {
-    getProducts(size: $size) {
+    getPosts(size: $size) {
       _id
       title
       imageUrl
@@ -69,9 +69,9 @@ export const GET_PRODUCTS = gql`
   }
 `;
 
-export const SEARCH_PRODUCTS = gql`
+export const SEARCH_POSTS = gql`
   query($searchTerm: String) {
-    searchProducts(searchTerm: $searchTerm) {
+    searchPosts(searchTerm: $searchTerm) {
       _id
       title
       description
@@ -99,9 +99,9 @@ export const GET_CURRENT_USER = gql`
   }
 `;
 
-export const GET_USER_PRODUCTS = gql`
-  query($userId: String!) {
-    getUserProducts(userId: $userId) {
+export const GET_USER_POSTS = gql`
+  query($userId: ID!) {
+    getUserPosts(userId: $userId) {
       _id
       title
       imageUrl
@@ -113,16 +113,16 @@ export const GET_USER_PRODUCTS = gql`
   }
 `;
 
-/* Product Mutations */
-export const ADD_PRODUCT = gql`
+/* Post Mutations */
+export const ADD_POST = gql`
   mutation(
+    $creatorId: ID!
     $title: String!
     $imageUrl: String!
     $description: String!
     $categories: [String]!
-    $creatorId: String!
   ) {
-    addProduct(
+    addPost(
       title: $title
       imageUrl: $imageUrl
       description: $description
@@ -143,17 +143,17 @@ export const ADD_PRODUCT = gql`
   }
 `;
 
-export const UPDATE_USER_PRODUCT = gql`
+export const UPDATE_USER_POST = gql`
   mutation(
-    $productId: String!
-    $userId: String!
+    $postId: ID!
+    $userId: ID!
     $title: String!
     $imageUrl: String!
     $categories: [String]!
     $description: String!
   ) {
-    updateUserProduct(
-      productId: $productId
+    updateUserPost(
+      postId: $postId
       userId: $userId
       title: $title
       imageUrl: $imageUrl
@@ -175,20 +175,20 @@ export const UPDATE_USER_PRODUCT = gql`
   }
 `;
 
-export const DELETE_USER_PRODUCT = gql`
-  mutation($productId: String!) {
-    deleteUserProduct(productId: $productId) {
+export const DELETE_USER_POST = gql`
+  mutation($postId: ID!) {
+    deleteUserPost(postId: $postId) {
       _id
     }
   }
 `;
 
-export const ADD_PRODUCT_MESSAGE = gql`
-  mutation($messageBody: String!, $userId: String!, $productId: String!) {
-    addProductMessage(
-      messageBody: $messageBody
+export const ADD_POST_MESSAGE = gql`
+  mutation($userId: ID!, $postId: ID!, $messageBody: String!) {
+    addPostMessage(
       userId: $userId
-      productId: $productId
+      postId: $postId
+      messageBody: $messageBody
     ) {
       _id
       title
@@ -205,9 +205,9 @@ export const ADD_PRODUCT_MESSAGE = gql`
   }
 `;
 
-export const LIKE_PRODUCT = gql`
-  mutation($_id: ID, $username: String) {
-    likeProduct(_id: $_id, username: $username) {
+export const LIKE_POST = gql`
+  mutation($postId: ID!, $username: String!) {
+    likePost(postId: $postId, username: $username) {
       likes
       favorites {
         _id
@@ -218,9 +218,9 @@ export const LIKE_PRODUCT = gql`
   }
 `;
 
-export const UNLIKE_PRODUCT = gql`
-  mutation($_id: ID, $username: String) {
-    unlikeProduct(_id: $_id, username: $username) {
+export const UNLIKE_POST = gql`
+  mutation($postId: ID!, $username: String!) {
+    unlikePost(postId: $postId, username: $username) {
       likes
       favorites {
         _id

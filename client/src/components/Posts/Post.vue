@@ -1,16 +1,16 @@
 <template>
-  <v-container v-if="getProduct" class="mt-5 mb-5" flexbox center>
+  <v-container v-if="getPost" class="mt-5 mb-5" flexbox center>
 
-    <!-- Product Card -->
+    <!-- Post Card -->
     <v-layout row wrap>
       <v-flex xs12>
         <v-card hover>
           <v-card-title>
-            <h1>{{getProduct.title}}</h1>
-            <v-btn large icon @click="handleToggleLike(getProduct._id)">
-              <v-icon large v-if="userFavorites" :color="checkIfLiked(getProduct._id) ? 'red' : 'grey'">favorite</v-icon>
+            <h1>{{getPost.title}}</h1>
+            <v-btn large icon v-if="user" @click="handleToggleLike(getPost._id)">
+              <v-icon large :color="checkIfLiked(getPost._id) ? 'red' : 'grey'">favorite</v-icon>
             </v-btn>
-            <h3 class="font-weight-thin">{{getProduct.likes}} LIKES</h3>
+            <h3 class="ml-3 font-weight-thin">{{getPost.likes}} LIKES</h3>
             <v-spacer></v-spacer>
             <v-icon color="info" large @click="goToPreviousPage">
               arrow_back
@@ -18,19 +18,19 @@
           </v-card-title>
           <v-tooltip right>
             <span>Click to enlarge image</span>
-            <v-card-media slot="activator" @click="togglePictureDialog" :src="getProduct.imageUrl" id="product__image">
+            <v-card-media slot="activator" @click="togglePictureDialog" :src="getPost.imageUrl" id="post__image">
             </v-card-media>
           </v-tooltip>
           <v-dialog v-model="dialog">
             <v-card>
-              <v-card-media :src="getProduct.imageUrl" height="500px"></v-card-media>
+              <v-card-media :src="getPost.imageUrl" height="500px"></v-card-media>
             </v-card>
           </v-dialog>
           <v-card-text>
-            <span v-for="(category, index) in getProduct.categories" :key="index">
+            <span v-for="(category, index) in getPost.categories" :key="index">
               <v-chip class="mb-3" color="accent" text-color="white">{{category}}</v-chip>
             </span>
-            <h3>{{getProduct.description}}</h3>
+            <h3>{{getPost.description}}</h3>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -41,10 +41,10 @@
       <!-- Message Input -->
       <v-layout class="mb-3" v-if="user">
         <v-flex xs12>
-          <v-form @submit.prevent="handleAddProductMessage" v-model="isFormValid" ref="form" lazy-validation>
+          <v-form @submit.prevent="handleAddPostMessage" v-model="isFormValid" ref="form" lazy-validation>
             <v-layout row>
               <v-flex xs12>
-                <v-text-field clearable :append-outer-icon="messageBody && 'send'" @click:append-outer="handleAddProductMessage" label="Add Message" v-model="messageBody" type="text" prepend-icon="email" :rules="messageRules" required></v-text-field>
+                <v-text-field clearable :append-outer-icon="messageBody && 'send'" @click:append-outer="handleAddPostMessage" label="Add Message" v-model="messageBody" type="text" prepend-icon="email" :rules="messageRules" required></v-text-field>
               </v-flex>
             </v-layout>
           </v-form>
@@ -55,9 +55,9 @@
       <v-layout row wrap>
         <v-flex xs12>
           <v-list subheader two-line>
-            <v-subheader>Messages ({{getProduct.messages.length}})
+            <v-subheader>Messages ({{getPost.messages.length}})
             </v-subheader>
-            <template v-for="message in getProduct.messages">
+            <template v-for="message in getPost.messages">
               <v-divider :key="message._id"></v-divider>
 
               <v-list-tile avatar inset :key="message.title">
@@ -91,20 +91,20 @@ import { mapGetters } from "vuex";
 import moment from "moment";
 
 import {
-  LIKE_PRODUCT,
-  UNLIKE_PRODUCT,
-  GET_PRODUCT,
+  LIKE_POST,
+  UNLIKE_POST,
+  GET_POST,
   GET_CURRENT_USER,
-  ADD_PRODUCT_MESSAGE
+  ADD_POST_MESSAGE
 } from "../../queries";
 
 export default {
-  name: "Product",
-  props: ["_id"],
+  name: "Post",
+  props: ["postId"],
   data() {
     return {
       isFormValid: true,
-      productLiked: false,
+      postLiked: false,
       dialog: false,
       messageBody: "",
       messageRules: [
@@ -116,11 +116,11 @@ export default {
     };
   },
   apollo: {
-    getProduct: {
-      query: GET_PRODUCT,
+    getPost: {
+      query: GET_POST,
       variables() {
         return {
-          _id: this._id
+          postId: this.postId
         };
       }
     }
@@ -130,99 +130,99 @@ export default {
   },
   // watch: {
   //   $route() {
-  //     this.handleGetProduct();
+  //     this.handleGetPost();
   //   }
   // },
   created() {
-    // this.handleGetProduct();
+    // this.handleGetPost();
   },
   methods: {
-    checkIfLiked(productId) {
-      if (this.userFavorites.some(fave => fave._id === productId)) {
-        this.productLiked = true;
+    checkIfLiked(postId) {
+      if (this.userFavorites.some(fave => fave._id === postId)) {
+        this.postLiked = true;
         return true;
       } else {
-        this.productLiked = false;
+        this.postLiked = false;
         return false;
       }
     },
     checkIfOwnMessage(message) {
       return this.user && this.user._id === message.messageUser._id;
     },
-    handleGetProduct() {
-      this.$store.dispatch("getProduct", {
-        _id: this._id
+    handleGetPost() {
+      this.$store.dispatch("getPost", {
+        postId: this.postId
       });
     },
     handleToggleLike() {
-      if (this.productLiked) {
-        this.productLiked = false;
-        this.handleUnlikeProduct();
+      if (this.postLiked) {
+        this.postLiked = false;
+        this.handleUnlikePost();
       } else {
-        this.productLiked = true;
-        this.handleLikeProduct();
+        this.postLiked = true;
+        this.handleLikePost();
       }
     },
-    handleLikeProduct() {
+    handleLikePost() {
       const variables = {
         username: this.user.username,
-        _id: this._id
+        postId: this.postId
       };
 
       this.$apollo
         .mutate({
-          mutation: LIKE_PRODUCT,
+          mutation: LIKE_POST,
           variables,
-          update: (store, { data: { likeProduct } }) => {
-            const { getProduct } = store.readQuery({
-              query: GET_PRODUCT,
-              variables: { _id: this._id }
+          update: (store, { data: { likePost } }) => {
+            const { getPost } = store.readQuery({
+              query: GET_POST,
+              variables: { postId: this.postId }
             });
 
             store.writeQuery({
-              query: GET_PRODUCT,
-              variables: { _id: this._id },
+              query: GET_POST,
+              variables: { postId: this.postId },
               data: {
-                getProduct: {
-                  ...getProduct,
-                  likes: getProduct.likes + 1
+                getPost: {
+                  ...getPost,
+                  likes: getPost.likes + 1
                 }
               }
             });
           }
         })
         .then(({ data }) => {
-          console.log(data.likeProduct);
+          console.log(data.likePost);
           this.$store.commit("setUser", {
             ...this.user,
-            favorites: data.likeProduct.favorites
+            favorites: data.likePost.favorites
           });
         })
         .catch(err => console.error(err));
     },
-    handleUnlikeProduct() {
+    handleUnlikePost() {
       const variables = {
         username: this.user.username,
-        _id: this._id
+        postId: this.postId
       };
 
       this.$apollo
         .mutate({
-          mutation: UNLIKE_PRODUCT,
+          mutation: UNLIKE_POST,
           variables,
-          update: (store, { data: { unlikeProduct } }) => {
-            const { getProduct } = store.readQuery({
-              query: GET_PRODUCT,
-              variables: { _id: this._id }
+          update: (store, { data: { unlikePost } }) => {
+            const { getPost } = store.readQuery({
+              query: GET_POST,
+              variables: { postId: this.postId }
             });
 
             store.writeQuery({
-              query: GET_PRODUCT,
-              variables: { _id: this._id },
+              query: GET_POST,
+              variables: { postId: this.postId },
               data: {
-                getProduct: {
-                  ...getProduct,
-                  likes: getProduct.likes - 1
+                getPost: {
+                  ...getPost,
+                  likes: getPost.likes - 1
                 }
               }
             });
@@ -232,39 +232,39 @@ export default {
           console.log(data);
           this.$store.commit("setUser", {
             ...this.user,
-            favorites: data.unlikeProduct.favorites
+            favorites: data.unlikePost.favorites
           });
         })
         .catch(err => console.error(err));
     },
-    handleAddProductMessage() {
+    handleAddPostMessage() {
       if (this.$refs.form.validate()) {
         const variables = {
           messageBody: this.messageBody,
           userId: this.user._id,
-          productId: this._id
+          postId: this.postId
         };
         this.$apollo
           .mutate({
-            mutation: ADD_PRODUCT_MESSAGE,
+            mutation: ADD_POST_MESSAGE,
             variables,
-            update: (cache, { data: { addProductMessage } }) => {
-              const { getProduct } = cache.readQuery({
-                query: GET_PRODUCT,
+            update: (cache, { data: { addPostMessage } }) => {
+              const { getPost } = cache.readQuery({
+                query: GET_POST,
                 variables: {
-                  _id: this._id
+                  postId: this.postId
                 }
               });
 
               cache.writeQuery({
-                query: GET_PRODUCT,
+                query: GET_POST,
                 variables: {
-                  _id: this._id
+                  postId: this.postId
                 },
                 data: {
-                  getProduct: {
-                    ...getProduct,
-                    messages: [...addProductMessage, ...getProduct.messages]
+                  getPost: {
+                    ...getPost,
+                    messages: [...addPostMessage, ...getPost.messages]
                   }
                 }
               });
@@ -295,30 +295,30 @@ export default {
 </script>
 
 <style scoped>
-#product__image {
+#post__image {
   height: 200px;
   width: 100%;
   object-fit: contain;
 }
 
 @media screen and (min-width: 250px) {
-  #product__image {
+  #post__image {
     height: 180px !important;
   }
 }
 @media screen and (min-width: 400px) {
-  #product__image {
+  #post__image {
     height: 230px !important;
   }
 }
 @media screen and (min-width: 550px) {
-  #product__image {
+  #post__image {
     font-size: 2rem;
     height: 350px !important;
   }
 }
 @media screen and (min-width: 800px) {
-  #product__image {
+  #post__image {
     height: 350px !important;
   }
 }

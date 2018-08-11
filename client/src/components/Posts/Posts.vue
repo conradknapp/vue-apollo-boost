@@ -19,17 +19,17 @@
       </v-flex>
     </v-layout>
 
-    <!-- Product Cards -->
-    <v-layout row wrap v-if="productsPage">
-      <v-flex xs12 v-for="(product, index) in productsPage.products" v-bind="{ [`sm${mozaicLayout && index % 3 === 0 ? 12 : 6}`]: true }" :key="product._id">
+    <!-- Post Cards -->
+    <v-layout row wrap v-if="postsPage">
+      <v-flex xs12 v-for="(post, index) in postsPage.posts" v-bind="{ [`sm${mozaicLayout && index % 3 === 0 ? 12 : 6}`]: true }" :key="post._id">
         <v-card class="mt-3 ml-1 mr-2" hover>
-          <v-card-media lazy :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" tag="button" height="30vh">
+          <v-card-media lazy :src="post.imageUrl" :key="post._id" @click="goToPost(post._id)" tag="button" height="30vh">
           </v-card-media>
           <v-card-actions>
             <v-card-title primary-title>
               <div>
-                <div class="headline">{{product.title}}</div>
-                <span class="grey--text">{{product.likes}} likes • {{product.messages.length}} comments</span>
+                <div class="headline">{{post.title}}</div>
+                <span class="grey--text">{{post.likes}} likes • {{post.messages.length}} comments</span>
               </div>
             </v-card-title>
             <v-spacer></v-spacer>
@@ -42,12 +42,12 @@
             <v-card-text v-show="showCreator" class="grey lighten-4">
               <v-list-tile avatar>
                 <v-list-tile-avatar>
-                  <img :src="product.createdBy.avatar">
+                  <img :src="post.createdBy.avatar">
                 </v-list-tile-avatar>
 
                 <v-list-tile-content>
-                  <v-list-tile-title class="text--primary">{{product.createdBy.username}}</v-list-tile-title>
-                  <v-list-tile-sub-title class="font-weight-thin">Added {{formatProductDate(product.createdDate)}}</v-list-tile-sub-title>
+                  <v-list-tile-title class="text--primary">{{post.createdBy.username}}</v-list-tile-title>
+                  <v-list-tile-sub-title class="font-weight-thin">Added {{formatCreatedDate(post.createdDate)}}</v-list-tile-sub-title>
                 </v-list-tile-content>
 
                 <v-list-tile-action>
@@ -64,7 +64,7 @@
     </v-layout>
 
     <!-- Show More Button (Optional) -->
-    <!-- <v-btn @click="showMoreProducts" v-if="showMoreEnabled">Fetch More</v-btn> -->
+    <!-- <v-btn @click="showMorePosts" v-if="showMoreEnabled">Fetch More</v-btn> -->
 
     <!-- Page Up Button -->
     <v-layout>
@@ -77,10 +77,10 @@
       </v-flex>
     </v-layout>
 
-    <!-- Product Skeleton Component -->
+    <!-- Post Skeleton Component -->
     <skeleton v-show="$apollo.loading"></skeleton>
 
-    <!-- Text if No Remaining Products -->
+    <!-- Text if No Remaining Posts -->
     <v-layout v-if="!$apollo.loading && !showMoreEnabled">
       <v-flex class="text-xs-center mt-5 mb-5" xs12>
         <h1 class="warning--text">You have reached the end
@@ -96,13 +96,13 @@ import { mapGetters } from "vuex";
 import throttle from "lodash/throttle";
 import moment from "moment";
 
-import { PRODUCTS_PAGE } from "../../queries";
+import { POSTS_PAGE } from "../../queries";
 import skeleton from "../Shared/Skeleton";
 
 const size = 2;
 
 export default {
-  name: "Products",
+  name: "Posts",
   components: { skeleton },
   data() {
     return {
@@ -115,8 +115,8 @@ export default {
     };
   },
   apollo: {
-    productsPage: {
-      query: PRODUCTS_PAGE,
+    postsPage: {
+      query: POSTS_PAGE,
       variables: {
         page: 1,
         size
@@ -124,26 +124,26 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["products", "userFavorites"]),
+    ...mapGetters(["posts", "userFavorites"]),
     user() {
       return this.$store.getters.user != null;
     },
     showMoreEnabled() {
-      return this.productsPage && this.productsPage.hasMore;
+      return this.postsPage && this.postsPage.hasMore;
     }
   },
   watch: {
     isBottom(value) {
       // if this.bottom evaluates to true
       if (value === true) {
-        const throttled = throttle(this.showMoreProducts, 250);
+        const throttled = throttle(this.showMorePosts, 250);
         throttled();
       }
     }
   },
   methods: {
-    // handleGetProducts() {
-    //   this.$store.dispatch("getProducts");
+    // handleGetPosts() {
+    //   this.$store.dispatch("getPosts");
     // },
     onScroll() {
       this.checkIfPageBottom();
@@ -156,10 +156,10 @@ export default {
     goToTop() {
       window.scroll({ top: 0, behavior: "smooth" });
     },
-    goToProduct(id) {
-      this.$router.push(`/products/${id}`);
+    goToPost(id) {
+      this.$router.push(`/posts/${id}`);
     },
-    formatProductDate(date) {
+    formatCreatedDate(date) {
       return moment(new Date(date)).format("ll");
     },
     checkIfPageBottom() {
@@ -169,24 +169,24 @@ export default {
         browserHeight + this.amountScrolled >= pageHeight;
       this.isBottom = scrolledToBottom;
     },
-    showMoreProducts() {
+    showMorePosts() {
       if (this.showMoreEnabled) {
         this.page += 1;
-        this.$apollo.queries.productsPage.fetchMore({
+        this.$apollo.queries.postsPage.fetchMore({
           variables: {
             page: this.page,
             size
           },
           updateQuery: (previousResult, { fetchMoreResult }) => {
-            const newProducts = fetchMoreResult.productsPage.products;
-            const hasMore = fetchMoreResult.productsPage.hasMore;
+            const newPosts = fetchMoreResult.postsPage.posts;
+            const hasMore = fetchMoreResult.postsPage.hasMore;
 
             return {
-              productsPage: {
-                __typename: previousResult.productsPage.__typename,
-                products: [
-                  ...previousResult.productsPage.products,
-                  ...newProducts
+              postsPage: {
+                __typename: previousResult.postsPage.__typename,
+                posts: [
+                  ...previousResult.postsPage.posts,
+                  ...newPosts
                 ],
                 hasMore
               }

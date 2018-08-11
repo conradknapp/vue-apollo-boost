@@ -1,11 +1,11 @@
 <template>
   <v-container class="text-xs-center" fluid grid-list-md>
 
-    <!-- Explore Products Button -->
+    <!-- Explore Posts Button -->
     <v-layout row wrap v-if="!loading">
       <v-flex xs12>
-        <v-btn class="secondary" id="products__button" to="/products" large dark>
-          Explore Products
+        <v-btn class="secondary" id="posts__button" to="/posts" large dark>
+          Explore Posts
         </v-btn>
       </v-flex>
     </v-layout>
@@ -21,12 +21,12 @@
       </v-dialog>
     </v-layout>
 
-    <!-- Products Carousel  -->
+    <!-- Posts Carousel  -->
     <v-layout row wrap v-if="!loading">
       <v-flex xs12>
         <v-carousel v-bind="{ 'cycle': cycleCarousel }" interval="3000">
-          <v-carousel-item v-for="product in shuffledProducts" :src="product.imageUrl" :key="product._id" @click="goToProduct(product._id)" @mouseover="toggleCarousel" @mouseout="toggleCarousel">
-            <h1 id="carousel__title" @click="goToProduct(product._id)">{{product.title}}</h1>
+          <v-carousel-item v-for="post in shuffledPosts" :src="post.imageUrl" :key="post._id" @click="goToPost(post._id)" @mouseover="toggleCarousel" @mouseout="toggleCarousel">
+            <h1 id="carousel__title" @click="goToPost(post._id)">{{post.title}}</h1>
           </v-carousel-item>
         </v-carousel>
 
@@ -34,8 +34,10 @@
         <div id="info-card" v-if="!user">
           <v-layout row>
             <v-flex xs12>
-              <!-- <h1><span class="font-weight-black">Love</span> Your Home</h1> -->
-              <h2>Find the best curated furniture and home accessories here</h2>
+              <h1>Get
+                <span class="font-weight-black">Inspired</span>
+              </h1>
+              <h2>Browse creative posts from users around the world</h2>
             </v-flex>
           </v-layout>
         </div>
@@ -136,17 +138,17 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["loading", "error", "shuffledProducts"]),
+    ...mapGetters(["loading", "error", "shuffledPosts"]),
     user() {
       return this.$store.getters.user != null;
     }
   },
   created() {
-    this.handleGetCarouselProducts();
+    this.handleGetCarouselPosts();
   },
   methods: {
-    handleGetCarouselProducts() {
-      this.$store.dispatch("getProducts", {
+    handleGetCarouselPosts() {
+      this.$store.dispatch("getPosts", {
         size: 3
       });
     },
@@ -162,8 +164,8 @@ export default {
         });
       }
     },
-    goToProduct(id) {
-      this.$router.push(`/products/${id}`);
+    goToPost(id) {
+      this.$router.push(`/posts/${id}`);
     },
     toggleCarousel() {
       this.cycleCarousel = !this.cycleCarousel;
@@ -249,6 +251,9 @@ export default {
   }
   h1 {
     font-size: 1.7rem;
+  }
+  h2 {
+    font-size: 1.4rem;
   }
 }
 </style>

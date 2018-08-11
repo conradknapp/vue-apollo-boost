@@ -8,7 +8,7 @@
       <v-toolbar color="accent" dark flat>
         <v-toolbar-side-icon @click="toggleSideNav"></v-toolbar-side-icon>
         <router-link tag="span" to="/">
-          <h1 class="title font-weight-light pl-3" style="cursor: pointer">Vue Pinterest</h1>
+          <h1 class="title font-weight-light pl-3" style="cursor: pointer">VueShare</h1>
         </router-link>
       </v-toolbar>
 
@@ -39,13 +39,15 @@
       <!-- App Title -->
       <v-toolbar-side-icon @click="toggleSideNav"></v-toolbar-side-icon>
       <v-toolbar-title class="hidden-xs-only font-weight-light">
-        <router-link to="/" tag="span" style="cursor: pointer">Vue Pinterest</router-link>
+        <router-link to="/" tag="span" style="cursor: pointer">
+          VueShare
+        </router-link>
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
 
       <!-- Search Input -->
-      <v-text-field v-model="searchTerm" @input="handleSearchProducts" flex prepend-icon="search" placeholder="Search styles" color="accent" single-line hide-details></v-text-field>
+      <v-text-field v-model="searchTerm" @input="handleSearchPosts" flex prepend-icon="search" placeholder="Search posts" color="accent" single-line hide-details></v-text-field>
 
       <!-- Search Results Card -->
       <v-card dark v-if="searchResults.length" id="card__search">
@@ -130,14 +132,14 @@ export default {
     ...mapGetters(["searchResults", "user", "authError", "userFavorites"]),
     sideNavItems() {
       let items = [
-        { icon: "weekend", title: "Products", link: "/products" },
+        { icon: "chat", title: "Posts", link: "/posts" },
         { icon: "lock_open", title: "Sign In", link: "/signin" },
         { icon: "create", title: "Sign Up", link: "/signup" }
       ];
       if (this.user) {
         items = [
-          { icon: "weekend", title: "Products", link: "/products" },
-          { icon: "stars", title: "Create Product", link: "/product/add" },
+          { icon: "chat", title: "Posts", link: "/posts" },
+          { icon: "stars", title: "Create Post", link: "/post/add" },
           { icon: "account_box", title: "Profile", link: "/profile" }
         ];
       }
@@ -145,12 +147,11 @@ export default {
     },
     horizontalNavItems() {
       let items = [
-        { icon: "weekend", title: "Products", link: "/products" },
+        { icon: "chat", title: "Posts", link: "/posts" },
         { icon: "lock_open", title: "Sign In", link: "/signin" },
         { icon: "create", title: "Sign Up", link: "/signup" }
       ];
-      if (this.user)
-        items = [{ icon: "weekend", title: "Products", link: "/products" }];
+      if (this.user) items = [{ icon: "chat", title: "Posts", link: "/posts" }];
       return items;
     }
   },
@@ -182,14 +183,14 @@ export default {
     },
     goToSearchResult(resultId) {
       this.searchTerm = "";
-      this.$router.push(`/products/${resultId}`);
-      this.$store.dispatch("getProduct", {
+      this.$router.push(`/posts/${resultId}`);
+      this.$store.dispatch("getPost", {
         _id: resultId
       });
       this.$store.commit("clearSearchResults");
     },
-    handleSearchProducts() {
-      this.$store.dispatch("searchProducts", {
+    handleSearchPosts() {
+      this.$store.dispatch("searchPosts", {
         searchTerm: this.searchTerm
       });
     },

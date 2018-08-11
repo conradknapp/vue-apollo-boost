@@ -1,5 +1,5 @@
 <template>
-  <v-alert dark icon="warning" :color="error" dismissible @input="onClose" transition="scale-transition" :value="true">
+  <v-alert dark icon="warning" color="error" dismissible @input="onClose" transition="scale-transition" value="true">
     <h3 class="text-xs-center">{{text}}</h3>
   </v-alert>
 </template>

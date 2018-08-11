@@ -8,40 +8,40 @@ Vue.use(Vuex);
 
 import {
   GET_CURRENT_USER,
-  GET_USER_PRODUCTS,
-  GET_PRODUCT,
-  GET_PRODUCTS,
-  ADD_PRODUCT,
+  GET_USER_POSTS,
+  GET_POST,
+  GET_POSTS,
+  ADD_POST,
   SIGNIN_USER,
   SIGNUP_USER,
-  SEARCH_PRODUCTS,
-  UPDATE_USER_PRODUCT,
-  DELETE_USER_PRODUCT
+  SEARCH_POSTS,
+  UPDATE_USER_POST,
+  DELETE_USER_POST
 } from "../queries";
 
 export const store = new Vuex.Store({
   state: {
-    product: null,
-    products: [],
+    post: null,
+    posts: [],
     searchResults: [],
     user: null,
-    userProducts: [],
+    userPosts: [],
     loading: false,
     error: null,
     authError: null
   },
   mutations: {
-    setProduct: (state, payload) => {
-      state.product = payload;
+    setPost: (state, payload) => {
+      state.post = payload;
     },
-    setProducts: (state, payload) => {
-      state.products = payload;
+    setPosts: (state, payload) => {
+      state.posts = payload;
     },
-    setUserProducts: (state, payload) => {
-      state.userProducts = payload;
+    setUserPosts: (state, payload) => {
+      state.userPosts = payload;
     },
-    setNewProduct: (state, payload) => {
-      state.products = [payload, ...state.products];
+    setNewPost: (state, payload) => {
+      state.posts = [payload, ...state.posts];
     },
     setSearchResults: (state, payload) => {
       if (payload !== null) {
@@ -79,16 +79,16 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    getProduct: ({ commit }, payload) => {
+    getPost: ({ commit }, payload) => {
       commit("setLoading", true);
       apolloClient
         .query({
-          query: GET_PRODUCT,
+          query: GET_POST,
           variables: payload
         })
         .then(({ data }) => {
           commit("setLoading", false);
-          commit("setProduct", data.getProduct);
+          commit("setPost", data.getPost);
         })
         .catch(err => {
           commit("setLoading", false);
@@ -96,16 +96,16 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    getProducts: ({ commit }, payload) => {
+    getPosts: ({ commit }, payload) => {
       commit("setLoading", true);
       apolloClient
         .query({
-          query: GET_PRODUCTS,
+          query: GET_POSTS,
           variables: payload
         })
         .then(({ data }) => {
           commit("setLoading", false);
-          commit("setProducts", data.getProducts);
+          commit("setPosts", data.getPosts);
         })
         .catch(err => {
           commit("setLoading", false);
@@ -113,16 +113,16 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    getUserProducts: ({ commit }, payload) => {
+    getUserPosts: ({ commit }, payload) => {
       commit("setLoading", true);
       apolloClient
         .query({
-          query: GET_USER_PRODUCTS,
+          query: GET_USER_POSTS,
           variables: payload
         })
         .then(({ data }) => {
           commit("setLoading", false);
-          commit("setUserProducts", data.getUserProducts);
+          commit("setUserPosts", data.getUserPosts);
         })
         .catch(err => {
           commit("setLoading", false);
@@ -130,36 +130,36 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    searchProducts: ({ commit }, payload) => {
+    searchPosts: ({ commit }, payload) => {
       apolloClient
         .query({
-          query: SEARCH_PRODUCTS,
+          query: SEARCH_POSTS,
           variables: payload
         })
         .then(({ data }) => {
-          commit("setSearchResults", data.searchProducts);
+          commit("setSearchResults", data.searchPosts);
         })
         .catch(err => {
           console.error(err);
         });
     },
-    addProduct: ({ commit }, payload) => {
+    addPost: ({ commit }, payload) => {
       commit("setLoading", true);
       commit("clearError");
       apolloClient
         .mutate({
-          mutation: ADD_PRODUCT,
+          mutation: ADD_POST,
           variables: payload,
           refetchQueries: [
             {
-              query: GET_PRODUCTS,
+              query: GET_POSTS,
               variables: { size: null }
             }
           ]
         })
         .then(({ data }) => {
           commit("setLoading", false);
-          commit("setNewProduct", data.addProduct);
+          commit("setNewPost", data.addPost);
         })
         .catch(err => {
           commit("setLoading", false);
@@ -167,43 +167,43 @@ export const store = new Vuex.Store({
           console.error(err);
         });
     },
-    deleteUserProduct: ({ state, commit }, payload) => {
+    deleteUserPost: ({ state, commit }, payload) => {
       apolloClient
         .mutate({
-          mutation: DELETE_USER_PRODUCT,
+          mutation: DELETE_USER_POST,
           variables: payload
         })
         .then(({ data }) => {
-          const index = state.userProducts.findIndex(
-            product => product._id === data.deleteUserProduct._id
+          const index = state.userPosts.findIndex(
+            post => post._id === data.deleteUserPost._id
           );
-          const userProducts = [
-            ...state.userProducts.slice(0, index),
-            ...state.userProducts.slice(index + 1)
+          const userPosts = [
+            ...state.userPosts.slice(0, index),
+            ...state.userPosts.slice(index + 1)
           ];
-          commit("setUserProducts", userProducts);
+          commit("setUserPosts", userPosts);
         })
         .catch(err => {
           console.error(err);
         });
     },
-    updateUserProduct: ({ state, commit }, payload) => {
+    updateUserPost: ({ state, commit }, payload) => {
       apolloClient
         .mutate({
-          mutation: UPDATE_USER_PRODUCT,
+          mutation: UPDATE_USER_POST,
           variables: payload
         })
         .then(({ data }) => {
-          const index = state.userProducts.findIndex(
-            product => product._id === data.updateUserProduct._id
+          const index = state.userPosts.findIndex(
+            post => post._id === data.updateUserPost._id
           );
-          const userProducts = [
-            ...state.userProducts.slice(0, index),
-            data.updateUserProduct,
-            ...state.userProducts.slice(index + 1)
+          const userPosts = [
+            ...state.userPosts.slice(0, index),
+            data.updateUserPost,
+            ...state.userPosts.slice(index + 1)
           ];
-          commit("setUserProducts", userProducts);
-          // console.log(data.updateUserProduct);
+          commit("setUserPosts", userPosts);
+          // console.log(data.updateUserPost);
         })
         .catch(err => {
           console.error(err);
@@ -253,14 +253,14 @@ export const store = new Vuex.Store({
     }
   },
   getters: {
-    product: state => state.product,
-    products: state => state.products,
-    shuffledProducts: state =>
-      [...state.products].sort(() => Math.random() - 0.5),
+    post: state => state.post,
+    posts: state => state.posts,
+    shuffledPosts: state =>
+      [...state.posts].sort(() => Math.random() - 0.5),
     searchResults: state => state.searchResults,
     user: state => state.user,
     userFavorites: state => state.user && state.user.favorites,
-    userProducts: state => state.userProducts,
+    userPosts: state => state.userPosts,
     loading: state => state.loading,
     error: state => state.error,
     authError: state => state.authError

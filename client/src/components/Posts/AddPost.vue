@@ -2,12 +2,12 @@
   <v-container>
     <v-layout>
       <v-flex class="text-xs-center" xs12>
-        <h1 class="primary--text">Add a New Product</h1>
+        <h1 class="primary--text">Add a New Post</h1>
       </v-flex>
     </v-layout>
     <v-layout row>
       <v-flex xs12>
-        <v-form @submit.prevent="handleAddProduct" v-model="isFormValid" ref="form" lazy-validation>
+        <v-form @submit.prevent="handleAddPost" v-model="isFormValid" ref="form" lazy-validation>
           <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
               <v-text-field label="Title" v-model.trim="title" required :rules="titleRules"></v-text-field>
@@ -15,7 +15,7 @@
           </v-layout>
           <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
-              <v-select label="Categories" :items="['Mid-Century Modern', 'Rustic', 'Preppy', 'Traditional', 'Arts and Crafts']" v-model="categories" multiple :rules="categoriesRules" required></v-select>
+              <v-select label="Categories" :items="['Art', 'Furniture', 'Education', 'Clothing', 'Technology']" v-model="categories" multiple :rules="categoriesRules" required></v-select>
             </v-flex>
           </v-layout>
           <v-layout row>
@@ -33,7 +33,7 @@
           </v-layout>
 
           <v-flex xs12 sm6 offset-sm3>
-            <v-btn color="primary" :disabled="!isFormValid || loading" type="submit">Create Product</v-btn>
+            <v-btn color="primary" :disabled="!isFormValid || loading" type="submit">Create Post</v-btn>
           </v-flex>
         </v-form>
       </v-flex>
@@ -45,7 +45,7 @@
 import { mapGetters } from "vuex";
 
 export default {
-  name: "AddProduct",
+  name: "AddPost",
   data() {
     return {
       isFormValid: true,
@@ -54,7 +54,7 @@ export default {
       description: "",
       categories: [],
       titleRules: [
-        title => !!title || "Product title is required",
+        title => !!title || "Post title is required",
         title => title.length < 10 || "Title must be less than 10 characters"
       ],
       imageRules: [image => !!image || "Image is required"],
@@ -70,18 +70,19 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["loading"])
+    ...mapGetters(["user", "loading"])
   },
   methods: {
-    handleAddProduct() {
+    handleAddPost() {
       if (this.$refs.form.validate()) {
-        this.$store.dispatch("addProduct", {
+        this.$store.dispatch("addPost", {
+          creatorId: this.user._id,
           title: this.title,
           categories: this.categories,
           imageUrl: this.imageUrl,
           description: this.description
         });
-        this.$router.push("/products");
+        this.$router.push("/posts");
       }
     }
   }

@@ -6,7 +6,7 @@
           <v-container fill-height fluid>
             <v-layout fill-height>
               <v-flex xs12 align-end flexbox>
-                <span class="product__skeleton--description"></span>
+                <span class="post__skeleton--description"></span>
                 <div>
                   <v-btn x-large icon>
                     <v-icon color="grey lighten-1" x-large>favorite</v-icon>
@@ -24,7 +24,7 @@
           <v-container fill-height fluid>
             <v-layout fill-height>
               <v-flex xs12 align-end flexbox>
-                <span class="product__skeleton--description"></span>
+                <span class="post__skeleton--description"></span>
                 <div>
                   <v-btn icon>
                     <v-icon color="grey lighten-1" x-large>favorite</v-icon>
@@ -69,7 +69,7 @@ export default {
   );
 }
 
-.product__skeleton--description {
+.post__skeleton--description {
   background: rgba(57, 57, 57, 0.3);
   color: rgba(57, 57, 57, 0.3);
   min-height: 5em;

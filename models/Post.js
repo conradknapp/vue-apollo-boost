@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const ProductSchema = new mongoose.Schema({
+const PostSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true
@@ -47,8 +47,8 @@ const ProductSchema = new mongoose.Schema({
   }]
 });
 
-ProductSchema.index({
+PostSchema.index({
   "$**": "text"
 });
 
-module.exports = mongoose.model("Product", ProductSchema);
+module.exports = mongoose.model("Post", PostSchema);

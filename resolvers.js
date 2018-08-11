@@ -8,16 +8,16 @@ const createToken = (user, secret, expiresIn) => {
 
 module.exports = {
   Query: {
-    productsPage: async (_, { page, size }, { Product }) => {
-      let products;
+    postsPage: async (_, { page, size }, { Post }) => {
+      let posts;
       if (page === 1) {
-        products = await Product.find({})
+        posts = await Post.find({})
           .sort({ createdDate: "desc" })
           .limit(size)
           .populate({ path: "createdBy", model: "User" });
       } else {
         const skips = size * (page - 1);
-        products = await Product.find({})
+        posts = await Post.find({})
           .sort({ createdDate: "desc" })
           .skip(skips)
           .limit(size)
@@ -26,21 +26,21 @@ module.exports = {
             model: "User"
           });
       }
-      const countDocs = await Product.countDocuments();
+      const countDocs = await Post.countDocuments();
       const hasMore = countDocs > size * page;
-      return { products, hasMore };
+      return { posts, hasMore };
     },
-    getProduct: async (_, { _id }, { Product }) => {
-      const product = await Product.findOne({ _id }).populate({
+    getPost: async (_, { postId }, { Post }) => {
+      const post = await Post.findOne({ _id: postId }).populate({
         path: "messages.messageUser",
         model: "User"
       });
-      return product;
+      return post;
     },
-    getProducts: async (_, { size }, { Product }) => {
-      let products;
+    getPosts: async (_, { size }, { Post }) => {
+      let posts;
       if (size) {
-        products = await Product.find({})
+        posts = await Post.find({})
           .sort({ createdDate: "desc" })
           .limit(size)
           .populate({
@@ -48,24 +48,24 @@ module.exports = {
             model: "User"
           });
       } else {
-        products = await Product.find({})
+        posts = await Post.find({})
           .sort({ createdDate: "desc" })
           .populate({
             path: "createdBy",
             model: "User"
           });
       }
-      return products;
+      return posts;
     },
-    getUserProducts: async (_, { userId }, { Product }) => {
-      const products = await Product.find({
+    getUserPosts: async (_, { userId }, { Post }) => {
+      const posts = await Post.find({
         createdBy: userId
       });
-      return products;
+      return posts;
     },
-    searchProducts: async (_, { searchTerm }, { Product }) => {
+    searchPosts: async (_, { searchTerm }, { Post }) => {
       if (searchTerm) {
-        const searchResults = await Product.find(
+        const searchResults = await Post.find(
           {
             $text: { $search: searchTerm }
           },
@@ -87,86 +87,77 @@ module.exports = {
       }
       const user = await User.findOne({
         username: currentUser.username
-      }).populate({ path: "favorites", model: "Product" });
+      }).populate({ path: "favorites", model: "Post" });
       return user;
     }
   },
   Mutation: {
-    addProduct: async (
+    addPost: async (
       _,
       { title, imageUrl, description, categories, creatorId },
-      { Product }
+      { Post }
     ) => {
-      const newProduct = await new Product({
+      const newPost = await new Post({
         title,
         imageUrl,
         description,
         categories,
         createdBy: creatorId
       }).save();
-      return newProduct;
+      return newPost;
     },
-    addProductMessage: async (
-      _,
-      { messageBody, userId, productId },
-      { Product }
-    ) => {
+    addPostMessage: async (_, { messageBody, userId, postId }, { Post }) => {
       const newMessage = {
         messageBody,
         messageUser: userId
       };
-      const product = await Product.findOne({ _id: productId }).then(
-        product => {
-          product.messages.unshift(newMessage);
-          return product.save();
-        }
-      );
-      return product;
+      const post = await Post.findOne({ _id: postId }).then(post => {
+        post.messages.unshift(newMessage);
+        return post.save();
+      });
+      return post;
     },
-    updateUserProduct: async (
+    updateUserPost: async (
       _,
-      { productId, userId, title, imageUrl, categories, description },
-      { Product }
+      { postId, userId, title, imageUrl, categories, description },
+      { Post }
     ) => {
-      const product = await Product.findOneAndUpdate(
-        { _id: productId, createdBy: userId },
-        {
-          $set: { title, imageUrl, categories, description }
-        },
+      const post = await Post.findOneAndUpdate(
+        { _id: postId, createdBy: userId },
+        { $set: { title, imageUrl, categories, description } },
         { new: true }
       );
-      return product;
+      return post;
     },
-    deleteUserProduct: async (_, { productId }, { Product }) => {
-      const product = await Product.findOneAndRemove({ _id: productId });
-      return product;
+    deleteUserPost: async (_, { postId }, { Post }) => {
+      const post = await Post.findOneAndRemove({ _id: postId });
+      return post;
     },
-
-    likeProduct: async (_, { _id, username }, { Product, User }) => {
-      const product = await Product.findOneAndUpdate(
-        { _id },
+    likePost: async (_, { postId, username }, { Post, User }) => {
+      const post = await Post.findOneAndUpdate(
+        { _id: postId },
         { $inc: { likes: 1 } },
         { new: true }
       );
       const user = await User.findOneAndUpdate(
         { username },
-        { $addToSet: { favorites: _id } },
+        { $addToSet: { favorites: postId } },
         { new: true }
-      ).populate({ path: "favorites", model: "Product" });
-      return { likes: product.likes, favorites: user.favorites };
+      ).populate({ path: "favorites", model: "Post" });
+      return { likes: post.likes, favorites: user.favorites };
     },
-    unlikeProduct: async (_, { _id, username }, { Product, User }) => {
-      const product = await Product.findOneAndUpdate(
-        { _id },
+    unlikePost: async (_, { postId, username }, { Post, User }) => {
+      const post = await Post.findOneAndUpdate(
+        { _id: postId },
         { $inc: { likes: -1 } },
         { new: true }
       );
       const user = await User.findOneAndUpdate(
         { username },
-        { $pull: { favorites: _id } },
+        { $pull: { favorites: postId } },
         { new: true }
-      ).populate({ path: "favorites", model: "Product" });
-      return { likes: product.likes, favorites: user.favorites };
+      ).populate({ path: "favorites", model: "Post" });
+      return { likes: post.likes, favorites: user.favorites };
     },
     signinUser: async (_, { username, password }, { User }) => {
       const user = await User.findOne({ username });

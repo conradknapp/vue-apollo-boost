@@ -6,10 +6,10 @@ import Signin from "@/components/Auth/Signin";
 import Signup from "@/components/Auth/Signup";
 import Profile from "@/components/Auth/Profile";
 
-import Products from "@/components/Products/Products";
-import Product from "@/components/Products/Product";
-import AddProduct from "@/components/Products/AddProduct";
-import test from "@/components/Products/test";
+import Posts from "@/components/Posts/Posts";
+import Post from "@/components/Posts/Post";
+import AddPost from "@/components/Posts/AddPost";
+import test from "@/components/Posts/test";
 
 import AuthGuard from "./AuthGuard";
 
@@ -33,21 +33,21 @@ export default new Router({
       component: Signup
     },
     {
-      path: "/products",
-      name: "Products",
-      component: Products
+      path: "/posts",
+      name: "Posts",
+      component: Posts
     },
     {
-      path: "/products/:_id",
-      name: "Product",
+      path: "/posts/:postId",
+      name: "Post",
       props: true,
-      component: Product
+      component: Post
     },
     {
-      path: "/product/add",
-      name: "AddProduct",
+      path: "/post/add",
+      name: "AddPost",
       beforeEnter: AuthGuard,
-      component: AddProduct
+      component: AddPost
     },
     {
       path: "/profile",
